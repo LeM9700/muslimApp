@@ -1,0 +1,2 @@
+C:/Users/melbo/projects/muslimApp/android/app/.cxx/Debug/q1b1s4u1/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/melbo/projects/muslimApp/android/app/.cxx/Debug/q1b1s4u1/armeabi-v7a/CMakeFiles/rebuild_cache.dir

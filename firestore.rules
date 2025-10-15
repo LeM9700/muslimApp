@@ -1,0 +1,31 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Règles pour la collection hadiths
+    // Lecture seule des hadiths validés par les administrateurs
+    match /hadiths/{document} {
+      allow read: if resource.data.reviewed == true;
+      allow write: if false; // Pas d'écriture côté app - admin uniquement
+    }
+    
+    // Règles pour la collection quiz_questions
+    // Lecture seule des questions validées par les administrateurs
+    match /quiz_questions/{document} {
+      allow read: if resource.data.reviewed == true;
+      allow write: if false; // Pas d'écriture côté app - admin uniquement
+    }
+    
+    // Règles pour la collection quran
+    // Lecture libre pour tous les versets du Coran
+    match /quran/{document} {
+      allow read: if true;
+      allow write: if false; // Pas d'écriture côté app - admin uniquement
+    }
+    
+    // Refuser tout autre accès par défaut
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "hadiths": [
+    {
+      "id": "hadith_001",
+      "text": "إنما الأعمال بالنيات وإنما لكل امرئ ما نوى",
+      "source": "صحيح البخاري",
+      "reviewed": true,
+      "created_at": "2025-01-01T00:00:00Z"
+    },
+    {
+      "id": "hadith_002", 
+      "text": "من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت",
+      "source": "صحيح البخاري",
+      "reviewed": true,
+      "created_at": "2025-01-02T00:00:00Z"
+    },
+    {
+      "id": "hadith_003",
+      "text": "المسلم من سلم المسلمون من لسانه ويده",
+      "source": "صحيح البخاري",
+      "reviewed": true,
+      "created_at": "2025-01-03T00:00:00Z"
+    },
+    {
+      "id": "hadith_004",
+      "text": "من صلى البردين دخل الجنة",
+      "source": "صحيح البخاري",
+      "reviewed": true,
+      "created_at": "2025-01-04T00:00:00Z"
+    },
+    {
+      "id": "hadith_005",
+      "text": "الدين النصيحة",
+      "source": "صحيح مسلم",
+      "reviewed": true,
+      "created_at": "2025-01-05T00:00:00Z"
+    }
+  ],
+  "quiz_questions": [
+    {
+      "id": "quiz_001",
+      "question": "Combien de sourates compte le Coran ?",
+      "options": ["112", "114", "116", "118"],
+      "answerIndex": 1,
+      "explanation": "Le Coran comprend 114 sourates, de Al-Fatiha (l'Ouverture) à An-Nas (Les Hommes).",
+      "reviewed": true,
+      "created_at": "2025-01-01T00:00:00Z"
+    },
+    {
+      "id": "quiz_002",
+      "question": "Quelle est la première sourate révélée ?",
+      "options": ["Al-Fatiha", "Al-Alaq", "Al-Muddaththir", "An-Nas"],
+      "answerIndex": 1,
+      "explanation": "La sourate Al-Alaq (L'Adhérence) fut la première révélée au Prophète Muhammad ﷺ.",
+      "reviewed": true,
+      "created_at": "2025-01-02T00:00:00Z"
+    },
+    {
+      "id": "quiz_003",
+      "question": "Combien de piliers compte l'Islam ?",
+      "options": ["3", "4", "5", "6"],
+      "answerIndex": 2,
+      "explanation": "L'Islam repose sur 5 piliers : la Shahada, la Salat, la Zakat, le Hajj et le Sawm.",
+      "reviewed": true,
+      "created_at": "2025-01-03T00:00:00Z"
+    },
+    {
+      "id": "quiz_004",
+      "question": "Quel est le mois de jeûne pour les musulmans ?",
+      "options": ["Ramadan", "Shawwal", "Dhul-Hijjah", "Muharram"],
+      "answerIndex": 0,
+      "explanation": "Le mois de Ramadan est le mois de jeûne obligatoire pour tous les musulmans.",
+      "reviewed": true,
+      "created_at": "2025-01-04T00:00:00Z"
+    },
+    {
+      "id": "quiz_005",
+      "question": "Vers quelle direction les musulmans prient-ils ?",
+      "options": ["Le Nord", "La Mecque", "Médine", "Jérusalem"],
+      "answerIndex": 1,
+      "explanation": "Les musulmans prient en direction de la Mecque, plus précisément vers la Kaaba.",
+      "reviewed": true,
+      "created_at": "2025-01-05T00:00:00Z"
+    },
+    {
+      "id": "quiz_006",
+      "question": "Combien de fois par jour les musulmans prient-ils ?",
+      "options": ["3", "4", "5", "6"],
+      "answerIndex": 2,
+      "explanation": "Les musulmans accomplissent 5 prières quotidiennes : Fajr, Dhuhr, Asr, Maghrib et Isha.",
+      "reviewed": true,
+      "created_at": "2025-01-06T00:00:00Z"
+    }
+  ]
+}

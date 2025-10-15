@@ -1,0 +1,372 @@
+import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/quran_models.dart';
+import '../services/quran_api_service.dart';
+import '../widgets/glass_widgets.dart';
+import '../utils/app_theme.dart';
+
+/// Écran de lecture d'une sourate avec API Quran Foundation v4
+/// Affiche les versets en arabe + traduction FR + audio à la volée
+class SuraDetailScreen extends StatefulWidget {
+  final String suraId; // string mais on va caster en int pour l'API
+  final String? suraName; // optionnel car on peut le récupérer via API
+
+  const SuraDetailScreen({
+    super.key,
+    required this.suraId,
+    this.suraName,
+  });
+
+  @override
+  State<SuraDetailScreen> createState() => _SuraDetailScreenState();
+}
+
+class _SuraDetailScreenState extends State<SuraDetailScreen> {
+  final QuranApiService _api = QuranApiService();
+  final AudioPlayer _player = AudioPlayer();
+
+  ChapterInfo? _meta;
+  List<Verse> _verses = [];
+  int _page = 1;
+  bool _loading = true;
+  bool _hasMore = true;
+  String? _errorMessage;
+  int? _currentPlayingVerse;
+  bool _isPlaying = false;
+
+  // Clés SharedPreferences pour le bookmarking
+  static const String _keyLastSuraId = 'last_sura_id';
+  static const String _keyLastSuraName = 'last_sura_name';
+  static const String _keyLastAyah = 'last_ayah';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSuraVerses();
+    _setupAudioPlayerListeners();
+  }
+
+  /// Charge les versets de la sourate depuis Firestore
+  /// Structure: { sura_number, name, verses: [{ ayah, text, translation_fr, audio_url }] }
+  Future<void> _loadSuraVerses() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      final doc = await _firestore.collection('quran').doc(widget.suraId).get();
+      
+      if (doc.exists) {
+        final data = doc.data()!;
+        final verses = data['verses'] as List? ?? [];
+        
+        if (mounted) {
+          setState(() {
+            _verses = verses.cast<Map<String, dynamic>>();
+            _isLoading = false;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = 'Sourate non trouvée';
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Erreur de chargement: $e';
+        });
+      }
+    }
+  }
+
+  /// Configure les listeners pour le lecteur audio
+  /// Gère les événements de fin de lecture et d'erreur
+  void _setupAudioPlayerListeners() {
+    _audioPlayer.onPlayerComplete.listen((_) {
+      if (mounted) {
+        setState(() {
+          _isPlaying = false;
+          _currentPlayingVerse = null;
+        });
+      }
+    });
+
+    _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      if (mounted) {
+        setState(() {
+          _isPlaying = state == PlayerState.playing;
+        });
+      }
+    });
+  }
+
+  /// Lance la lecture audio d'un verset
+  /// [verseIndex] : index du verset dans la liste
+  Future<void> _playVerse(int verseIndex) async {
+    try {
+      final verse = _verses[verseIndex];
+      final audioUrl = verse['audio_url'] as String?;
+      
+      if (audioUrl == null || audioUrl.isEmpty) {
+        _showSnackBar('Audio non disponible pour ce verset');
+        return;
+      }
+
+      // Arrêter la lecture en cours si nécessaire
+      if (_isPlaying) {
+        await _audioPlayer.stop();
+      }
+
+      // Jouer le nouveau verset
+      await _audioPlayer.play(UrlSource(audioUrl));
+      
+      setState(() {
+        _currentPlayingVerse = verseIndex;
+      });
+      
+      // Sauvegarder la progression
+      await _saveReadingProgress(verse['ayah'] as int);
+      
+    } catch (e) {
+      _showSnackBar('Erreur de lecture audio: $e');
+    }
+  }
+
+  /// Arrête la lecture audio en cours
+  Future<void> _stopAudio() async {
+    try {
+      await _audioPlayer.stop();
+      setState(() {
+        _isPlaying = false;
+        _currentPlayingVerse = null;
+      });
+    } catch (e) {
+      _showSnackBar('Erreur lors de l\'arrêt: $e');
+    }
+  }
+
+  /// Sauvegarde la progression de lecture dans SharedPreferences
+  /// [ayahNumber] : numéro du verset actuellement lu
+  Future<void> _saveReadingProgress(int ayahNumber) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_keyLastSuraId, widget.suraId);
+      await prefs.setString(_keyLastSuraName, widget.suraName);
+      await prefs.setInt(_keyLastAyah, ayahNumber);
+    } catch (e) {
+      // Erreur silencieuse pour cette fonctionnalité non critique
+      print('Erreur sauvegarde progression: $e');
+    }
+  }
+
+  /// Affiche un SnackBar avec un message
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.suraName),
+        actions: [
+          // Bouton stop audio si en cours de lecture
+          if (_isPlaying)
+            IconButton(
+              icon: const Icon(Icons.stop),
+              onPressed: _stopAudio,
+              tooltip: 'Arrêter la lecture',
+            ),
+        ],
+      ),
+      body: _buildBody(),
+    );
+  }
+
+  /// Construit le corps de l'écran selon l'état actuel
+  Widget _buildBody() {
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return _buildErrorState();
+    }
+
+    if (_verses.isEmpty) {
+      return _buildEmptyState();
+    }
+
+    return _buildVersesList();
+  }
+
+  /// Affiche l'état d'erreur
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Colors.red.shade300,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _errorMessage!,
+            style: TextStyle(
+              color: Colors.red.shade300,
+              fontSize: 16,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: _loadSuraVerses,
+            child: const Text('Réessayer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Affiche l'état vide
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.book_outlined,
+            size: 64,
+            color: Colors.white30,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Aucun verset trouvé',
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Construit la liste des versets
+  Widget _buildVersesList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: _verses.length,
+      itemBuilder: (context, index) {
+        final verse = _verses[index];
+        return _buildVerseCard(verse, index);
+      },
+    );
+  }
+
+  /// Construit une card pour un verset
+  /// Affiche le texte arabe, la traduction française et les contrôles audio
+  Widget _buildVerseCard(Map<String, dynamic> verse, int index) {
+    final ayahNumber = verse['ayah'] as int? ?? (index + 1);
+    final arabicText = verse['text'] as String? ?? '';
+    final frenchTranslation = verse['translation_fr'] as String? ?? '';
+    final hasAudio = (verse['audio_url'] as String?)?.isNotEmpty ?? false;
+    final isCurrentlyPlaying = _currentPlayingVerse == index && _isPlaying;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // En-tête avec numéro du verset et bouton audio
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: AppTheme.accentGold.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    'Verset $ayahNumber',
+                    style: TextStyle(
+                      color: AppTheme.accentGold,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                if (hasAudio)
+                  IconButton(
+                    icon: Icon(
+                      isCurrentlyPlaying ? Icons.pause_circle : Icons.play_circle,
+                      color: isCurrentlyPlaying ? Colors.orange : Colors.green,
+                      size: 32,
+                    ),
+                    onPressed: isCurrentlyPlaying 
+                        ? _stopAudio 
+                        : () => _playVerse(index),
+                    tooltip: isCurrentlyPlaying ? 'Pause' : 'Écouter',
+                  ),
+              ],
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Texte arabe
+            if (arabicText.isNotEmpty) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppTheme.gradientStart,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  arabicText,
+                  style: AppTheme.getArabicTextStyle(fontSize: 22),
+                  textAlign: TextAlign.right,
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+            
+            // Traduction française
+            if (frenchTranslation.isNotEmpty)
+              Text(
+                frenchTranslation,
+                style: AppTheme.getFrenchTranslationStyle(fontSize: 15),
+                textAlign: TextAlign.left,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+}
