@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Muslim App</string>
+	<string>Sakina</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -41,28 +41,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	
-	<!-- Permissions pour Muslim App -->
-	
-	<!-- Géolocalisation pour la boussole Qibla -->
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Cette application utilise votre position pour calculer la direction de la Qibla (direction de prière vers la Kaaba).</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Cette application utilise votre position pour calculer la direction de la Qibla (direction de prière vers la Kaaba).</string>
-	
-	<!-- Notifications locales pour hadiths et quiz -->
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>background-fetch</string>
-		<string>background-processing</string>
-	</array>
-	
-	<!-- Audio pour lecture des versets du Coran -->
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Cette application ne nécessite pas l'accès au microphone.</string>
-	
-	<!-- Configuration pour dark mode et apparence -->
+	<string>Votre position est utilisee uniquement lorsque l'app est ouverte afin de calculer la direction de la Qibla et les horaires de priere locaux.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIUserInterfaceStyle</key>
-	<string>Dark</string>
+	<string>Light</string>
 </dict>
 </plist>
