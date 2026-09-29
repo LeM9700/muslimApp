@@ -385,7 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         // Titre de l'app
         Text(
-          'Sakina',
+          'Deen',
           style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,

@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sakina',
+      title: 'Deen',
       debugShowCheckedModeBanner: false,
 
       // Thème iridescent clair (pivot depuis dark navy)
