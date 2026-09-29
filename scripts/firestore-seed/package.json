@@ -1,0 +1,13 @@
+{
+  "name": "firestore-seed",
+  "private": true,
+  "type": "module",
+  "description": "Remplit Firestore depuis assets/data (hadiths Nawawi + questions de quiz)",
+  "scripts": {
+    "dry-run": "node seed.mjs",
+    "seed": "node seed.mjs --write"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0"
+  }
+}

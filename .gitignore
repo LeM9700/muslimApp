@@ -75,3 +75,6 @@ coverage/
 # User data (never commit)
 user_preferences.json
 local_bookmarks.json
+# Firestore seeding (clé de compte de service = accès admin, ne JAMAIS commiter)
+/scripts/firestore-seed/service-account.json
+/scripts/firestore-seed/node_modules/

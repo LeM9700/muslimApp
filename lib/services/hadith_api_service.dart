@@ -15,14 +15,16 @@ import '../models/hadith.dart';
 class HadithApiService {
   static const String _baseUrl = 'https://api.sunnah.com/v1';
 
-  /// [🔒 SÉCURITÉ] Ne jamais mettre la clé en dur ici.
-  /// À remplacer par un appel à un endpoint proxy /api/hadith/today
-  /// qui appellera Sunnah.com côté serveur avec la clé secrète.
-  // ignore: prefer_const_declarations
-  static const String _apiKey = '';
+  /// [🔒 SÉCURITÉ] Ne jamais mettre la clé en dur ici. Elle est injectée au
+  /// build : --dart-define=SUNNAH_API_KEY=... (secret GitHub en CI).
+  /// Elle reste extractible du binaire : pour une protection complète,
+  /// passer par un proxy serveur.
+  static const String _apiKey = String.fromEnvironment('SUNNAH_API_KEY');
+
+  /// Sans clé, aucun appel réseau : fallback Firestore / JSON embarqué.
+  static bool get isConfigured => _apiKey.isNotEmpty;
 
   /// Headers requis par l'API
-  /// Si _apiKey est vide, l'API retournera 401 → fallback Firestore automatique
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
     'x-api-key': _apiKey,
@@ -39,6 +41,7 @@ class HadithApiService {
   /// Récupère un hadith aléatoire depuis l'API
   /// Endpoint : GET /v1/hadiths/random
   static Future<Hadith?> getRandomHadith() async {
+    if (!isConfigured) return null;
     try {
       final response = await http
           .get(Uri.parse('$_baseUrl/hadiths/random'), headers: _headers)

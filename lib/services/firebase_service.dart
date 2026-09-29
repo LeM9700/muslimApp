@@ -166,17 +166,18 @@ class FirebaseService {
     if (!isAvailable) return _getLocalQuizQuestion();
 
     try {
+      // Pas d'orderBy : combiné au filtre 'reviewed' il exigerait un index
+      // composite. On tire au hasard parmi un petit lot.
       final snapshot = await _firestore!
           .collection('quiz_questions')
           .where('reviewed', isEqualTo: true)
-          .orderBy('createdAt', descending: true)
-          .limit(1)
+          .limit(30)
           .get()
           .timeout(Duration(seconds: 8));
 
       if (snapshot.docs.isNotEmpty) {
-        final data = snapshot.docs.first.data();
-        return QuizQuestion.fromFirestore(data, snapshot.docs.first.id);
+        final docs = [...snapshot.docs]..shuffle();
+        return QuizQuestion.fromFirestore(docs.first.data(), docs.first.id);
       }
 
       return _getLocalQuizQuestion();

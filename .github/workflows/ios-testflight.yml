@@ -117,9 +117,12 @@ jobs:
           cd ios && pod install --repo-update
 
       - name: Build IPA
+        env:
+          SUNNAH_API_KEY: ${{ secrets.SUNNAH_API_KEY }}
         run: |
           flutter build ipa --release \
             --build-number=${{ github.run_number }} \
+            --dart-define=SUNNAH_API_KEY="$SUNNAH_API_KEY" \
             --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
 
       - name: Upload to TestFlight
