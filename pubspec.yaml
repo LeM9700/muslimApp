@@ -49,6 +49,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   generate: true
@@ -66,3 +67,10 @@ flutter:
   #   - family: NotoNaskhArabic
   #     fonts:
   #       - asset: assets/fonts/NotoNaskhArabic-Regular.ttf
+# App icon generation: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  image_path: "assets/icon/app_icon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  background_color_ios: "#0B1F33"
