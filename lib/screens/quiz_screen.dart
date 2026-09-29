@@ -85,7 +85,7 @@ class _QuizScreenState extends State<QuizScreen> {
       // Charger 5 questions filtrées par difficulté
       final questions = await FirebaseService.getMultipleQuestions(
         5,
-        difficulty: difficulty.name,
+        difficulty: difficulty.dataKey,
       );
 
       if (mounted) {

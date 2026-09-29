@@ -26,15 +26,34 @@ class Verse {
     final firstTr = translations.isNotEmpty ? translations.first : null;
 
     final audio = json['audio'];
-    
+    final rawTranslation = firstTr != null ? (firstTr['text'] as String?) : null;
+
     return Verse(
       id: json['id'] as int? ?? 0,
       verseNumber: json['verse_number'] as int? ?? 0,
       textUthmani: json['text_uthmani'] as String? ?? '',
-      translationText: firstTr != null ? (firstTr['text'] as String?) : null,
-      audioUrl: (audio != null) ? (audio['url'] as String?) : null,
+      translationText: rawTranslation != null ? _cleanTranslation(rawTranslation) : null,
+      audioUrl: (audio != null) ? _absoluteAudioUrl(audio['url'] as String?) : null,
       verseKey: json['verse_key'] as String?,
     );
+  }
+
+  /// L'API renvoie un chemin relatif ("Alafasy/mp3/001001.mp3") qu'il faut
+  /// préfixer par le CDN audio de Quran.com pour pouvoir le lire.
+  static String? _absoluteAudioUrl(String? url) {
+    if (url == null || url.isEmpty) return null;
+    if (url.startsWith('http')) return url;
+    if (url.startsWith('//')) return 'https:$url';
+    return 'https://verses.quran.com/$url';
+  }
+
+  /// Retire les appels de notes (<sup foot_note=..>1</sup>) et le HTML restant.
+  static String _cleanTranslation(String text) {
+    return text
+        .replaceAll(RegExp(r'<sup[^>]*>.*?</sup>'), '')
+        .replaceAll(RegExp(r'<[^>]*>'), '')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .trim();
   }
 
   /// Pour debugging

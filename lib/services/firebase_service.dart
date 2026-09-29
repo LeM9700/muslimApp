@@ -5,6 +5,7 @@ import '../firebase_options.dart';
 import '../models/hadith.dart';
 import '../models/quiz_question.dart';
 import 'hadith_api_service.dart';
+import 'local_content_service.dart';
 
 /// Service centralisé pour toutes les interactions Firebase
 /// Gère l'initialisation, la disponibilité et les fallbacks
@@ -101,8 +102,8 @@ class FirebaseService {
       print('⚠️ API Sunnah non disponible, fallback Firestore : $e');
     }
 
-    // 2. Fallback Firestore (hadiths Nawawi)
-    if (!isAvailable) return _getMockHadith();
+    // 2. Fallback Firestore (hadiths Nawawi), puis JSON embarqué
+    if (!isAvailable) return _getLocalHadith();
 
     try {
       final countResult = await _firestore!
@@ -113,7 +114,7 @@ class FirebaseService {
           .timeout(Duration(seconds: 5));
 
       final totalCount = countResult.count ?? 0;
-      if (totalCount == 0) return _getMockHadith();
+      if (totalCount == 0) return _getLocalHadith();
 
       final now = DateTime.now();
       final dayOfYear = now.difference(DateTime(now.year, 1, 1)).inDays;
@@ -134,10 +135,10 @@ class FirebaseService {
         return Hadith.fromMap(data);
       }
 
-      return _getMockHadith();
+      return _getLocalHadith();
     } catch (e) {
       print('⚠️ Erreur Firestore Hadith : $e');
-      return _getMockHadith();
+      return _getLocalHadith();
     }
   }
 
@@ -162,7 +163,7 @@ class FirebaseService {
 
   /// Service Quiz - Question aléatoire du jour
   static Future<QuizQuestion?> getRandomQuizQuestion() async {
-    if (!isAvailable) return _getMockQuizQuestion();
+    if (!isAvailable) return _getLocalQuizQuestion();
 
     try {
       final snapshot = await _firestore!
@@ -178,10 +179,10 @@ class FirebaseService {
         return QuizQuestion.fromFirestore(data, snapshot.docs.first.id);
       }
 
-      return _getMockQuizQuestion();
+      return _getLocalQuizQuestion();
     } catch (e) {
       print('⚠️ Erreur Firestore Quiz : $e');
-      return _getMockQuizQuestion();
+      return _getLocalQuizQuestion();
     }
   }
 
@@ -189,7 +190,7 @@ class FirebaseService {
   /// Si [difficulty] est passé, filtre par niveau de difficulté
   static Future<List<QuizQuestion>> getMultipleQuestions(int count,
       {String? difficulty}) async {
-    if (!isAvailable) return _getMockQuestions(count);
+    if (!isAvailable) return _getLocalQuestions(count, difficulty);
 
     try {
       Query<Map<String, dynamic>> query = _firestore!
@@ -210,12 +211,15 @@ class FirebaseService {
           .map((doc) => QuizQuestion.fromFirestore(doc.data(), doc.id))
           .toList();
 
+      // Collection vide (non seedée) → questions embarquées
+      if (questions.isEmpty) return _getLocalQuestions(count, difficulty);
+
       // Mélanger et prendre le nombre demandé
       questions.shuffle();
       return questions.take(count).toList();
     } catch (e) {
       print('⚠️ Erreur récupération questions multiples : $e');
-      return _getMockQuestions(count);
+      return _getLocalQuestions(count, difficulty);
     }
   }
 
@@ -236,6 +240,39 @@ class FirebaseService {
       print('⚠️ Erreur comptage questions : $e');
       return 156;
     }
+  }
+
+  /// Fallbacks sur le contenu embarqué (assets/data), puis sur les mocks
+  /// si la lecture de l'asset échoue.
+  static Future<Hadith> _getLocalHadith() async {
+    try {
+      return await LocalContentService.getHadithOfTheDay() ?? _getMockHadith();
+    } catch (e) {
+      print('⚠️ Hadiths locaux indisponibles : $e');
+      return _getMockHadith();
+    }
+  }
+
+  static Future<QuizQuestion> _getLocalQuizQuestion() async {
+    try {
+      return await LocalContentService.getRandomQuestion() ??
+          _getMockQuizQuestion();
+    } catch (e) {
+      print('⚠️ Questions locales indisponibles : $e');
+      return _getMockQuizQuestion();
+    }
+  }
+
+  static Future<List<QuizQuestion>> _getLocalQuestions(
+      int count, String? difficulty) async {
+    try {
+      final questions =
+          await LocalContentService.getQuestions(count, difficulty: difficulty);
+      if (questions.isNotEmpty) return questions;
+    } catch (e) {
+      print('⚠️ Questions locales indisponibles : $e');
+    }
+    return _getMockQuestions(count);
   }
 
   /// Données de test - Hadith de fallback

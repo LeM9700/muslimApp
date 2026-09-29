@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../routes/app_routes.dart';
+import '../navigation/main_navigation.dart';
 
 /// Widget pour reprendre la dernière lecture du Coran
 /// Lit les données de SharedPreferences: last_sura_id, last_sura_name, last_ayah
@@ -115,7 +116,7 @@ class _ResumeReadingCardState extends State<ResumeReadingCard> {
     return Card(
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, AppRoutes.quran);
+          MainNavigation.goToTab(context, MainNavigation.quranTab);
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
@@ -156,7 +157,7 @@ class _ResumeReadingCardState extends State<ResumeReadingCard> {
                 children: [
                   TextButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.quran);
+                      MainNavigation.goToTab(context, MainNavigation.quranTab);
                     },
                     icon: const Icon(Icons.play_arrow),
                     label: const Text('Commencer'),

@@ -240,11 +240,16 @@ class _SuraDetailScreenState extends State<SuraDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    // Écran poussé hors de MainNavigation : il doit fournir son propre fond,
+    // sinon le Scaffold transparent s'affiche sur du noir (texte illisible).
+    return AnimatedGlassBackground(
+      child: Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         title: Text(
           _meta?.displayName ?? widget.suraName ?? 'Sourate ${widget.suraId}',
+          overflow: TextOverflow.ellipsis,
         ),
         actions: [
           // [Q12] Bouton "Play Sourate"
@@ -267,6 +272,7 @@ class _SuraDetailScreenState extends State<SuraDetailScreen> {
         ],
       ),
       body: _buildBody(),
+      ),
     );
   }
 
@@ -316,9 +322,20 @@ class _SuraDetailScreenState extends State<SuraDetailScreen> {
     final isCurrentlyPlaying = _currentPlayingVerse == verse.verseNumber && _isPlaying;
     final isInQueue = _isPlayingSurah && _currentPlayingVerse == verse.verseNumber;
 
+    final isActive = _currentPlayingVerse == verse.verseNumber;
+
     return GlassContainer(
       margin: const EdgeInsets.only(bottom: 14),
+      padding: EdgeInsets.zero,
       borderRadius: 18,
+      // Fond plus opaque que glassLight pour la lisibilité du texte long
+      color: Colors.white.withOpacity(0.72),
+      border: Border.all(
+        color: isActive
+            ? (isInQueue ? AppColors.copper : AppColors.emerald)
+            : Colors.white.withOpacity(0.6),
+        width: isActive ? 1.5 : 1,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -360,34 +377,32 @@ class _SuraDetailScreenState extends State<SuraDetailScreen> {
 
           // Texte arabe
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            padding: const EdgeInsets.fromLTRB(18, 8, 18, 12),
             child: Text(
               verse.textUthmani,
               textAlign: TextAlign.right,
-              style: const TextStyle(
-                fontSize: 24,
-                color: AppColors.textPrimary,
-                // fontFamily: 'NotoNaskhArabic', // TODO: activer après ajout police
-                height: 1.8,
-              ),
+              textDirection: TextDirection.rtl,
+              style: AppTheme.getArabicTextStyle(fontSize: 26)
+                  .copyWith(height: 2.0),
             ),
           ),
 
           // Traduction française
           if (verse.translationText != null)
             Container(
-              margin: const EdgeInsets.fromLTRB(12, 0, 12, 14),
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.fromLTRB(18, 12, 18, 16),
               decoration: BoxDecoration(
-                color: AppColors.glassMedium,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.glassBorder),
+                color: AppColors.emerald.withOpacity(0.06),
+                border: Border(
+                  top: BorderSide(color: AppColors.textMuted.withOpacity(0.2)),
+                ),
               ),
               child: Text(
                 verse.translationText!,
                 style: AppTheme.getFrenchTranslationStyle(
-                  color: AppColors.textSecondary,
-                ),
+                  fontSize: 16,
+                  color: AppColors.textPrimary,
+                ).copyWith(fontStyle: FontStyle.normal, height: 1.55),
               ),
             )
           else

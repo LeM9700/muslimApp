@@ -12,7 +12,7 @@ import '../widgets/next_prayer_countdown.dart';
 import '../widgets/city_search_widget.dart';
 import '../widgets/onboarding_overlay.dart';
 import '../widgets/glass_widgets.dart';
-import '../routes/app_routes.dart';
+import '../navigation/main_navigation.dart';
 import '../services/prayer_service.dart';
 import '../services/firebase_service.dart';
 import '../services/onboarding_service.dart';
@@ -546,7 +546,7 @@ class _HomeScreenState extends State<HomeScreen> {
             key: _keyQiblaNav,
             child: InkWell(
               onTap: () {
-                Navigator.pushNamed(context, AppRoutes.qibla);
+                MainNavigation.goToTab(context, MainNavigation.qiblaTab);
               },
               borderRadius: BorderRadius.circular(12),
               child: const Padding(
@@ -580,7 +580,7 @@ class _HomeScreenState extends State<HomeScreen> {
             key: _keyQuranNav,
             child: InkWell(
               onTap: () {
-                Navigator.pushNamed(context, AppRoutes.quran);
+                MainNavigation.goToTab(context, MainNavigation.quranTab);
               },
               borderRadius: BorderRadius.circular(12),
               child: const Padding(

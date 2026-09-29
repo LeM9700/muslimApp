@@ -14,6 +14,20 @@ import '../widgets/floating_navbar.dart';
 class MainNavigation extends StatefulWidget {
   const MainNavigation({Key? key}) : super(key: key);
 
+  // Index des onglets (ordre de _screens)
+  static const int homeTab = 0;
+  static const int quranTab = 1;
+  static const int qiblaTab = 2;
+  static const int quizTab = 3;
+  static const int profileTab = 4;
+
+  /// Bascule vers un onglet depuis un écran enfant (raccourcis de l'accueil).
+  /// Évite de pousser une route séparée, qui afficherait l'écran sans le fond
+  /// glass ni la navbar.
+  static void goToTab(BuildContext context, int index) {
+    context.findAncestorStateOfType<_MainNavigationState>()?._onItemTapped(index);
+  }
+
   @override
   _MainNavigationState createState() => _MainNavigationState();
 }
@@ -88,14 +102,21 @@ class _MainNavigationState extends State<MainNavigation>
   }
 
   void _onItemTapped(int index) {
+    final distance = (index - _selectedIndex).abs();
     setState(() {
       _selectedIndex = index;
     });
-    _pageController.animateToPage(
-      index,
-      duration: Duration(milliseconds: 300),
-      curve: Curves.easeInOutCubic,
-    );
+    // Saut direct si l'onglet est éloigné : évite de faire défiler (et
+    // construire) toutes les pages intermédiaires.
+    if (distance > 1) {
+      _pageController.jumpToPage(index);
+    } else {
+      _pageController.animateToPage(
+        index,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOutCubic,
+      );
+    }
   }
 
   @override

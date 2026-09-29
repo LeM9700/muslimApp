@@ -3,7 +3,7 @@ import '../utils/app_theme.dart';
 import '../utils/hero_tags.dart';
 import '../services/firebase_service.dart';
 import '../models/quiz_question.dart';
-import '../routes/app_routes.dart';
+import '../navigation/main_navigation.dart';
 
 /// Widget pour afficher un aperçu du quiz du jour
 /// Charge une question depuis Firestore et permet d'aller vers l'écran complet
@@ -60,7 +60,7 @@ class _QuizCardState extends State<QuizCard> {
     return Card(
       child: InkWell(
         onTap: _currentQuestion != null ? () {
-          Navigator.pushNamed(context, AppRoutes.quiz);
+          MainNavigation.goToTab(context, MainNavigation.quizTab);
         } : null,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
@@ -234,7 +234,7 @@ class _QuizCardState extends State<QuizCard> {
           children: [
             TextButton.icon(
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.quiz);
+                MainNavigation.goToTab(context, MainNavigation.quizTab);
               },
               icon: const Icon(Icons.play_arrow),
               label: const Text('Commencer le quiz'),

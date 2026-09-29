@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/firebase_service.dart';
 import '../services/hadith_api_service.dart';
+import '../services/local_content_service.dart';
 import '../models/hadith.dart';
 import '../utils/app_theme.dart';
 import 'glass_widgets.dart';
@@ -63,8 +64,11 @@ class _HadithCardState extends State<HadithCard> {
         _errorMessage = null;
       });
 
-      // Appeler directement l'API random (pas le cache)
-      final hadith = await HadithApiService.getRandomHadith();
+      // API random (pas le cache), sinon un autre hadith Nawawi embarqué
+      final hadith = await HadithApiService.getRandomHadith() ??
+          await LocalContentService.getRandomHadith(
+            excludeId: _currentHadith?.id,
+          );
       
       if (mounted) {
         setState(() {

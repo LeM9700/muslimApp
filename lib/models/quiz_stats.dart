@@ -145,6 +145,20 @@ enum QuizDifficulty {
   final int pointMultiplier;
   final int colorValue;
   
+  /// Valeur du champ 'difficulty' dans les données (quizzes.json / Firestore)
+  String get dataKey {
+    switch (this) {
+      case QuizDifficulty.novice:
+        return 'novice';
+      case QuizDifficulty.intermediate:
+        return 'intermediaire';
+      case QuizDifficulty.difficult:
+        return 'difficile';
+      case QuizDifficulty.expert:
+        return 'expert';
+    }
+  }
+
   /// Couleur associée au niveau
   Color get color => Color(colorValue);
   
@@ -170,6 +184,7 @@ extension QuizDifficultyExtension on QuizDifficulty {
       case 'novice':
         return QuizDifficulty.novice;
       case 'intermédiaire':
+      case 'intermediaire':
       case 'intermediate':
         return QuizDifficulty.intermediate;
       case 'difficile':
