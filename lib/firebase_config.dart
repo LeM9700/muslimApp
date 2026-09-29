@@ -1,15 +1,12 @@
-import 'secure_firebase_options.dart';
+import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-/// Configuration Firebase sécurisée pour toutes les plateformes
+/// Configuration Firebase — délègue à DefaultFirebaseOptions (firebase_options.dart, gitignored).
+/// Préférer FirebaseService.initialize() qui inclut la gestion d'erreur et les fallbacks.
 class FirebaseConfig {
   static Future<void> initialize() async {
-    // Initialiser les variables d'environnement
-    await SecureFirebaseOptions.initialize();
-    
-    // Initialiser Firebase avec la configuration sécurisée
     await Firebase.initializeApp(
-      options: SecureFirebaseOptions.currentPlatform,
+      options: DefaultFirebaseOptions.currentPlatform,
     );
   }
 }

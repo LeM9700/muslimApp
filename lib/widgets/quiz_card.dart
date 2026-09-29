@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../utils/app_theme.dart';
+import '../utils/hero_tags.dart';
 import '../services/firebase_service.dart';
 import '../models/quiz_question.dart';
 import '../routes/app_routes.dart';
@@ -72,10 +74,13 @@ class _QuizCardState extends State<QuizCard> {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.quiz_outlined,
-                        color: Colors.white70,
-                        size: 20,
+                      Hero(
+                        tag: HeroTags.quizIcon,
+                        child: Icon(
+                          Icons.quiz_outlined,
+                          color: AppColors.textSecondary,
+                          size: 20,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Text(
@@ -162,19 +167,19 @@ class _QuizCardState extends State<QuizCard> {
         Icon(
           Icons.quiz,
           size: 48,
-          color: Colors.white30,
+          color: AppColors.textMuted,
         ),
         const SizedBox(height: 16),
         Text(
           'Aucune question disponible pour aujourd\'hui',
-          style: TextStyle(color: Colors.white70),
+          style: TextStyle(color: AppColors.textSecondary),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
           'Revenez plus tard ou actualisez',
           style: TextStyle(
-            color: Colors.white54,
+            color: AppColors.textMuted,
             fontSize: 12,
           ),
           textAlign: TextAlign.center,
@@ -209,13 +214,13 @@ class _QuizCardState extends State<QuizCard> {
             Icon(
               Icons.format_list_bulleted,
               size: 16,
-              color: Colors.white54,
+              color: AppColors.textMuted,
             ),
             const SizedBox(width: 8),
             Text(
               '${question.options.length} réponses possibles',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.white54,
+                color: AppColors.textMuted,
               ),
             ),
           ],
@@ -234,7 +239,7 @@ class _QuizCardState extends State<QuizCard> {
               icon: const Icon(Icons.play_arrow),
               label: const Text('Commencer le quiz'),
               style: TextButton.styleFrom(
-                foregroundColor: Colors.blue.shade300,
+                foregroundColor: AppColors.emerald,
               ),
             ),
           ],

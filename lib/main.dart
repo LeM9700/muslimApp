@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'services/firebase_service.dart';
 import 'services/firebase_data_seeder.dart';
+import 'services/notification_service.dart';
 import 'app.dart';
 
 /// Point d'entrée principal de l'application
@@ -12,17 +14,17 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialisation Firebase avec gestion d'erreur
   await FirebaseService.initialize();
-  
+
   // Lancer le seeding en arrière-plan (NE PAS await)
-  if (FirebaseService.isAvailable) {
+  if (kDebugMode && FirebaseService.isAvailable) {
     FirebaseDataSeeder.seedAllData().catchError((Object e) {
       print('Seeding background error: $e');
     });
   }
-  
+
   // Initialisation des notifications locales
   try {
     await _initializeNotifications();
@@ -30,7 +32,7 @@ Future<void> main() async {
   } catch (e) {
     print('⚠️ Erreur notifications: $e');
   }
-  
+
   // Initialisation des fuseaux horaires pour les notifications
   try {
     tz.initializeTimeZones();
@@ -38,7 +40,21 @@ Future<void> main() async {
   } catch (e) {
     print('⚠️ Erreur timezones: $e');
   }
-  
+
+  // Programmer les notifications quotidiennes (hadith 10h, quiz 20h)
+  try {
+    final notificationsEnabled =
+        await NotificationService.areNotificationsEnabled();
+    if (notificationsEnabled) {
+      await NotificationService.setupDailyNotifications();
+      print('✅ Notifications quotidiennes programmées');
+    } else {
+      print('⚠️ Permissions notifications refusées');
+    }
+  } catch (e) {
+    print('⚠️ Erreur setup notifications: $e');
+  }
+
   runApp(const MyApp());
 }
 
@@ -47,20 +63,19 @@ Future<void> main() async {
 Future<void> _initializeNotifications() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
-  
+
   const DarwinInitializationSettings initializationSettingsIOS =
       DarwinInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
-    requestSoundPermission: true,
+    requestAlertPermission: false,
+    requestBadgePermission: false,
+    requestSoundPermission: false,
   );
-  
-  const InitializationSettings initializationSettings =
-      InitializationSettings(
+
+  const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
     iOS: initializationSettingsIOS,
   );
-  
+
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse: (NotificationResponse response) {
@@ -68,7 +83,7 @@ Future<void> _initializeNotifications() async {
       debugPrint('Notification reçue: ${response.payload}');
     },
   );
-  
+
   // Création des canaux de notification Android
   await _createNotificationChannels();
 }
@@ -82,19 +97,19 @@ Future<void> _createNotificationChannels() async {
     description: 'Notifications pour le hadith quotidien à 10h',
     importance: Importance.defaultImportance,
   );
-  
+
   const AndroidNotificationChannel quizChannel = AndroidNotificationChannel(
     'quiz_channel',
     'Quiz du jour',
     description: 'Notifications pour le quiz quotidien à 20h',
     importance: Importance.defaultImportance,
   );
-  
+
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(hadithChannel);
-      
+
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()

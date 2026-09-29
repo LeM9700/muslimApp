@@ -1,0 +1,422 @@
+[
+  {
+    "number": 1,
+    "title": "Les actes ne valent que par les intentions",
+    "textArabic": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى، فَمَنْ كَانَتْ هِجْرَتُهُ إِلَى اللَّهِ وَرَسُولِهِ فَهِجْرَتُهُ إِلَى اللَّهِ وَرَسُولِهِ، وَمَنْ كَانَتْ هِجْرَتُهُ لِدُنْيَا يُصِيبُهَا أَوِ امْرَأَةٍ يَنْكِحُهَا فَهِجْرَتُهُ إِلَى مَا هَاجَرَ إِلَيْهِ",
+    "textFrench": "Les actes ne valent que par les intentions, et chaque homme n'aura que ce qu'il a eu réellement l'intention de faire. Celui dont l'émigration a pour but Allah et Son Messager verra son émigration considérée comme étant pour Allah et Son Messager, et celui dont l'émigration a pour but un bien de ce monde ou une femme qu'il souhaite épouser, son émigration sera considérée pour ce vers quoi il a émigré.",
+    "source": "Sahih al-Bukhari 1, Sahih Muslim 1907",
+    "narrator": "Omar ibn al-Khattab",
+    "theme": "Intention",
+    "reviewed": true
+  },
+  {
+    "number": 2,
+    "title": "Le hadith de Jibril",
+    "textArabic": "أَخْبِرْنِي عَنِ الإِسْلَامِ، قَالَ: الإِسْلامُ أَنْ تَشْهَدَ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَتُقِيمَ الصَّلَاةَ، وَتُؤْتِيَ الزَّكَاةَ، وَتَصُومَ رَمَضَانَ، وَتَحُجَّ الْبَيْتَ إِنِ اسْتَطَعْتَ إِلَيْهِ سَبِيلًا",
+    "textFrench": "Informe-moi sur l'Islam. Il dit : L'Islam est que tu témoignes qu'il n'y a de divinité qu'Allah et que Muhammad est le Messager d'Allah, que tu accomplisses la prière, que tu t'acquittes de la zakat, que tu jeûnes le mois de Ramadan et que tu fasses le pèlerinage à la Maison Sacrée si tu en as la possibilité.",
+    "source": "Sahih Muslim 8",
+    "narrator": "Omar ibn al-Khattab",
+    "theme": "Piliers",
+    "reviewed": true
+  },
+  {
+    "number": 3,
+    "title": "Les piliers de l'Islam",
+    "textArabic": "بُنِيَ الإِسْلَامُ عَلَى خَمْسٍ: شَهَادَةِ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلَاةِ، وَإِيتَاءِ الزَّكَاةِ، وَحَجِّ الْبَيْتِ، وَصَوْمِ رَمَضَانَ",
+    "textFrench": "L'Islam est bâti sur cinq piliers : l'attestation qu'il n'y a de divinité qu'Allah et que Muhammad est le Messager d'Allah, l'accomplissement de la prière, l'acquittement de la zakat, le pèlerinage à la Maison Sacrée et le jeûne du mois de Ramadan.",
+    "source": "Sahih al-Bukhari 8, Sahih Muslim 16",
+    "narrator": "Abdullah ibn Omar",
+    "theme": "Piliers",
+    "reviewed": true
+  },
+  {
+    "number": 4,
+    "title": "Les étapes de la création",
+    "textArabic": "إِنَّ أَحَدَكُمْ يُجْمَعُ خَلْقُهُ فِي بَطْنِ أُمِّهِ أَرْبَعِينَ يَوْمًا نُطْفَةً، ثُمَّ يَكُونُ عَلَقَةً مِثْلَ ذلِكَ، ثُمَّ يَكُونُ مُضْغَةً مِثْلَ ذلِكَ، ثُمَّ يُرْسَلُ إِلَيْهِ الْمَلَكُ فَيَنْفُخُ فِيهِ الرُّوحَ",
+    "textFrench": "Certes, la création de chacun de vous est rassemblée dans le ventre de sa mère durant quarante jours sous forme de goutte de sperme, puis il est un caillot de sang pendant une durée similaire, puis une bouchée de chair pendant une durée similaire, puis l'ange lui est envoyé et lui insuffle l'âme.",
+    "source": "Sahih al-Bukhari 3208, Sahih Muslim 2643",
+    "narrator": "Abdullah ibn Mas'ud",
+    "theme": "Création",
+    "reviewed": true
+  },
+  {
+    "number": 5,
+    "title": "L'innovation en religion",
+    "textArabic": "مَنْ أَحْدَثَ فِي أَمْرِنَا هَذَا مَا لَيْسَ مِنْهُ فَهُوَ رَدٌّ",
+    "textFrench": "Quiconque introduit dans notre religion une chose qui n'en fait pas partie, verra son acte rejeté.",
+    "source": "Sahih al-Bukhari 2697, Sahih Muslim 1718",
+    "narrator": "Aicha",
+    "theme": "Innovation",
+    "reviewed": true
+  },
+  {
+    "number": 6,
+    "title": "Le licite et l'illicite",
+    "textArabic": "إِنَّ الْحَلَالَ بَيِّنٌ وَإِنَّ الْحَرَامَ بَيِّنٌ وَبَيْنَهُمَا أُمُورٌ مُشْتَبِهَاتٌ لَا يَعْلَمُهُنَّ كَثِيرٌ مِنَ النَّاسِ",
+    "textFrench": "Certes, le licite est clair et l'illicite est clair, et entre les deux il y a des choses ambiguës que beaucoup de gens ne connaissent pas. Celui qui se prémunit contre les choses ambiguës a préservé sa religion et son honneur.",
+    "source": "Sahih al-Bukhari 52, Sahih Muslim 1599",
+    "narrator": "An-Nu'man ibn Bashir",
+    "theme": "Licite et illicite",
+    "reviewed": true
+  },
+  {
+    "number": 7,
+    "title": "La religion c'est le bon conseil",
+    "textArabic": "الدِّينُ النَّصِيحَةُ. قُلْنَا: لِمَنْ؟ قَالَ: لِلَّهِ، وَلِكِتَابِهِ، وَلِرَسُولِهِ، وَلِأَئِمَّةِ الْمُسْلِمِينَ وَعَامَّتِهِمْ",
+    "textFrench": "La religion c'est le bon conseil. Nous demandâmes : Envers qui ? Il dit : Envers Allah, Son Livre, Son Messager, les dirigeants des musulmans et le commun des gens.",
+    "source": "Sahih Muslim 55",
+    "narrator": "Tamim ad-Dari",
+    "theme": "Conseil",
+    "reviewed": true
+  },
+  {
+    "number": 8,
+    "title": "L'inviolabilité du sang du musulman",
+    "textArabic": "أُمِرْتُ أَنْ أُقَاتِلَ النَّاسَ حَتَّى يَشْهَدُوا أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ وَيُقِيمُوا الصَّلَاةَ وَيُؤْتُوا الزَّكَاةَ",
+    "textFrench": "Il m'a été ordonné de combattre les gens jusqu'à ce qu'ils attestent qu'il n'y a de divinité qu'Allah et que Muhammad est le Messager d'Allah, qu'ils accomplissent la prière et s'acquittent de la zakat. S'ils le font, ils auront préservé de moi leur sang et leurs biens.",
+    "source": "Sahih al-Bukhari 25, Sahih Muslim 22",
+    "narrator": "Abdullah ibn Omar",
+    "theme": "Témoignage de foi",
+    "reviewed": true
+  },
+  {
+    "number": 9,
+    "title": "Les interdictions à respecter",
+    "textArabic": "مَا نَهَيْتُكُمْ عَنْهُ فَاجْتَنِبُوهُ، وَمَا أَمَرْتُكُمْ بِهِ فَأْتُوا مِنْهُ مَا اسْتَطَعْتُمْ",
+    "textFrench": "Ce que je vous ai interdit, évitez-le, et ce que je vous ai ordonné, faites-le dans la mesure de vos possibilités. Ceux qui ont causé la perte de ceux qui vous ont précédés, ce sont leurs questions excessives et leur opposition à leurs prophètes.",
+    "source": "Sahih al-Bukhari 7288, Sahih Muslim 1337",
+    "narrator": "Abu Hurayra",
+    "theme": "Obéissance",
+    "reviewed": true
+  },
+  {
+    "number": 10,
+    "title": "Allah n'accepte que le bon",
+    "textArabic": "إِنَّ اللَّهَ طَيِّبٌ لَا يَقْبَلُ إِلَّا طَيِّبًا",
+    "textFrench": "Certes, Allah est bon et n'accepte que ce qui est bon. Et certes, Allah a ordonné aux croyants ce qu'Il a ordonné aux messagers.",
+    "source": "Sahih Muslim 1015",
+    "narrator": "Abu Hurayra",
+    "theme": "Pureté",
+    "reviewed": true
+  },
+  {
+    "number": 11,
+    "title": "Délaisser le douteux",
+    "textArabic": "دَعْ مَا يَرِيبُكَ إِلَى مَا لَا يَرِيبُكَ",
+    "textFrench": "Laisse ce qui te met dans le doute pour ce qui ne t'y met pas. Certes, la vérité est source de sérénité et le mensonge est source de doute.",
+    "source": "Tirmidhi 2518, Nasa'i 5711",
+    "narrator": "Al-Hasan ibn Ali",
+    "theme": "Doute",
+    "reviewed": true
+  },
+  {
+    "number": 12,
+    "title": "Délaisser ce qui ne nous concerne pas",
+    "textArabic": "مِنْ حُسْنِ إِسْلَامِ الْمَرْءِ تَرْكُهُ مَا لَا يَعْنِيهِ",
+    "textFrench": "Parmi les qualités d'un bon Islam d'une personne, c'est de délaisser ce qui ne la concerne pas.",
+    "source": "Tirmidhi 2317",
+    "narrator": "Abu Hurayra",
+    "theme": "Comportement",
+    "reviewed": true
+  },
+  {
+    "number": 13,
+    "title": "Aimer pour son frère",
+    "textArabic": "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
+    "textFrench": "Aucun d'entre vous ne sera véritablement croyant tant qu'il n'aimera pas pour son frère ce qu'il aime pour lui-même.",
+    "source": "Sahih al-Bukhari 13, Sahih Muslim 45",
+    "narrator": "Anas ibn Malik",
+    "theme": "Fraternité",
+    "reviewed": true
+  },
+  {
+    "number": 14,
+    "title": "L'inviolabilité du sang du musulman",
+    "textArabic": "لَا يَحِلُّ دَمُ امْرِئٍ مُسْلِمٍ إِلَّا بِإِحْدَى ثَلَاثٍ: الثَّيِّبُ الزَّانِي، وَالنَّفْسُ بِالنَّفْسِ، وَالتَّارِكُ لِدِينِهِ الْمُفَارِقُ لِلْجَمَاعَةِ",
+    "textFrench": "Il n'est pas permis de verser le sang d'un musulman, sauf dans trois cas : le marié coupable d'adultère, la vie pour la vie (meurtre), et celui qui délaisse sa religion en quittant la communauté.",
+    "source": "Sahih al-Bukhari 6878, Sahih Muslim 1676",
+    "narrator": "Abdullah ibn Mas'ud",
+    "theme": "Droit",
+    "reviewed": true
+  },
+  {
+    "number": 15,
+    "title": "L'honneur du voisin et de l'invité",
+    "textArabic": "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيُكْرِمْ جَارَهُ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيُكْرِمْ ضَيْفَهُ",
+    "textFrench": "Que celui qui croit en Allah et au Jour dernier dise du bien ou qu'il se taise. Que celui qui croit en Allah et au Jour dernier honore son voisin. Que celui qui croit en Allah et au Jour dernier honore son invité.",
+    "source": "Sahih al-Bukhari 6018, Sahih Muslim 47",
+    "narrator": "Abu Hurayra",
+    "theme": "Parole",
+    "reviewed": true
+  },
+  {
+    "number": 16,
+    "title": "L'interdiction de la colère",
+    "textArabic": "لَا تَغْضَبْ",
+    "textFrench": "Ne te mets pas en colère. Et il répéta cela à plusieurs reprises : Ne te mets pas en colère.",
+    "source": "Sahih al-Bukhari 6116",
+    "narrator": "Abu Hurayra",
+    "theme": "Comportement",
+    "reviewed": true
+  },
+  {
+    "number": 17,
+    "title": "La bienfaisance en toute chose",
+    "textArabic": "إِنَّ اللَّهَ كَتَبَ الإِحْسَانَ عَلَى كُلِّ شَيْءٍ",
+    "textFrench": "Certes, Allah a prescrit la bienfaisance en toute chose. Lorsque vous tuez, faites-le de la meilleure façon, et lorsque vous égorgez, faites-le de la meilleure façon. Que l'un de vous aiguise sa lame et qu'il soulage sa bête.",
+    "source": "Sahih Muslim 1955",
+    "narrator": "Shaddad ibn Aws",
+    "theme": "Bienfaisance",
+    "reviewed": true
+  },
+  {
+    "number": 18,
+    "title": "La crainte d'Allah et le bon comportement",
+    "textArabic": "اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ، وَأَتْبِعِ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا، وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ",
+    "textFrench": "Crains Allah où que tu sois, fais suivre la mauvaise action par une bonne action qui l'effacera, et comporte-toi envers les gens avec un bon caractère.",
+    "source": "Tirmidhi 1987",
+    "narrator": "Abu Dharr al-Ghifari",
+    "theme": "Piété",
+    "reviewed": true
+  },
+  {
+    "number": 19,
+    "title": "La préservation d'Allah",
+    "textArabic": "يَا غُلَامُ إِنِّي أُعَلِّمُكَ كَلِمَاتٍ: احْفَظِ اللَّهَ يَحْفَظْكَ، احْفَظِ اللَّهَ تَجِدْهُ تُجَاهَكَ",
+    "textFrench": "Ô jeune homme, je vais t'enseigner quelques paroles : Préserve Allah, Il te préservera. Préserve Allah, tu Le trouveras devant toi. Lorsque tu demandes, demande à Allah, et lorsque tu cherches de l'aide, cherche-la auprès d'Allah.",
+    "source": "Tirmidhi 2516",
+    "narrator": "Abdullah ibn Abbas",
+    "theme": "Confiance en Allah",
+    "reviewed": true
+  },
+  {
+    "number": 20,
+    "title": "La pudeur",
+    "textArabic": "إِنَّ مِمَّا أَدْرَكَ النَّاسُ مِنْ كَلَامِ النُّبُوَّةِ الأُولَى: إِذَا لَمْ تَسْتَحْيِ فَاصْنَعْ مَا شِئْتَ",
+    "textFrench": "Parmi ce que les gens ont retenu des paroles de la prophétie ancienne : Si tu n'as pas de pudeur, fais ce que tu veux.",
+    "source": "Sahih al-Bukhari 3483",
+    "narrator": "Abu Mas'ud",
+    "theme": "Pudeur",
+    "reviewed": true
+  },
+  {
+    "number": 21,
+    "title": "La droiture",
+    "textArabic": "قُلْ آمَنْتُ بِاللَّهِ ثُمَّ اسْتَقِمْ",
+    "textFrench": "Dis : Je crois en Allah, puis sois droit.",
+    "source": "Sahih Muslim 38",
+    "narrator": "Abu Amr Sufyan ibn Abdillah",
+    "theme": "Foi",
+    "reviewed": true
+  },
+  {
+    "number": 22,
+    "title": "Le chemin du Paradis",
+    "textArabic": "أَرَأَيْتَ إِذَا صَلَّيْتُ الْمَكْتُوبَاتِ وَصُمْتُ رَمَضَانَ وَأَحْلَلْتُ الْحَلَالَ وَحَرَّمْتُ الْحَرَامَ وَلَمْ أَزِدْ عَلَى ذَلِكَ شَيْئًا أَأَدْخُلُ الْجَنَّةَ؟ قَالَ: نَعَمْ",
+    "textFrench": "Si j'accomplis les prières obligatoires, que je jeûne le Ramadan, que je considère licite ce qui est licite et illicite ce qui est illicite, sans rien ajouter à cela, entrerai-je au Paradis ? Il répondit : Oui.",
+    "source": "Sahih Muslim 15",
+    "narrator": "Abu Abdillah Jabir ibn Abdillah",
+    "theme": "Paradis",
+    "reviewed": true
+  },
+  {
+    "number": 23,
+    "title": "La purification est la moitié de la foi",
+    "textArabic": "الطُّهُورُ شَطْرُ الإِيمَانِ، وَالْحَمْدُ لِلَّهِ تَمْلَأُ الْمِيزَانَ، وَسُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ تَمْلَآنِ مَا بَيْنَ السَّمَاءِ وَالأَرْضِ",
+    "textFrench": "La purification est la moitié de la foi. Al-hamdu lillah (la louange est à Allah) remplit la balance. Subhan Allah wa al-hamdu lillah (Gloire à Allah et la louange est à Allah) remplissent l'espace entre le ciel et la terre.",
+    "source": "Sahih Muslim 223",
+    "narrator": "Abu Malik al-Ash'ari",
+    "theme": "Purification",
+    "reviewed": true
+  },
+  {
+    "number": 24,
+    "title": "L'interdiction de l'injustice",
+    "textArabic": "يَا عِبَادِي إِنِّي حَرَّمْتُ الظُّلْمَ عَلَى نَفْسِي وَجَعَلْتُهُ بَيْنَكُمْ مُحَرَّمًا فَلَا تَظَالَمُوا",
+    "textFrench": "Ô Mes serviteurs, Je Me suis interdit l'injustice et Je l'ai rendue interdite entre vous, alors ne commettez pas d'injustice les uns envers les autres.",
+    "source": "Sahih Muslim 2577",
+    "narrator": "Abu Dharr al-Ghifari",
+    "theme": "Justice",
+    "reviewed": true
+  },
+  {
+    "number": 25,
+    "title": "La charité",
+    "textArabic": "كُلُّ سُلَامَى مِنَ النَّاسِ عَلَيْهِ صَدَقَةٌ، كُلَّ يَوْمٍ تَطْلُعُ فِيهِ الشَّمْسُ",
+    "textFrench": "Chaque articulation du corps de chacun d'entre vous doit s'acquitter d'une aumône chaque jour où le soleil se lève. Réconcilier de manière juste entre deux personnes est une aumône. Aider quelqu'un à monter sur sa monture est une aumône. La bonne parole est une aumône. Chaque pas vers la prière est une aumône. Écarter un obstacle du chemin est une aumône.",
+    "source": "Sahih al-Bukhari 2989, Sahih Muslim 1009",
+    "narrator": "Abu Hurayra",
+    "theme": "Charité",
+    "reviewed": true
+  },
+  {
+    "number": 26,
+    "title": "La valeur des bonnes œuvres",
+    "textArabic": "كُلُّ مَعْرُوفٍ صَدَقَةٌ",
+    "textFrench": "Chaque bonne action est une aumône. Et parmi les bonnes actions : rencontrer ton frère avec un visage souriant et verser de ton seau dans le récipient de ton frère.",
+    "source": "Sahih al-Bukhari 6021, Sahih Muslim 1005",
+    "narrator": "Jabir ibn Abdillah",
+    "theme": "Charité",
+    "reviewed": true
+  },
+  {
+    "number": 27,
+    "title": "La piété et le péché",
+    "textArabic": "الْبِرُّ حُسْنُ الْخُلُقِ، وَالإِثْمُ مَا حَاكَ فِي نَفْسِكَ وَكَرِهْتَ أَنْ يَطَّلِعَ عَلَيْهِ النَّاسُ",
+    "textFrench": "La piété, c'est le bon caractère. Et le péché, c'est ce qui te met mal à l'aise intérieurement et que tu détesterais que les gens le sachent.",
+    "source": "Sahih Muslim 2553",
+    "narrator": "An-Nawwas ibn Sam'an",
+    "theme": "Piété",
+    "reviewed": true
+  },
+  {
+    "number": 28,
+    "title": "Écouter et obéir",
+    "textArabic": "عَلَيْكُمْ بِتَقْوَى اللَّهِ وَالسَّمْعِ وَالطَّاعَةِ وَإِنْ تَأَمَّرَ عَلَيْكُمْ عَبْدٌ",
+    "textFrench": "Je vous recommande la crainte d'Allah, ainsi que l'écoute et l'obéissance, même si c'est un esclave qui vous gouverne. Celui d'entre vous qui vivra verra beaucoup de divergences. Accrochez‑vous alors à ma tradition et à celle des califes bien guidés.",
+    "source": "Abu Dawud 4607, Tirmidhi 2676",
+    "narrator": "Abu Najih al-Irbad ibn Sariya",
+    "theme": "Obéissance",
+    "reviewed": true
+  },
+  {
+    "number": 29,
+    "title": "Les portes du bien",
+    "textArabic": "أَلَا أَدُلُّكَ عَلَى أَبْوَابِ الْخَيْرِ؟ الصَّوْمُ جُنَّةٌ، وَالصَّدَقَةُ تُطْفِئُ الْخَطِيئَةَ كَمَا يُطْفِئُ الْمَاءُ النَّارَ",
+    "textFrench": "Ne veux-tu pas que je t'indique les portes du bien ? Le jeûne est un bouclier. L'aumône éteint le péché comme l'eau éteint le feu. Et la prière de l'homme au milieu de la nuit.",
+    "source": "Tirmidhi 2616",
+    "narrator": "Mu'adh ibn Jabal",
+    "theme": "Bien",
+    "reviewed": true
+  },
+  {
+    "number": 30,
+    "title": "Les limites d'Allah",
+    "textArabic": "إِنَّ اللَّهَ فَرَضَ فَرَائِضَ فَلَا تُضَيِّعُوهَا، وَحَدَّ حُدُودًا فَلَا تَعْتَدُوهَا، وَحَرَّمَ أَشْيَاءَ فَلَا تَنْتَهِكُوهَا، وَسَكَتَ عَنْ أَشْيَاءَ رَحْمَةً لَكُمْ غَيْرَ نِسْيَانٍ فَلَا تَبْحَثُوا عَنْهَا",
+    "textFrench": "Certes, Allah a prescrit des obligations, ne les négligez pas. Il a fixé des limites, ne les transgressez pas. Il a interdit des choses, ne les violez pas. Et Il a tu certaines choses par miséricorde envers vous, et non par oubli, alors ne les recherchez pas.",
+    "source": "Daraqutni 4/184, Nawawi",
+    "narrator": "Abu Tha'laba al-Khushani",
+    "theme": "Limites",
+    "reviewed": true
+  },
+  {
+    "number": 31,
+    "title": "L'ascétisme",
+    "textArabic": "ازْهَدْ فِي الدُّنْيَا يُحِبَّكَ اللَّهُ، وَازْهَدْ فِيمَا عِنْدَ النَّاسِ يُحِبَّكَ النَّاسُ",
+    "textFrench": "Renonce à ce bas monde, Allah t'aimera. Renonce à ce que possèdent les gens, les gens t'aimeront.",
+    "source": "Ibn Majah 4102",
+    "narrator": "Abu al-Abbas Sahl ibn Sa'd as-Sa'idi",
+    "theme": "Ascétisme",
+    "reviewed": true
+  },
+  {
+    "number": 32,
+    "title": "Pas de tort ni de préjudice",
+    "textArabic": "لَا ضَرَرَ وَلَا ضِرَارَ",
+    "textFrench": "Pas de tort ni de préjudice. Quiconque cause un tort, Allah lui causera un tort, et quiconque crée des difficultés, Allah lui créera des difficultés.",
+    "source": "Ibn Majah 2341, Ahmad",
+    "narrator": "Abu Sa'id al-Khudri",
+    "theme": "Justice",
+    "reviewed": true
+  },
+  {
+    "number": 33,
+    "title": "La charge de la preuve",
+    "textArabic": "لَوْ يُعْطَى النَّاسُ بِدَعْوَاهُمْ لَادَّعَى رِجَالٌ دِمَاءَ قَوْمٍ وَأَمْوَالَهُمْ، لَكِنِ الْبَيِّنَةُ عَلَى الْمُدَّعِي وَالْيَمِينُ عَلَى مَنْ أَنْكَرَ",
+    "textFrench": "Si l'on donnait aux gens selon leurs prétentions, des hommes réclameraient le sang et les biens d'autres personnes. Mais la preuve incombe au demandeur et le serment à celui qui nie.",
+    "source": "Bayhaqi, partie dans Bukhari et Muslim",
+    "narrator": "Abdullah ibn Abbas",
+    "theme": "Justice",
+    "reviewed": true
+  },
+  {
+    "number": 34,
+    "title": "Combattre le blâmable",
+    "textArabic": "مَنْ رَأَى مِنْكُمْ مُنْكَرًا فَلْيُغَيِّرْهُ بِيَدِهِ، فَإِنْ لَمْ يَسْتَطِعْ فَبِلِسَانِهِ، فَإِنْ لَمْ يَسْتَطِعْ فَبِقَلْبِهِ وَذَلِكَ أَضْعَفُ الإِيمَانِ",
+    "textFrench": "Quiconque d'entre vous voit un mal qu'il le change par sa main, s'il ne le peut pas, par sa langue, et s'il ne le peut pas, par son cœur, et c'est le degré le plus faible de la foi.",
+    "source": "Sahih Muslim 49",
+    "narrator": "Abu Sa'id al-Khudri",
+    "theme": "Blâmable",
+    "reviewed": true
+  },
+  {
+    "number": 35,
+    "title": "La fraternité",
+    "textArabic": "لَا تَحَاسَدُوا وَلَا تَنَاجَشُوا وَلَا تَبَاغَضُوا وَلَا تَدَابَرُوا وَلَا يَبِعْ بَعْضُكُمْ عَلَى بَيْعِ بَعْضٍ وَكُونُوا عِبَادَ اللَّهِ إِخْوَانًا",
+    "textFrench": "Ne vous enviez pas, ne vous haïssez pas, ne vous tournez pas le dos. Soyez des serviteurs d'Allah, des frères. Le musulman est le frère du musulman : il ne lui fait pas d'injustice, il ne le trahit pas et il ne le méprise pas.",
+    "source": "Sahih Muslim 2564",
+    "narrator": "Abu Hurayra",
+    "theme": "Fraternité",
+    "reviewed": true
+  },
+  {
+    "number": 36,
+    "title": "Soulager son frère",
+    "textArabic": "مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً مِنْ كُرَبِ الدُّنْيَا نَفَّسَ اللَّهُ عَنْهُ كُرْبَةً مِنْ كُرَبِ يَوْمِ الْقِيَامَةِ",
+    "textFrench": "Quiconque soulage un croyant d'une affliction de ce bas monde, Allah le soulagera d'une affliction du Jour de la Résurrection. Quiconque facilite les choses à celui en difficulté, Allah lui facilitera dans ce monde et dans l'au-delà.",
+    "source": "Sahih Muslim 2699",
+    "narrator": "Abu Hurayra",
+    "theme": "Entraide",
+    "reviewed": true
+  },
+  {
+    "number": 37,
+    "title": "La multiplication des bonnes et des mauvaises actions",
+    "textArabic": "إِنَّ اللَّهَ كَتَبَ الْحَسَنَاتِ وَالسَّيِّئَاتِ ثُمَّ بَيَّنَ ذَلِكَ",
+    "textFrench": "Certes, Allah a inscrit les bonnes et les mauvaises actions, puis Il a clarifié cela : celui qui a l'intention de faire une bonne action sans la faire, Allah lui inscrit une bonne action complète. S'il la fait, Allah lui inscrit de dix à sept cents fois, voire plus.",
+    "source": "Sahih al-Bukhari 6491, Sahih Muslim 131",
+    "narrator": "Abdullah ibn Abbas",
+    "theme": "Récompense",
+    "reviewed": true
+  },
+  {
+    "number": 38,
+    "title": "Les alliés d'Allah",
+    "textArabic": "مَنْ عَادَى لِي وَلِيًّا فَقَدْ آذَنْتُهُ بِالْحَرْبِ",
+    "textFrench": "Quiconque prend pour ennemi un de Mes alliés, Je lui déclare la guerre. Mon serviteur ne se rapproche pas de Moi par quelque chose de plus aimé de Moi que ce que Je lui ai rendu obligatoire. Et Mon serviteur ne cesse de se rapprocher de Moi par les actes surérogatoires jusqu'à ce que Je l'aime.",
+    "source": "Sahih al-Bukhari 6502",
+    "narrator": "Abu Hurayra",
+    "theme": "Piété",
+    "reviewed": true
+  },
+  {
+    "number": 39,
+    "title": "Le pardon de l'erreur",
+    "textArabic": "إِنَّ اللَّهَ تَجَاوَزَ عَنْ أُمَّتِي الْخَطَأَ وَالنِّسْيَانَ وَمَا اسْتُكْرِهُوا عَلَيْهِ",
+    "textFrench": "Certes, Allah a pardonné à ma communauté l'erreur, l'oubli et ce à quoi elle est contrainte.",
+    "source": "Ibn Majah 2045",
+    "narrator": "Abdullah ibn Abbas",
+    "theme": "Miséricorde",
+    "reviewed": true
+  },
+  {
+    "number": 40,
+    "title": "Être dans ce monde comme un étranger",
+    "textArabic": "كُنْ فِي الدُّنْيَا كَأَنَّكَ غَرِيبٌ أَوْ عَابِرُ سَبِيلٍ",
+    "textFrench": "Sois dans ce monde comme un étranger ou un voyageur de passage. Et Abdullah ibn Omar disait : Quand tu arrives au soir, n'attends pas le matin, et quand tu arrives au matin, n'attends pas le soir.",
+    "source": "Sahih al-Bukhari 6416",
+    "narrator": "Abdullah ibn Omar",
+    "theme": "Ascétisme",
+    "reviewed": true
+  },
+  {
+    "number": 41,
+    "title": "Suivre le Prophète",
+    "textArabic": "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يَكُونَ هَوَاهُ تَبَعًا لِمَا جِئْتُ بِهِ",
+    "textFrench": "Aucun de vous ne sera véritablement croyant tant que ses passions ne seront pas conformes à ce que j'ai apporté.",
+    "source": "Kitab al-Hujja, Nawawi l'a jugé authentique",
+    "narrator": "Abu Muhammad Abdullah ibn Amr",
+    "theme": "Foi",
+    "reviewed": true
+  },
+  {
+    "number": 42,
+    "title": "L'immensité du pardon d'Allah",
+    "textArabic": "يَا ابْنَ آدَمَ إِنَّكَ مَا دَعَوْتَنِي وَرَجَوْتَنِي غَفَرْتُ لَكَ عَلَى مَا كَانَ مِنْكَ وَلَا أُبَالِي",
+    "textFrench": "Ô fils d'Adam, tant que tu M'invoqueras et que tu espéreras en Moi, Je te pardonnerai quoi que tu aies fait et Je ne m'en soucie pas. Ô fils d'Adam, si tes péchés atteignaient les nuages du ciel puis que tu Me demandais pardon, Je te pardonnerais.",
+    "source": "Tirmidhi 3540",
+    "narrator": "Anas ibn Malik",
+    "theme": "Miséricorde",
+    "reviewed": true
+  }
+]

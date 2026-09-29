@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/firebase_service.dart';
+import '../services/hadith_api_service.dart';
 import '../models/hadith.dart';
 import '../utils/app_theme.dart';
 import 'glass_widgets.dart';
@@ -24,7 +25,7 @@ class _HadithCardState extends State<HadithCard> {
     _loadDailyHadith();
   }
 
-  /// Charge le hadith du jour depuis Firestore
+  /// Charge le hadith du jour depuis l'API Sunnah.com (ou Firestore fallback)
   /// Affiche un état de chargement puis le hadith ou une erreur
   Future<void> _loadDailyHadith() async {
     try {
@@ -54,6 +55,36 @@ class _HadithCardState extends State<HadithCard> {
     }
   }
 
+  /// Charge un nouveau hadith aléatoire depuis l'API (bouton refresh)
+  Future<void> _loadRandomHadith() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+
+      // Appeler directement l'API random (pas le cache)
+      final hadith = await HadithApiService.getRandomHadith();
+      
+      if (mounted) {
+        setState(() {
+          _currentHadith = hadith;
+          _isLoading = false;
+          if (hadith == null) {
+            _errorMessage = 'Impossible de charger un hadith';
+          }
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Erreur de chargement: $e';
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return LiquidGlassCard(
@@ -70,7 +101,7 @@ class _HadithCardState extends State<HadithCard> {
                   children: [
                     Icon(
                       Icons.auto_stories_outlined,
-                      color: Colors.white70,
+                      color: AppColors.textSecondary,
                       size: 20,
                     ),
                     const SizedBox(width: 8),
@@ -85,8 +116,8 @@ class _HadithCardState extends State<HadithCard> {
                 if (!_isLoading)
                   IconButton(
                     icon: const Icon(Icons.refresh, size: 20),
-                    onPressed: _loadDailyHadith,
-                    tooltip: 'Actualiser',
+                    onPressed: _loadRandomHadith,
+                    tooltip: 'Nouveau hadith aléatoire',
                   ),
               ],
             ),
@@ -157,19 +188,19 @@ class _HadithCardState extends State<HadithCard> {
         Icon(
           Icons.book_outlined,
           size: 48,
-          color: Colors.white30,
+          color: AppColors.textMuted,
         ),
         const SizedBox(height: 16),
         Text(
           'Aucun hadith disponible pour aujourd\'hui',
-          style: TextStyle(color: Colors.white70),
+          style: TextStyle(color: AppColors.textSecondary),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
           'Revenez plus tard ou actualisez',
           style: TextStyle(
-            color: Colors.white54,
+            color: AppColors.textMuted,
             fontSize: 12,
           ),
           textAlign: TextAlign.center,
@@ -191,7 +222,7 @@ class _HadithCardState extends State<HadithCard> {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppTheme.gradientStart,
+            color: AppColors.glassLight,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
@@ -209,28 +240,57 @@ class _HadithCardState extends State<HadithCard> {
         
         const SizedBox(height: 12),
         
-        // Source du hadith
+        // Source et grade du hadith
         Row(
           children: [
             Icon(
               Icons.source_outlined,
               size: 16,
-              color: Colors.white54,
+              color: AppColors.textMuted,
             ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 hadith.source,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white54,
+                  color: AppColors.textMuted,
                   fontStyle: FontStyle.italic,
                 ),
               ),
             ),
+            // Badge de grade (Sahih, Hasan, etc.)
+            if (hadith.grade != null && hadith.grade!.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: _gradeColor(hadith.grade!).withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: _gradeColor(hadith.grade!).withValues(alpha: 0.5),
+                  ),
+                ),
+                child: Text(
+                  hadith.grade!,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: _gradeColor(hadith.grade!),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
           ],
         ),
       ],
     );
+  }
+
+  /// Couleur associée au grade d'authenticité du hadith
+  Color _gradeColor(String grade) {
+    final g = grade.toLowerCase();
+    if (g.contains('sahih')) return AppColors.emeraldLight;
+    if (g.contains('hasan')) return AppColors.warning;
+    if (g.contains('da\'if') || g.contains('daif')) return AppColors.copperLight;
+    return AppColors.textMuted;
   }
 
   /// Détermine si le texte contient principalement de l'arabe

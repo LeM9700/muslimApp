@@ -1,0 +1,4180 @@
+[
+  {
+    "question": "Combien de piliers de l’Islam y a‑t‑il ?",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Les cinq piliers : attestation, prière, zakat, jeûne de Ramadan, hajj pour qui en a la capacité. (Hadith de Jibril, Bukhari/Muslim)",
+    "tags": [
+      "piliers",
+      "foi"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160033Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quels sont les piliers de la foi (al‑Imân) mentionnés dans le hadith de Jibril ?",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "correctIndex": 3,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Six piliers : Allah, Ses anges, Ses Livres, Ses messagers, le Jour dernier, et la prédestination. (Hadith de Jibril, Muslim)",
+    "tags": [
+      "foi"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160053Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le premier pilier de l’Islam ?",
+    "options": [
+      "La prière (salât)",
+      "L’attestation (shahâda)",
+      "La zakat",
+      "Le jeûne"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La shahâda : attester qu’il n’y a de divinité qu’Allah et que Muhammad est Son messager. (Bukhari/Muslim)",
+    "tags": [
+      "piliers"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160057Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Combien y a‑t‑il de sourates dans le Coran ?",
+    "options": [
+      "110",
+      "112",
+      "113",
+      "114"
+    ],
+    "correctIndex": 3,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Il y a 114 sourates dans le Coran.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160061Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la première sourate du Coran ?",
+    "options": [
+      "Al‑Baqarah",
+      "Al‑Fâtiha",
+      "An‑Nâs",
+      "Al‑Ikhlâs"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La première sourate est Al‑Fâtiha.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160064Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la plus longue sourate du Coran ?",
+    "options": [
+      "Âl‑‘Imrân",
+      "An‑Nisâ’",
+      "Al‑Baqarah",
+      "Al‑An‘âm"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La sourate la plus longue est Al‑Baqarah.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160068Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la plus courte sourate ?",
+    "options": [
+      "Al‑Kawthar",
+      "Al‑‘Asr",
+      "An‑Nasr",
+      "Al‑Ikhlâs"
+    ],
+    "correctIndex": 0,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La sourate la plus courte est Al‑Kawthar (3 versets).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160071Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate est appelée « la Mère du Livre » (Umm al‑Kitâb) ?",
+    "options": [
+      "Al‑Baqarah",
+      "Al‑Fâtiha",
+      "Yâ‑Sîn",
+      "Al‑Mulk"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Al‑Fâtiha est appelée Umm al‑Kitâb.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160076Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel verset est nommé Âyat al‑Kursî ?",
+    "options": [
+      "2:255",
+      "3:18",
+      "36:58",
+      "112:1"
+    ],
+    "correctIndex": 0,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Âyat al‑Kursî : Al‑Baqarah 2:255.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160080Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qui est le dernier Prophète selon l’Islam ?",
+    "options": [
+      "‘Îsâ (Jésus)",
+      "Mûsâ (Moïse)",
+      "Ibrâhîm (Abraham)",
+      "Muhammad ﷺ"
+    ],
+    "correctIndex": 3,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Muhammad ﷺ est le Sceau des Prophètes. (Coran 33:40)",
+    "tags": [
+      "prophètes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160084Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Combien de prières obligatoires par jour ?",
+    "options": [
+      "Deux",
+      "Trois",
+      "Quatre",
+      "Cinq"
+    ],
+    "correctIndex": 3,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Il y a cinq prières obligatoires quotidiennes.",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160087Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Combien de rak‘ât pour fajr (obligatoires) ?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "correctIndex": 0,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Fajr comporte 2 unités (rak‘ât) obligatoires.",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160091Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Combien de rak‘ât pour maghrib (obligatoires) ?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Maghrib comporte 3 unités (rak‘ât) obligatoires.",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160094Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel mois est prescrit pour le jeûne obligatoire ?",
+    "options": [
+      "Muharram",
+      "Ramadan",
+      "Dhul‑Hijja",
+      "Sha‘bân"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Le jeûne obligatoire est en Ramadan. (Coran 2:183)",
+    "tags": [
+      "jeûne"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160097Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le cinquième pilier pour qui en a la capacité ?",
+    "options": [
+      "La zakat",
+      "Le hajj",
+      "Le jeûne",
+      "La prière"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Le hajj pour qui en a les moyens. (Bukhari/Muslim)",
+    "tags": [
+      "piliers",
+      "hajj"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160100Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Dans quelle ville se trouve la Ka‘ba ?",
+    "options": [
+      "Médine",
+      "Jérusalem",
+      "La Mecque",
+      "Damas"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La Ka‘ba se trouve à La Mecque.",
+    "tags": [
+      "hajj",
+      "qibla"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160104Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Dans quelle direction prient les musulmans ?",
+    "options": [
+      "Vers Jérusalem",
+      "Vers la Ka‘ba",
+      "Vers Médine",
+      "Vers l’Est"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La Qibla est la Ka‘ba. (Coran 2:144)",
+    "tags": [
+      "prière",
+      "qibla"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160107Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qui a accompagné le Prophète ﷺ lors de l’Hégire ?",
+    "options": [
+      "‘Umar",
+      "‘Uthmân",
+      "‘Alî",
+      "Abû Bakr"
+    ],
+    "correctIndex": 3,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Abû Bakr as‑Siddîq a accompagné le Prophète ﷺ à l’Hégire.",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160110Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Combien de califes bien guidés (al‑khulafâ’ ar‑râshidûn) ?",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Quatre : Abû Bakr, ‘Umar, ‘Uthmân, ‘Alî.",
+    "tags": [
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160113Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel ange transmet la Révélation ?",
+    "options": [
+      "Mika’îl",
+      "Jibrîl",
+      "Isrâfîl",
+      "‘Azrâ’îl"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "L’ange Jibrîl (Gabriel).",
+    "tags": [
+      "foi",
+      "anges"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160117Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel Livre a été révélé à Mûsâ (Moïse) ?",
+    "options": [
+      "Injîl",
+      "Zabûr",
+      "Tawrât",
+      "Suhuf"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La Tawrât (Torah).",
+    "tags": [
+      "livres"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160120Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel Livre a été révélé à Dâwûd (David) ?",
+    "options": [
+      "Zabûr",
+      "Injîl",
+      "Tawrât",
+      "Qur’ân"
+    ],
+    "correctIndex": 0,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Le Zabûr (Psaumes).",
+    "tags": [
+      "livres"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160124Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel Livre a été révélé à ‘Îsâ (Jésus) ?",
+    "options": [
+      "Injîl",
+      "Tawrât",
+      "Zabûr",
+      "Suhuf"
+    ],
+    "correctIndex": 0,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "L’Injîl (Évangile).",
+    "tags": [
+      "livres"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160127Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Combien de prophètes sont nommés dans le Coran ?",
+    "options": [
+      "18",
+      "19",
+      "24",
+      "25"
+    ],
+    "correctIndex": 3,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Vingt‑cinq prophètes sont nommés dans le Coran.",
+    "tags": [
+      "prophètes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160130Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Où le premier verset fut‑il révélé ?",
+    "options": [
+      "Grotte de Thawr",
+      "Grotte de Hirâ’",
+      "Masjid an‑Nabawî",
+      "Masjid al‑Harâm"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Dans la grotte de Hirâ’ (Jabal an‑Nûr).",
+    "tags": [
+      "révélation",
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160133Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate a été révélée en premier selon la majorité ?",
+    "options": [
+      "Al‑Muddaththir",
+      "Al‑‘Alaq (96:1‑5)",
+      "Al‑Fâtiha",
+      "An‑Naba’"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Les cinq premiers versets d’Al‑‘Alaq. (Bukhari)",
+    "tags": [
+      "révélation"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160137Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel jour de la semaine est la prière du Jumu‘a ?",
+    "options": [
+      "Samedi",
+      "Dimanche",
+      "Vendredi",
+      "Lundi"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La prière du vendredi (Jumu‘a). (Coran 62:9)",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160140Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle fête suit le mois de Ramadan ?",
+    "options": [
+      "‘Îd al‑Adhâ",
+      "‘Îd al‑Fitr",
+      "Achûrâ’",
+      "Mawlid"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "‘Îd al‑Fitr suit Ramadan.",
+    "tags": [
+      "fêtes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160143Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle nuit est meilleure que mille mois ?",
+    "options": [
+      "Mi‑raj",
+      "Isrâ’",
+      "Laylat al‑Qadr",
+      "Nisf Sha‘bân"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La Nuit du Destin, en Ramadan. (Coran 97:1‑3)",
+    "tags": [
+      "ramadan"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160146Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le pourcentage standard de la zakat sur l’épargne ?",
+    "options": [
+      "1%",
+      "2.5%",
+      "5%",
+      "10%"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La zakat sur biens monétaires est de 2,5% (nisâb et conditions requis).",
+    "tags": [
+      "zakat"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160151Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le mois du pèlerinage ?",
+    "options": [
+      "Muharram",
+      "Rajab",
+      "Ramadan",
+      "Dhul‑Hijja"
+    ],
+    "correctIndex": 3,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Le hajj culmine en Dhul‑Hijja (9 : ‘Arafât, 10 : ‘Eid).",
+    "tags": [
+      "hajj"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160156Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel appel précède la prière en groupe ?",
+    "options": [
+      "Takbîr",
+      "Iqâma",
+      "Adhân",
+      "Tasbîh"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "L’adhân appelle à la prière, puis l’iqâma.",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160162Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon est surnommé al‑Fârûq ?",
+    "options": [
+      "Abû Bakr",
+      "‘Umar ibn al‑Khattâb",
+      "‘Uthmân",
+      "‘Alî"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Surnom de ‘Umar : al‑Fârûq.",
+    "tags": [
+      "compagnons"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160167Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon a compilé officiellement le Coran durant son califat ?",
+    "options": [
+      "Abû Bakr",
+      "‘Umar",
+      "‘Uthmân",
+      "‘Alî"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Le mushaf ‘Uthmânî a unifié la récitation. ",
+    "tags": [
+      "histoire",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160172Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Que signifie « zakat » ?",
+    "options": [
+      "Aumône obligatoire",
+      "Jeûne",
+      "Prière",
+      "Pèlerinage"
+    ],
+    "correctIndex": 0,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Zakat : aumône légale purificatrice.",
+    "tags": [
+      "zakat"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160177Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle prière se fait en deux rak‘ât le vendredi (congrégation) ?",
+    "options": [
+      "Dhuhr",
+      "Jumu‘a",
+      "Asr",
+      "Ishâ’"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Jumu‘a remplace Dhuhr en congrégation (2 rak‘ât).",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160183Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le nom de la mère du Prophète ﷺ ?",
+    "options": [
+      "Amina bint Wahb",
+      "Khadîja bint Khuwaylid",
+      "Fâtima bint Asad",
+      "Hâla bint Khuwaylid"
+    ],
+    "correctIndex": 0,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Amina bint Wahb.",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160189Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le nom du père du Prophète ﷺ ?",
+    "options": [
+      "‘Abd Allâh",
+      "Abû Tâlib",
+      "‘Abd al‑Muttalib",
+      "Hârith"
+    ],
+    "correctIndex": 0,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "‘Abd Allâh ibn ‘Abd al‑Muttalib.",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160194Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle ville fut la destination de l’Hégire ?",
+    "options": [
+      "La Mecque",
+      "Médine (Yathrib)",
+      "Ta’if",
+      "Jérusalem"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Médine (Yathrib). 622 EC.",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160197Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Combien de jours obligatoires dure le jeûne d’un mois lunaire ?",
+    "options": [
+      "28‑29",
+      "29‑30",
+      "30‑31",
+      "31‑32"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Mois lunaire : 29 ou 30 jours.",
+    "tags": [
+      "jeûne",
+      "lunaire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160201Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qui est l’ange chargé de souffler dans la Trompe ?",
+    "options": [
+      "Jibrîl",
+      "Mika’îl",
+      "Isrâfîl",
+      "Malik"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Israfil.",
+    "tags": [
+      "anges",
+      "eschatologie"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160204Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Comment s’appelle la profession de foi ?",
+    "options": [
+      "Takbîr",
+      "Tasbîh",
+      "Tahlîl",
+      "Shahâda"
+    ],
+    "correctIndex": 3,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "La shahâda.",
+    "tags": [
+      "piliers"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160207Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel mot glorifie Allah en disant « Allah est le Plus Grand » ?",
+    "options": [
+      "Subhân Allâh",
+      "Alhamdulillâh",
+      "Allâhu akbar",
+      "Lâ ilâha illa Allâh"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Allâhu akbar.",
+    "tags": [
+      "dhikr"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160210Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel lavage rituel est requis pour la prière ?",
+    "options": [
+      "Ghusl",
+      "Wudû’",
+      "Tayammum",
+      "Aucun"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Wudû’ (ablutions) si on n’est pas en état majeur.",
+    "tags": [
+      "fiqh",
+      "purification"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160214Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Que fait‑on en cas d’absence d’eau pour se purifier ?",
+    "options": [
+      "On prie sans rien",
+      "On attend",
+      "Tayammum",
+      "On jeûne"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Tayammum avec une surface propre. (Coran 4:43)",
+    "tags": [
+      "fiqh",
+      "purification"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160217Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "La nuit du Destin se cherche surtout…",
+    "options": [
+      "Au début de Sha‘bân",
+      "Les 10 dernières nuits de Ramadan (nuits impaires)",
+      "Les 10 premières de Dhul‑Hijja",
+      "La nuit du vendredi"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Dernières nuits impaires de Ramadan. (Bukhari/Muslim)",
+    "tags": [
+      "ramadan"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160220Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le nom du puits près de la Ka‘ba ?",
+    "options": [
+      "Zamzam",
+      "‘Ayn Zubayda",
+      "Barhût",
+      "Tabariyya"
+    ],
+    "correctIndex": 0,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Zamzam.",
+    "tags": [
+      "hajj",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160224Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon est le premier calife ?",
+    "options": [
+      "‘Umar",
+      "‘Uthmân",
+      "Abû Bakr",
+      "‘Alî"
+    ],
+    "correctIndex": 2,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Abû Bakr as‑Siddîq.",
+    "tags": [
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160227Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le livre le plus authentique après le Coran pour les sunnites ?",
+    "options": [
+      "Musnad Ahmad",
+      "Sahîh al‑Bukhari",
+      "Sunan an‑Nasâ’î",
+      "Muwatta’"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Sahîh al‑Bukhari (avec Muslim).",
+    "tags": [
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160230Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jour de station à ‘Arafât ?",
+    "options": [
+      "8 Dhul‑Hijja",
+      "9 Dhul‑Hijja",
+      "10 Dhul‑Hijja",
+      "11 Dhul‑Hijja"
+    ],
+    "correctIndex": 1,
+    "difficulty": "novice",
+    "points": 1,
+    "explanation": "Le 9 de Dhul‑Hijja.",
+    "tags": [
+      "hajj"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.160233Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel événement marque le début du calendrier hégirien (An 1 AH) ?",
+    "options": [
+      "La naissance du Prophète ﷺ",
+      "La Révélation",
+      "L’Hégire vers Médine",
+      "La conquête de La Mecque"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Le calendrier hégirien commence avec l’Hégire (622 EC).",
+    "tags": [
+      "seerah",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161359Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel fut le premier combat majeur des musulmans ?",
+    "options": [
+      "Uhud",
+      "Badr",
+      "La Tranchée",
+      "Hunayn"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Bataille de Badr en 2 AH (624 EC).",
+    "tags": [
+      "seerah",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161370Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "En quelle année eut lieu la bataille d’Uhud ?",
+    "options": [
+      "2 AH",
+      "3 AH",
+      "4 AH",
+      "5 AH"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Uhud : 3 AH (~625 EC).",
+    "tags": [
+      "seerah",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161374Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel traité a permis une trêve avec Quraysh en 6 AH ?",
+    "options": [
+      "Hudaybiyya",
+      "Hunayn",
+      "Tabuk",
+      "Khaybar"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Traité de Hudaybiyya (6 AH).",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161377Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle année eut la conquête de La Mecque ?",
+    "options": [
+      "6 AH",
+      "7 AH",
+      "8 AH",
+      "9 AH"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Conquête de La Mecque : 8 AH.",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161380Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qui était le grand‑père paternel du Prophète ﷺ ?",
+    "options": [
+      "Abû Tâlib",
+      "‘Abd al‑Muttalib",
+      "Hâshim",
+      "Zubayr"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "‘Abd al‑Muttalib.",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161384Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon a dirigé la compilation initiale du Coran après Yamâma ?",
+    "options": [
+      "‘Umar",
+      "‘Uthmân",
+      "Zayd ibn Thâbit",
+      "Ibn ‘Abbâs"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Zayd ibn Thâbit sous Abû Bakr puis révision sous ‘Uthmân.",
+    "tags": [
+      "coran",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161387Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel terme désigne l’aumône volontaire ?",
+    "options": [
+      "Zakat",
+      "Sadaqa",
+      "Kaffâra",
+      "Fidya"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Sadaqa = aumône volontaire.",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161392Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la prière du witr ?",
+    "options": [
+      "Obligatoire",
+      "Fortement recommandée (wâjiba chez certains)",
+      "Interdite",
+      "Permise mais déconseillée"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Witr est fortement recommandée (obligatoire chez Hanafites).",
+    "tags": [
+      "fiqh",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161398Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qu’est‑ce qui n’invalide PAS le jeûne ?",
+    "options": [
+      "Manger par oubli",
+      "Boire sciemment",
+      "Rapports intimes",
+      "Vomir volontairement"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Manger/boire par oubli n’invalide pas (Bukhari/Muslim).",
+    "tags": [
+      "jeûne",
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161403Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la condition majeure du Jumu‘a ?",
+    "options": [
+      "Être en voyage",
+      "Réunion de la communauté et sermon (khutba)",
+      "Jeûner avant",
+      "Faire la zakat"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Jumu‘a implique sermon et congrégation.",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161409Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel prophète est appelé Khâlîl‑Allâh (ami intime d’Allah) ?",
+    "options": [
+      "Mûsâ",
+      "Ibrâhîm",
+      "‘Îsâ",
+      "Nûh"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Ibrâhîm (Abraham). (Coran 4:125)",
+    "tags": [
+      "prophètes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161414Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel prophète a reçu les Tables ?",
+    "options": [
+      "‘Îsâ",
+      "Mûsâ",
+      "Dâwûd",
+      "Sulaymân"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Mûsâ (Moïse).",
+    "tags": [
+      "prophètes",
+      "livres"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161419Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon est le scribe révélé le plus célèbre ?",
+    "options": [
+      "Ibn Mas‘ûd",
+      "Zayd ibn Thâbit",
+      "Abû Hurayra",
+      "Anas"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Zayd ibn Thâbit.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161422Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate est appelée « al‑Ikhlâs » ?",
+    "options": [
+      "112",
+      "113",
+      "114",
+      "1"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Sourate 112 : Pureté du monothéisme.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161426Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate protège des maux par récitation (deux protectrices) avec An‑Nâs ?",
+    "options": [
+      "Al‑Falaq",
+      "Al‑Ikhlâs",
+      "Al‑Kafirûn",
+      "Al‑Masad"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Al‑Falaq (113) et An‑Nâs (114).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161429Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon est le plus prolifique rapporteur de hadiths ?",
+    "options": [
+      "Abû Hurayra",
+      "Ibn ‘Umar",
+      "Aïcha",
+      "Anas"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Abû Hurayra (plus de 5000 hadiths).",
+    "tags": [
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161432Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Que signifie « sunnah » ?",
+    "options": [
+      "Innovation",
+      "Voie/pratique prophétique",
+      "Interdiction",
+      "Obligation"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Sunnah = voie, tradition du Prophète ﷺ.",
+    "tags": [
+      "hadith",
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161436Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la condition de la zakat sur l’épargne ?",
+    "options": [
+      "Posséder depuis un an (hawl) et atteindre le nisâb",
+      "Être malade",
+      "Être en voyage",
+      "Avoir prié witr"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Nisâb + année lunaire (hawl).",
+    "tags": [
+      "zakat"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161439Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jeûne recommandé hebdomadaire ?",
+    "options": [
+      "Lundi/Jeudi",
+      "Mardi/Jeudi",
+      "Samedi/Dimanche",
+      "Jeudi/Vendredi"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Lundi et jeudi (hadiths authentiques).",
+    "tags": [
+      "jeûne",
+      "sunna"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161442Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel jour est particulièrement recommandé pour invoquer (heure exaucée) ?",
+    "options": [
+      "Lundi",
+      "Mardi",
+      "Jeudi",
+      "Vendredi"
+    ],
+    "correctIndex": 3,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Jour de Jumu‘a (heure exaucée).",
+    "tags": [
+      "dhikr",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161445Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Que signifie « tawhîd » ?",
+    "options": [
+      "Association",
+      "Unicité d’Allah",
+      "Adoration des saints",
+      "Négation des prophètes"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Tawhîd = unicité d’Allah dans seigneurerie, noms/attributs, adoration.",
+    "tags": [
+      "foi"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161449Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est l’acte central du hajj sur le plan du temps ?",
+    "options": [
+      "Tawâf",
+      "Sa‘î",
+      "Station à ‘Arafât",
+      "Ramî al‑Jamrât"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "« Al‑Hajj ʿArafah » : la station à ‘Arafât est essentielle.",
+    "tags": [
+      "hajj"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161452Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est l’ordre des actes au ‘Umra (MVP) ?",
+    "options": [
+      "Tawâf → Sa‘î → Taqsîr/Tahallul",
+      "Sa‘î → Tawâf → Tahallul",
+      "Tahallul → Tawâf → Sa‘î",
+      "Ramî → Tawâf → Sa‘î"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Ordre courant : tawâf, sa‘î, puis sortie d’ihrâm.",
+    "tags": [
+      "hajj"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161455Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qu’est‑ce qui annule l’ablution (wudû’) ?",
+    "options": [
+      "Sourire",
+      "Somme léger assis",
+      "Sorties naturelles",
+      "Penser à manger"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Sorties naturelles (gaz/urine/etc.).",
+    "tags": [
+      "fiqh",
+      "purification"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161458Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la prière en voyage (qasr) ?",
+    "options": [
+      "Interdite",
+      "Permise (raccourcie)",
+      "Obligatoire de la prolonger",
+      "Nulle"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Qasr : Dhuhr/‘Asr/‘Isha à 2 rak‘ât pour le voyageur.",
+    "tags": [
+      "fiqh",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161462Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "La zakat est due à partir d’un certain seuil appelé…",
+    "options": [
+      "Hawl",
+      "Nisâb",
+      "Witr",
+      "Rukû‘"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Nisâb = seuil minimal.",
+    "tags": [
+      "zakat"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161465Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate doit être récitée dans chaque rak‘a ?",
+    "options": [
+      "Al‑Baqarah",
+      "Al‑Fâtiha",
+      "Al‑Ikhlâs",
+      "Yâ‑Sîn"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Al‑Fâtiha dans chaque unité. (Bukhari/Muslim)",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161469Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Lorsqu’on oublie une partie de la prière, on effectue…",
+    "options": [
+      "Tayammum",
+      "Sujûd as‑sahw",
+      "Ghusl",
+      "Rattrapage complet"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Prosternations de l’oubli (sujûd as‑sahw).",
+    "tags": [
+      "fiqh",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161472Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le hadith qui résume Islam/Iman/Ihsan ?",
+    "options": [
+      "Hadith de l’Intention",
+      "Hadith de Jibril",
+      "Hadith du Pèlerin",
+      "Hadith Qudsi"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Hadith de Jibril (Muslim).",
+    "tags": [
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161475Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qui est « as‑Siddîq » parmi les califes ?",
+    "options": [
+      "‘Umar",
+      "‘Uthmân",
+      "Abû Bakr",
+      "‘Alî"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Abû Bakr as‑Siddîq.",
+    "tags": [
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161478Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate commence par les lettres « Alif‑Lâm‑Mîm » ?",
+    "options": [
+      "Al‑Baqarah",
+      "Al‑Kahf",
+      "Maryam",
+      "Tâ‑Hâ"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Al‑Baqarah (2).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161481Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel prophète a construit la Ka‘ba avec son fils ?",
+    "options": [
+      "Mûsâ et Hârûn",
+      "Ibrâhîm et Ismâ‘îl",
+      "Nûh et Sâm",
+      "Sulaymân et Dâwûd"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Ibrâhîm et Ismâ‘îl. (Coran 2:127)",
+    "tags": [
+      "prophètes",
+      "hajj"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161484Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le mois sacré parmi ceux‑ci ?",
+    "options": [
+      "Safar",
+      "Rajab",
+      "Sha‘bân",
+      "Rabi‘"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Mois sacrés : Dhul‑Qa‘da, Dhul‑Hijja, Muharram, Rajab.",
+    "tags": [
+      "lunaire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161487Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Combien de jours de tachrîq après ‘Eid al‑Adhâ ?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Jours de tachrîq : 11‑12‑13 Dhul‑Hijja.",
+    "tags": [
+      "fêtes",
+      "hajj"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161490Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate parle beaucoup de Maryam et ‘Îsâ ?",
+    "options": [
+      "Yûsuf",
+      "Maryam",
+      "An‑Nûr",
+      "Tahrîm"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Sourate Maryam (19).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161493Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le dhikr après l’iqâma et avant takbîr d’ouverture ?",
+    "options": [
+      "Dua al‑istiftah",
+      "Adhân",
+      "Tasbîh",
+      "Tahlîl"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Invocation d’ouverture (istiftâh) au début de la prière.",
+    "tags": [
+      "prière",
+      "dhikr"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161497Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "La zakat al‑fitr est…",
+    "options": [
+      "Optionnelle",
+      "Obligatoire à la fin de Ramadan",
+      "Interdite",
+      "Pour les riches seulement"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Obligatoire avant la prière de ‘Eid al‑Fitr.",
+    "tags": [
+      "zakat",
+      "ramadan"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161500Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel acte annule le jeûne de manière grave et nécessite expiation ?",
+    "options": [
+      "Sommeil",
+      "Rapports intimes volontaires",
+      "Se doucher",
+      "Oublier de manger"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Rapports volontaires → kaffâra (hadith).",
+    "tags": [
+      "jeûne"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161503Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Que signifie « ihsân » dans le hadith de Jibril ?",
+    "options": [
+      "Faire le strict minimum",
+      "Adorer Allah comme si tu Le voyais",
+      "Donner la zakat",
+      "Voyager beaucoup"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Ihsân : excellence dans l’adoration. (Muslim)",
+    "tags": [
+      "spiritualité"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161506Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon a préparé le minbar du Prophète ﷺ ?",
+    "options": [
+      "Bilâl",
+      "Salman al‑Fârisi",
+      "Tamîm ad‑Dârî",
+      "Une femme ansâriya (poteaux), un charpentier"
+    ],
+    "correctIndex": 3,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Le minbar fut fait par un charpentier (sources Sirah/akhbâr).",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161509Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate recommande la récitation du vendredi ?",
+    "options": [
+      "Al‑Kahf",
+      "Yâ‑Sîn",
+      "Ar‑Rahmân",
+      "Al‑Wâqi‘a"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Al‑Kahf recommandée le vendredi. (hadith hassan)",
+    "tags": [
+      "coran",
+      "sunna"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161512Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qu’est‑ce que « sadaqat al‑jâriya » ?",
+    "options": [
+      "Aumône ponctuelle",
+      "Aumône continue qui perdure",
+      "Zakat obligatoire",
+      "Dette"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Aumône continue (récurrente) dont la récompense perdure. (Muslim)",
+    "tags": [
+      "charité"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161515Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle prière de la nuit est fortement conseillée ?",
+    "options": [
+      "Duha",
+      "Tahajjud (qiyâm al‑layl)",
+      "Ishraq",
+      "Istikhâra"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Qiyâm/tahajjud recommandé.",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161518Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate protège du Dajjâl à la fin des temps (par mémorisation de débuts) ?",
+    "options": [
+      "Al‑Baqarah",
+      "Al‑Kahf",
+      "Yâ‑Sîn",
+      "Al‑Mulك"
+    ],
+    "correctIndex": 1,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Début de Al‑Kahf (hadiths).",
+    "tags": [
+      "eschatologie",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161522Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le mérite d’enseigner le Coran ?",
+    "options": [
+      "Neutre",
+      "Recommandé",
+      "Le meilleur : apprendre et enseigner le Coran",
+      "Interdit"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "« Le meilleur d’entre vous est celui qui apprend le Coran et l’enseigne. » (Bukhari)",
+    "tags": [
+      "coran",
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161525Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon a appelé à l’adhân à Médine ?",
+    "options": [
+      "Bilâl",
+      "Ibn ‘Umar",
+      "Abû Mûsâ",
+      "Anas"
+    ],
+    "correctIndex": 0,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Bilâl al‑Habashi.",
+    "tags": [
+      "histoire",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161528Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le mérite de visiter le malade ?",
+    "options": [
+      "Aucun",
+      "Péché",
+      "Grande récompense (hadiths authentiques)",
+      "Optionnel sans mérite"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "Mérite confirmé dans de nombreux hadiths.",
+    "tags": [
+      "éthique"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161531Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Le Prophète ﷺ a dit : « La religion, c’est… »",
+    "options": [
+      "la force",
+      "l’ascétisme",
+      "le conseil sincère (nasîha)",
+      "le combat"
+    ],
+    "correctIndex": 2,
+    "difficulty": "intermediaire",
+    "points": 2,
+    "explanation": "« Ad‑dîn an‑nasîha » (Muslim).",
+    "tags": [
+      "hadith",
+      "éthique"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.161534Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle année a été le changement de qibla vers la Ka‘ba ?",
+    "options": [
+      "1 AH",
+      "2 AH",
+      "3 AH",
+      "4 AH"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Changement de qibla à Médine en 2 AH. (Coran 2:144)",
+    "tags": [
+      "seerah",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162757Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate contient le verset du Trône (Ayat al‑Kursî) ?",
+    "options": [
+      "Âl ‘Imrân",
+      "Al‑Baqarah",
+      "An‑Nisâ’",
+      "An‑Nahl"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Ayat al‑Kursî : 2:255 dans Al‑Baqarah.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162766Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la sourate dite « al‑Saba‘ al‑mathânî » selon de nombreux savants ?",
+    "options": [
+      "Al‑Fâtiha",
+      "Al‑Baqarah",
+      "At‑Tawba",
+      "Al‑An‘âm"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Al‑Fâtiha (7 versets répétés). (Coran 15:87 ; Bukhari)",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162769Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la sourate recommandée le vendredi selon hadiths (lecture, lumière) ?",
+    "options": [
+      "Yâ‑Sîn",
+      "Al‑Kahf",
+      "Al‑Wâqi‘a",
+      "Ar‑Rahmân"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Al‑Kahf.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162773Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la prière en groupe pour les hommes selon de nombreuses écoles ?",
+    "options": [
+      "Indifférent",
+      "Recommandée ou fortement soulignée",
+      "Interdite",
+      "Obligatoire en tout temps"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Soulignée/fortement recommandée (détails selon écoles).",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162776Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelles sont les conditions de validité de la prière (shurût) ?",
+    "options": [
+      "Temps, ablution, qibla, couverture, intention",
+      "Zakat, jeûne, hajj",
+      "Voyage, sommeil, faim",
+      "Sacrifice"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Conditions : entrée du temps, tahâra, qibla, ‘awra, niyya.",
+    "tags": [
+      "fiqh",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162779Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la règle sur la récitation d’Al‑Fâtiha pour l’imam et le fidèle ?",
+    "options": [
+      "Toujours à voix basse",
+      "Jamais nécessaire",
+      "Indispensable par rak‘a (débat sur ma’mûm)",
+      "Interdite"
+    ],
+    "correctIndex": 2,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Al‑Fâtiha par rak‘a (détails ma’mûm selon écoles).",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162783Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Combien de takbîr au début de la prière funéraire (janâza) ?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "correctIndex": 3,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Quatre takbîr (pratique prophétique rapportée).",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162787Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le verset sur le jeûne prescrit ?",
+    "options": [
+      "2:183",
+      "2:255",
+      "3:31",
+      "24:35"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "« Le jeûne vous a été prescrit… » (Al‑Baqarah 2:183).",
+    "tags": [
+      "jeûne",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162790Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qui a dirigé la prière après la maladie du Prophète ﷺ avant son décès ?",
+    "options": [
+      "‘Umar",
+      "Abû Bakr",
+      "‘Uthmân",
+      "‘Alî"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Abû Bakr a dirigé la prière.",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162793Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate est appelée « Cœur du Coran » par des savants (mérites rapportés) ?",
+    "options": [
+      "Yâ‑Sîn",
+      "Ar‑Rahmân",
+      "Al‑Mulk",
+      "Ad‑Dukhân"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Beaucoup de savants mentionnent « Cœur du Coran » pour Yâ‑Sîn (mérites discutés).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162797Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel Compagnon est connu pour sa récitation et la transmission du mushaf (lecture) ?",
+    "options": [
+      "Abû Hurayra",
+      "Ibn Mas‘ûd",
+      "Anas",
+      "Abû Mûsâ"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "‘Abd Allâh ibn Mas‘ûd est une référence en qirâ’a.",
+    "tags": [
+      "coran",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162800Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le mérite d’« Al‑Ikhlâs » récité trois fois ?",
+    "options": [
+      "Équivaut à 1/3 du Coran",
+      "Équivaut au Coran entier",
+      "Sans mérite",
+      "Interdit"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Équivaut à un tiers du Coran (sens du mérite). (hadith sahîh)",
+    "tags": [
+      "coran",
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162803Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Dans quelle sourate se trouve le verset sur la dette détaillée ?",
+    "options": [
+      "Al‑Baqarah",
+      "An‑Nisâ’",
+      "At‑Tawba",
+      "An‑Nahl"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Verset le plus long : dette (2:282).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162807Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Que dit le Coran sur la consommation d’alcool ?",
+    "options": [
+      "Permise modérément",
+      "Réprouvée puis interdite",
+      "Toujours permise",
+      "Obligatoire"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Interdite à la fin (5:90‑91).",
+    "tags": [
+      "fiqh",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162810Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est l’ordre de priorité des ayants‑droit de la zakat selon 9:60 ?",
+    "options": [
+      "Pauvres, nécessiteux, collecteurs, cœurs à gagner, affranchir, endettés, cause d’Allah, voyageurs",
+      "Famille proche d’abord",
+      "Uniquement pauvres",
+      "Uniquement mosquées"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Huit catégories en 9:60.",
+    "tags": [
+      "zakat",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162813Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel prophète a eu un royaume et des miracles sur le vent et les djinns ?",
+    "options": [
+      "Sulaymân",
+      "Dâwûd",
+      "Yûsuf",
+      "Ayyûb"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Sulaymân (Salomon). (Coran 34:12‑13)",
+    "tags": [
+      "prophètes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162816Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel prophète a été avalé par un poisson ?",
+    "options": [
+      "Nûh",
+      "Yûnus",
+      "Ilyas",
+      "Idrîs"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Yûnus (Jonas). (Coran 37:139‑148)",
+    "tags": [
+      "prophètes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162819Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate demande de chercher protection contre le mal des souffleurs sur les nœuds ?",
+    "options": [
+      "Al‑Ikhlâs",
+      "Al‑Falaq",
+      "An‑Nâs",
+      "Al‑Masad"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Al‑Falaq (113:4).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162822Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de manger/boire par oubli pendant le jeûne ?",
+    "options": [
+      "Annule et expiation",
+      "Annule sans expiation",
+      "N’annule pas",
+      "Interdit et expiation"
+    ],
+    "correctIndex": 2,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "N’annule pas (Bukhari/Muslim).",
+    "tags": [
+      "jeûne",
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162825Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la règle du tayammum (support) ?",
+    "options": [
+      "N’importe quelle surface",
+      "Terre pure/surface naturelle propre",
+      "Uniquement sable",
+      "Uniquement poussière noire"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Terre/surface naturelle propre. (4:43)",
+    "tags": [
+      "fiqh",
+      "purification"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162828Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jugement de la prière pour le défunt ?",
+    "options": [
+      "Sunnah mu’akkada",
+      "Farḍ kifâya",
+      "Interdite",
+      "Optionnelle sans mérite"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Prière funéraire est une obligation communautaire.",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162831Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est l’ordre recommandé de l’aumône ?",
+    "options": [
+      "Famille, voisins, étrangers",
+      "Mosquée, pauvres, riche",
+      "Pauvres d’abord selon proximité/responsabilité",
+      "Toujours loin"
+    ],
+    "correctIndex": 2,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Proximité/parenté a priorité.",
+    "tags": [
+      "éthique",
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162834Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate commence par « Tabâraka » ?",
+    "options": [
+      "Al‑Mulk (67)",
+      "Al‑Wâqi‘a (56)",
+      "Ar‑Rahmân (55)",
+      "An‑Naba’ (78)"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Al‑Mulk : « Tabâraka… »",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162837Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quels livres sont cités explicitement dans le Coran (en plus du Qur’an) ?",
+    "options": [
+      "Torah, Psaumes, Évangile",
+      "Vedas, Tripitaka",
+      "Épîtres",
+      "Mishnah"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Tawrât, Zabûr, Injîl.",
+    "tags": [
+      "livres",
+      "foi"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162840Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel ange est en charge du Paradis selon traditions ?",
+    "options": [
+      "Ridwân",
+      "Malik",
+      "Munkar",
+      "Nakir"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Ridwân (traditions). Malik : Enfer.",
+    "tags": [
+      "anges"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162843Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Le hadith de l’Intention (n°1 Nawawi) enseigne que…",
+    "options": [
+      "Seule l’action suffit",
+      "La valeur dépend de l’intention",
+      "Seule la parole compte",
+      "Le lieu compte"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "« Les actes ne valent que par les intentions ». (Bukhari/Muslim)",
+    "tags": [
+      "nawawi",
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162846Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Que signifie « bid‘a » en religion ?",
+    "options": [
+      "Innovation blâmable introduite dans le culte",
+      "Bonne coutume sociale",
+      "Nouvelle technologie",
+      "Sport"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Innovation religieuse non fondée sur preuves scripturaires.",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162850Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le nombre de takbîr pour l’‘Îd (version la plus répandue) ?",
+    "options": [
+      "1",
+      "2",
+      "3 (plusieurs fois au début)",
+      "10"
+    ],
+    "correctIndex": 2,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Plusieurs takbîr au début (modalités selon écoles).",
+    "tags": [
+      "fêtes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162853Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate est souvent récitée avec Al‑Ikhlâs, Al‑Falaq, An‑Nâs ?",
+    "options": [
+      "Al‑Masad",
+      "Al‑Kafirûn",
+      "Al‑Kawthar",
+      "Al‑Qadr"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Al‑Kafirûn (authentique de la renonciation au shirk).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162856Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la prière de l’éclipse ?",
+    "options": [
+      "Interdite",
+      "Sunnah mu’akkada",
+      "Obligatoire individuelle",
+      "Nulle"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Sunnah mu’akkada en congrégation.",
+    "tags": [
+      "fiqh",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162859Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qu’est‑ce que le hadith qudsî ?",
+    "options": [
+      "Parole d’Allah rapportée par le Prophète ﷺ",
+      "Parole du Prophète",
+      "Parole des Compagnons",
+      "Parole d’un savant"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Sens de hadith qudsî.",
+    "tags": [
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162862Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon est célèbre pour la collecte des hadiths (Musnad) ?",
+    "options": [
+      "Al‑Bukhari",
+      "Muslim",
+      "Ahmad ibn Hanbal",
+      "Ibn Mâjah"
+    ],
+    "correctIndex": 2,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Musnad Ahmad.",
+    "tags": [
+      "hadith",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162865Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est l’avertissement de 49:12 ?",
+    "options": [
+      "Backbiting/calomnie interdits",
+      "Jeûner souvent",
+      "Voyager",
+      "Nourrir son voisin"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Interdiction de la médisance/suspicions. (Al‑Hujurât 49:12)",
+    "tags": [
+      "éthique",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162869Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le mérite d’apprendre la science religieuse ?",
+    "options": [
+      "Neutre",
+      "Récompense continue",
+      "Interdit",
+      "Sans effet"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Recherche de science a un grand mérite (hadiths).",
+    "tags": [
+      "science"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162874Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la prière sur le Prophète ﷺ (salât) ?",
+    "options": [
+      "Recommandée, et obligatoire dans la prière",
+      "Interdite",
+      "Sans effet",
+      "Optionnelle rare"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Envoyer salât/salâm est recommandé ; tashahhud l’inclut.",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162877Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel prophète a été jeté dans le feu mais a été sauvé ?",
+    "options": [
+      "Yûsuf",
+      "Ibrâhîm",
+      "Mûsâ",
+      "Ayyûb"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Ibrâhîm. (Coran 21:69)",
+    "tags": [
+      "prophètes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162881Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate parle de la lumière d’Allah (verset fameux) ?",
+    "options": [
+      "Al‑Nûr (24:35)",
+      "Al‑Hadîd (57:28)",
+      "Al‑An‘âm (6:122)",
+      "As‑Saff (61:8)"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Verset de la Lumière 24:35.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162884Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qu’est‑ce que « istikhâra » ?",
+    "options": [
+      "Prière de consultation",
+      "Prière funéraire",
+      "Prière d’éclipse",
+      "Prière de peur"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Deux rak‘ât puis invocation de consultation.",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162887Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de rompre le jeûne pour malade/voyageur ?",
+    "options": [
+      "Interdit",
+      "Permis, voire recommandé",
+      "Obligatoire de jeûner",
+      "Sans impact"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Permis/recommandé selon cas. (2:184‑185)",
+    "tags": [
+      "jeûne",
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162890Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon a rapporté le plus de hadiths après Abû Hurayra parmi ces noms ?",
+    "options": [
+      "Ibn ‘Umar",
+      "Abû Sa‘îd",
+      "Anas",
+      "Aïcha"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Ibn ‘Umar et Anas sont aussi parmi les plus prolifiques ; ici choix sûr : Ibn ‘Umar est très prolifique.",
+    "tags": [
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162893Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate est fortement liée à la protection nocturne (mérites) ?",
+    "options": [
+      "Al‑Mulk",
+      "Al‑Wâqi‘a",
+      "Ar‑Rahmân",
+      "Ad‑Dukhân"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Al‑Mulk (67) — hadiths sur protection (sommeil/tombe).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162897Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est l’endroit principal du pèlerinage où se tient la station ?",
+    "options": [
+      "Mina",
+      "Muzdalifa",
+      "‘Arafât",
+      "Masjid al‑Harâm"
+    ],
+    "correctIndex": 2,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "‘Arafât.",
+    "tags": [
+      "hajj"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162900Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel verset ordonne explicitement l’accomplissement de la prière aux temps prescrits ?",
+    "options": [
+      "4:103",
+      "2:286",
+      "3:200",
+      "24:56"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "4:103 mentionne les temps prescrits.",
+    "tags": [
+      "prière",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162903Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate narre largement l’histoire de Yûsuf ?",
+    "options": [
+      "Hud",
+      "Yûsuf",
+      "Yûnus",
+      "Maryam"
+    ],
+    "correctIndex": 1,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Sourate Yûsuf (12).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162906Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qui est « Dhu’l‑Qarnayn » selon le Coran ?",
+    "options": [
+      "Un roi juste",
+      "Un tyran",
+      "Un ange",
+      "Un prophète explicitement"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Figure pieuse/roi juste (18:83‑98). Statut prophétique non explicité.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162909Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jugement de la prière en retard sans excuse ?",
+    "options": [
+      "Grave péché",
+      "Neutre",
+      "Recommandé",
+      "Obligatoire"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "Retarder volontairement hors du temps est un péché.",
+    "tags": [
+      "fiqh",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162912Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate contient les plus longs versets de divorces/règles familiales ?",
+    "options": [
+      "An‑Nisâ’",
+      "At‑Talaq",
+      "Al‑Baqarah",
+      "An‑Nûr"
+    ],
+    "correctIndex": 0,
+    "difficulty": "difficile",
+    "points": 3,
+    "explanation": "An‑Nisâ’ et At‑Talaq traitent du droit familial ; le plus long verset demeure 2:282 (dette).",
+    "tags": [
+      "coran",
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.162915Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle est la sourate révélée en entier à Médine parmi celles‑ci ?",
+    "options": [
+      "Al‑Baqarah",
+      "Al‑Fîl",
+      "Al‑Quraysh",
+      "Al‑Ikhlâs"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Al‑Baqarah est médinoise (longue).",
+    "tags": [
+      "coran",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163818Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel verset est appelé « verset de l’épreuve » concernant l’alliance avec Ibrahim ?",
+    "options": [
+      "2:124",
+      "2:255",
+      "3:18",
+      "4:135"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "2:124 (imamat d’Ibrâhîm).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163831Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate mentionne clairement le jeûne de ‘Âshûrâ’ au temps prophétique (par la sunna) ?",
+    "options": [
+      "At‑Tawba",
+      "Al‑Baqarah",
+      "Al‑‘Imrân",
+      "An‑Nisâ’"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Sunna de jeûner ‘Âshûrâ’ (10 Muharram) — textes hadith ; 2:183 prescrit Ramadan.",
+    "tags": [
+      "jeûne",
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163835Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate interdit explicitement le riba (usure) en termes fermes ?",
+    "options": [
+      "Al‑Baqarah (2:275‑279)",
+      "An‑Nisâ’",
+      "At‑Tawba",
+      "Ar‑Rahmân"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Interdiction ferme en 2:275‑279.",
+    "tags": [
+      "fiqh",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163855Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate comporte la célèbre histoire de la Vache ?",
+    "options": [
+      "Al‑Baqarah",
+      "Al‑An‘âm",
+      "Al‑Mâ’idah",
+      "Al‑A‘râf"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Al‑Baqarah (La Vache).",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163858Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le nombre de takbîr de prière de l’‘Îd selon écoles (pratique répandue) ?",
+    "options": [
+      "2 et 2",
+      "3 et 3",
+      "4 et 4",
+      "7 puis 5 (dans deux rak‘ât)"
+    ],
+    "correctIndex": 3,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Version répandue : 7 au 1er rak‘a, 5 au 2e (variantes existent).",
+    "tags": [
+      "fêtes",
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163862Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel récitateur est souvent utilisé comme par défaut via API pour l’audio ?",
+    "options": [
+      "Husary",
+      "Mishary al‑Afasy",
+      "Minshawi",
+      "Basit"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Mishary est souvent proposé par défaut sur des APIs populaires.",
+    "tags": [
+      "coran",
+      "audio"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163865Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel hadith fonde la hiérarchie Islam/Iman/Ihsan en un seul texte ?",
+    "options": [
+      "Hadith de Jibril",
+      "Hadith Qudsi",
+      "Hadith de l’Intention",
+      "Hadith du Gharqad"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Hadith de Jibril (Muslim).",
+    "tags": [
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163869Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate contient des versets de la lumière, de la pudeur et des règles sociales détaillées ?",
+    "options": [
+      "Al‑Nûr",
+      "Al‑Ahzâb",
+      "An‑Nisâ’",
+      "Al‑Hujurât"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Al‑Nûr (24) traite pudeur, accusations, foyer.",
+    "tags": [
+      "coran",
+      "éthique"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163873Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate mentionne la calomnie (ifk) au sujet de ‘Aïsha (qu’Allah l’agrée) ?",
+    "options": [
+      "Al‑Ahzâb",
+      "An‑Nûr",
+      "Al‑Hujurât",
+      "At‑Tahrîm"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "An‑Nûr traite l’épisode de l’ifk.",
+    "tags": [
+      "histoire",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163876Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon a rédigé une grande partie de la correspondance du Prophète ﷺ ?",
+    "options": [
+      "‘Ali",
+      "Mu‘âwiya ibn Abî Sufyân",
+      "Zubayr",
+      "Talha"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Mu‘âwiya fut scribe/administrateur sous le Prophète puis plus tard dirigeant.",
+    "tags": [
+      "seerah",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163879Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel récit dans al‑Kahf concerne un savant et un Prophète en voyage d’apprentissage ?",
+    "options": [
+      "Dhul‑Qarnayn",
+      "Mûsâ et al‑Khidr",
+      "Les dormants",
+      "Les deux propriétaires"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Récit de Mûsâ et al‑Khidr.",
+    "tags": [
+      "coran",
+      "science"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163883Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon est célèbre pour la lecture de Qûf‑Hafs (chaîne de transmission) ?",
+    "options": [
+      "‘Asm",
+      "Warsh",
+      "Qalûn",
+      "Hafs ‘an ‘Asim"
+    ],
+    "correctIndex": 3,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Hafs ‘an ‘Asim est largement répandu.",
+    "tags": [
+      "coran",
+      "qiraat"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163886Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jugement de rattraper la prière manquée ?",
+    "options": [
+      "Pas nécessaire",
+      "Obligatoire (qadâ’)",
+      "Interdit",
+      "Facultatif"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Qadâ’ des prières manquées est requis.",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163889Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut du jeûne des six jours de Shawwâl ?",
+    "options": [
+      "Obligatoire",
+      "Recommandé",
+      "Interdit",
+      "Makrûh"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Recommandé après Ramadan (Muslim).",
+    "tags": [
+      "jeûne",
+      "sunna"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163891Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate contient le verset « Aujourd’hui, J’ai parachevé pour vous votre religion » ?",
+    "options": [
+      "Al‑Baqarah",
+      "Al‑Ma’idah (5:3)",
+      "An‑Nisâ’",
+      "Âl ‘Imrân"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "5:3 – parachèvement de la religion.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163895Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la zakat al‑fitr (temps et bénéficiaires) ?",
+    "options": [
+      "Don à n’importe qui et n’importe quand",
+      "Avant la prière de l’‘Îd aux nécessiteux",
+      "Après Dhul‑Hijja",
+      "Uniquement aux imams"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "À donner avant la prière de l’‘Îd aux nécessiteux.",
+    "tags": [
+      "zakat"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163898Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jugement de cacher les défauts du musulman repenti ?",
+    "options": [
+      "Interdit",
+      "Recommandé (ne pas divulguer)",
+      "Obligatoire de divulguer",
+      "Toujours permis"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Couvrir les défauts, ne pas médire. (49:12, hadiths)",
+    "tags": [
+      "éthique"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163901Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate met en garde contre la moquerie et les sobriquets ?",
+    "options": [
+      "Al‑Fath",
+      "Al‑Hujurât (49:11)",
+      "Al‑Hashr",
+      "At‑Taghâbun"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "49:11 – éthique sociale.",
+    "tags": [
+      "éthique",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163904Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la prière de la pluie (istisqâ’) ?",
+    "options": [
+      "Interdite",
+      "Sunnah confirmée",
+      "Obligatoire",
+      "Makrûh"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Sunnah confirmée (hadiths).",
+    "tags": [
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163907Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate raconte l’histoire d’Ayyûb (Job) et sa patience ?",
+    "options": [
+      "Yûnus",
+      "Hûd",
+      "Sâd",
+      "Yâ‑Sîn"
+    ],
+    "correctIndex": 2,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Sourate Sâd (38:41‑44).",
+    "tags": [
+      "prophètes",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163910Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quels sont les deux voyages nocturnes mentionnés ensemble par tradition ?",
+    "options": [
+      "Hijra et Badr",
+      "Isrâ’ et Mi‘râj",
+      "Hudaybiyya et Conquête",
+      "‘Umra et Hajj"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Isrâ’ (voyage nocturne) et Mi‘râj (ascension).",
+    "tags": [
+      "seerah"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163913Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de l’alcool selon 5:90‑91 ?",
+    "options": [
+      "Permis",
+      "Makrûh",
+      "Interdit",
+      "Obligatoire"
+    ],
+    "correctIndex": 2,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Interdit (éloignez‑vous).",
+    "tags": [
+      "fiqh",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163916Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate relate l’histoire de la vache et la résurrection d’un mort ?",
+    "options": [
+      "Al‑An‘âm",
+      "Al‑Baqarah (2:67‑73)",
+      "Al‑A‘râf",
+      "Yûnus"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Récit de la vache.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163919Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quels sont les signes majeurs de la Fin cités en hadiths (exemples) ?",
+    "options": [
+      "Yajûj‑Majûj, Dajjâl, retour de ‘Îsâ",
+      "Nouveaux mois",
+      "Plus de pluie",
+      "Moins de nuits"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Parmi les grands signes : Dajjâl, Yajûj‑Majûj, retour de ‘Îsâ, etc.",
+    "tags": [
+      "eschatologie",
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163922Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jugement de prier en chaussures propres ?",
+    "options": [
+      "Toujours interdit",
+      "Permis si propres",
+      "Obligatoire",
+      "Makrûh absolu"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Permis si propres (hadiths).",
+    "tags": [
+      "fiqh",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163925Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel prophète est connu pour sa beauté mise à l’épreuve ?",
+    "options": [
+      "Ibrâhîm",
+      "Yûsuf",
+      "Ayyûb",
+      "Idrîs"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Yûsuf (Joseph).",
+    "tags": [
+      "prophètes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163928Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate mentionne « Qul yâ ayyuhâ al‑kâfirûn » ?",
+    "options": [
+      "Al‑Ikhlâs",
+      "Al‑Kâfirûn (109)",
+      "Al‑Masad",
+      "Al‑Qadr"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Sourate 109.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163931Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la barbe selon de nombreux hadiths et écoles ?",
+    "options": [
+      "Sans importance",
+      "Recommandée/ordre de la laisser",
+      "Interdite",
+      "Obligatoire de la raser"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Nombreux hadiths ordonnent de laisser pousser (détails d’écoles).",
+    "tags": [
+      "fiqh",
+      "sunna"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163934Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon a tué le champion de Quraysh à Badr (duel) ?",
+    "options": [
+      "‘Alî",
+      "Hamza",
+      "Abû ‘Ubayda",
+      "Bilâl"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "‘Alî fait partie des duels victorieux (avec Hamza & ‘Ubayda).",
+    "tags": [
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163938Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate parle en détail des héritages ?",
+    "options": [
+      "Al‑Mâ’idah",
+      "An‑Nisâ’",
+      "At‑Talaq",
+      "An‑Nûr"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "An‑Nisâ’ (4) détaille l’héritage.",
+    "tags": [
+      "fiqh",
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163941Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Qu’est‑ce que « al‑radd » en héritage ?",
+    "options": [
+      "Ajout au défunt",
+      "Réduction des parts",
+      "Retour du surplus aux ayants droit",
+      "Don à un étranger"
+    ],
+    "correctIndex": 2,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Radd : retour du surplus aux héritiers.",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163944Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut du ribâ selon consensus ?",
+    "options": [
+      "Permis avec pauvres",
+      "Interdit par consensus",
+      "Makrûh",
+      "Obligatoire"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Riba est unanimement interdit.",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163947Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate mentionne la parabole des bonnes/ mauvaises paroles comme un arbre ?",
+    "options": [
+      "Ibrâhîm (14:24‑26)",
+      "Yâ‑Sîn",
+      "An‑Naba’",
+      "Al‑Qamar"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Parabole en 14:24‑26.",
+    "tags": [
+      "coran"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163950Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate recommande la justice et la bienfaisance et interdit l’indécence (verset récité en khutba) ?",
+    "options": [
+      "An‑Nahl (16:90)",
+      "Al‑Fath",
+      "Al‑Hashr",
+      "Al‑Jumu‘a"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "16:90 – souvent récité en khutba.",
+    "tags": [
+      "coran",
+      "éthique"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163953Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate condamne les fraudeurs dans la mesure ?",
+    "options": [
+      "Al‑Mutaffifîn (83)",
+      "Al‑Tîn",
+      "Al‑‘Alaq",
+      "Al‑Fajr"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "83 : Les fraudeurs.",
+    "tags": [
+      "coran",
+      "éthique"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163956Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la ‘aqîqa pour le nouveau‑né ?",
+    "options": [
+      "Interdite",
+      "Sunnah confirmée",
+      "Obligatoire",
+      "Sans valeur"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Sunnah confirmée (deux pour garçon, une pour fille).",
+    "tags": [
+      "fiqh",
+      "famille"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163959Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel prophète a reçu le « Zabûr » ?",
+    "options": [
+      "Dâwûd",
+      "Mûsâ",
+      "Ibrâhîm",
+      "Sulaymân"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Dâwûd (Psaumes).",
+    "tags": [
+      "prophètes",
+      "livres"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163964Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jugement de consommer halal et éviter le haram ?",
+    "options": [
+      "Optionnel",
+      "Obligatoire",
+      "Interdit",
+      "Makrûh"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Obligation de consommer licite et éviter l’illicite.",
+    "tags": [
+      "fiqh",
+      "éthique"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163967Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate mentionne le hadith du mensonge de la calomnie (ifk) ?",
+    "options": [
+      "An‑Nûr",
+      "At‑Tahrîm",
+      "Al‑Ahzâb",
+      "Al‑Hashr"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "An‑Nûr traite l’ifk.",
+    "tags": [
+      "coran",
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163970Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la prière du voyageur raccourcie et regroupée ?",
+    "options": [
+      "Interdite",
+      "Permise (raccourcie et parfois regroupée)",
+      "Obligatoire de compléter",
+      "Sans règle"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Permise selon conditions.",
+    "tags": [
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163973Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jugement de mentir sauf cas licites (réconciliation, guerre, conjoints) ?",
+    "options": [
+      "Toujours interdit",
+      "Il y a des dispenses limitées",
+      "Toujours permis",
+      "Recommandé"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Dispenses mentionnées dans hadiths (réconciliation, etc.).",
+    "tags": [
+      "éthique",
+      "hadith"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163976Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel verset résume l’équité du témoignage même contre soi‑même ?",
+    "options": [
+      "4:135",
+      "2:286",
+      "3:200",
+      "5:8"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "4:135 – être équitables, même contre soi.",
+    "tags": [
+      "coran",
+      "éthique"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163979Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jugement de consommer la viande du sacrifice (‘udhhiya) ?",
+    "options": [
+      "Obligatoire pour tous",
+      "Recommandée (selon écoles)",
+      "Interdite",
+      "Makrûh"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Sunnah confirmée chez plusieurs écoles.",
+    "tags": [
+      "fiqh",
+      "fêtes"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163982Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quelle sourate insiste sur le respect des engagements (awfû bil‑‘uqûd) ?",
+    "options": [
+      "Al‑Mâ’idah (5:1)",
+      "An‑Nisâ’",
+      "Al‑An‘âm",
+      "Al‑Tawba"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "5:1 – respect des pactes.",
+    "tags": [
+      "coran",
+      "éthique"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163986Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le jugement de rompre le jeûne par contrainte ou oubli ?",
+    "options": [
+      "Péché grave",
+      "Pas de péché et rattrapage si nécessaire",
+      "Obligatoire expiation",
+      "Interdit"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Oubli → pas d’annulation ; contrainte → selon cas. (Bukhari/Muslim)",
+    "tags": [
+      "jeûne",
+      "fiqh"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163990Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel compagnon a organisé l’administration en Syrie puis fut calife ?",
+    "options": [
+      "‘Alî",
+      "Mu‘âwiya ibn Abî Sufyân",
+      "Zubayr",
+      "Talha"
+    ],
+    "correctIndex": 1,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Mu‘âwiya.",
+    "tags": [
+      "histoire"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163993Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  },
+  {
+    "question": "Quel est le statut de la prière du vendredi pour l’homme résident ?",
+    "options": [
+      "Obligatoire",
+      "Optionnelle",
+      "Interdite",
+      "Makrûh"
+    ],
+    "correctIndex": 0,
+    "difficulty": "expert",
+    "points": 5,
+    "explanation": "Obligatoire pour l’homme résident (conditions remplies).",
+    "tags": [
+      "fiqh",
+      "prière"
+    ],
+    "language": "fr",
+    "reviewed": false,
+    "authorId": null,
+    "createdAt": "2025-10-15T16:47:44.163997Z",
+    "updatedAt": "2025-10-15T17:04:33.233506Z"
+  }
+]

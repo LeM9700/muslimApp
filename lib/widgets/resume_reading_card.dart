@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../routes/app_routes.dart';
 
@@ -126,7 +127,7 @@ class _ResumeReadingCardState extends State<ResumeReadingCard> {
                 children: [
                   Icon(
                     Icons.menu_book_outlined,
-                    color: Colors.white70,
+                    color: AppColors.textSecondary,
                     size: 20,
                   ),
                   const SizedBox(width: 8),
@@ -144,7 +145,7 @@ class _ResumeReadingCardState extends State<ResumeReadingCard> {
               Text(
                 'Commencez votre lecture du Coran',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.white70,
+                  color: AppColors.textSecondary,
                 ),
               ),
               
@@ -160,7 +161,7 @@ class _ResumeReadingCardState extends State<ResumeReadingCard> {
                     icon: const Icon(Icons.play_arrow),
                     label: const Text('Commencer'),
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.green.shade300,
+                      foregroundColor: AppColors.emerald,
                     ),
                   ),
                 ],
@@ -194,7 +195,7 @@ class _ResumeReadingCardState extends State<ResumeReadingCard> {
                     children: [
                       Icon(
                         Icons.bookmark_outline,
-                        color: Colors.white70,
+                        color: AppColors.textSecondary,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
@@ -230,7 +231,7 @@ class _ResumeReadingCardState extends State<ResumeReadingCard> {
                 Text(
                   'Verset ${_lastAyah}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white70,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               
@@ -247,7 +248,7 @@ class _ResumeReadingCardState extends State<ResumeReadingCard> {
                     icon: const Icon(Icons.play_arrow),
                     label: const Text('Continuer'),
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.green.shade300,
+                      foregroundColor: AppColors.emerald,
                     ),
                   ),
                 ],

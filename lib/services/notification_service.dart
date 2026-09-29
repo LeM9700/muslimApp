@@ -5,8 +5,36 @@ import '../utils/helpers.dart';
 /// Service de configuration des notifications locales quotidiennes
 /// Hadith à 10h et Quiz à 20h selon les spécifications
 class NotificationService {
-  static final FlutterLocalNotificationsPlugin _notifications = 
+  static final FlutterLocalNotificationsPlugin _notifications =
       FlutterLocalNotificationsPlugin();
+
+  /// Verifie si l'app a deja l'autorisation d'envoyer des notifications.
+  /// Ne declenche pas de prompt systeme.
+  static Future<bool> areNotificationsEnabled() async {
+    try {
+      final androidImplementation =
+          _notifications.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
+
+      if (androidImplementation != null) {
+        return await androidImplementation.areNotificationsEnabled() ?? false;
+      }
+
+      final iosImplementation =
+          _notifications.resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>();
+
+      if (iosImplementation != null) {
+        final permissions = await iosImplementation.checkPermissions();
+        return permissions?.isEnabled ?? false;
+      }
+
+      return false;
+    } catch (e) {
+      print('Erreur verification permissions notifications: $e');
+      return false;
+    }
+  }
 
   /// Initialise et programme les notifications quotidiennes
   /// À appeler au démarrage de l'application
@@ -14,13 +42,13 @@ class NotificationService {
     try {
       // Annuler les notifications existantes
       await _notifications.cancelAll();
-      
+
       // Programmer hadith quotidien à 10h
       await _scheduleHadithNotification();
-      
-      // Programmer quiz quotidien à 20h  
+
+      // Programmer quiz quotidien à 20h
       await _scheduleQuizNotification();
-      
+
       print('Notifications quotidiennes programmées avec succès');
     } catch (e) {
       print('Erreur lors de la programmation des notifications: $e');
@@ -43,7 +71,7 @@ class NotificationService {
           importance: Importance.defaultImportance,
           priority: Priority.defaultPriority,
           icon: '@mipmap/ic_launcher',
-          color: Color(0xFF0A1E32), // Couleur du thème
+          color: Color(0xFF10B981), // Émeraude — accent du thème iridescent
         ),
         iOS: DarwinNotificationDetails(
           categoryIdentifier: 'hadith_category',
@@ -53,7 +81,8 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time, // Répéter quotidiennement
+      matchDateTimeComponents:
+          DateTimeComponents.time, // Répéter quotidiennement
       payload: 'hadith_daily',
     );
   }
@@ -74,7 +103,7 @@ class NotificationService {
           importance: Importance.defaultImportance,
           priority: Priority.defaultPriority,
           icon: '@mipmap/ic_launcher',
-          color: Color(0xFF0A1E32), // Couleur du thème
+          color: Color(0xFF10B981), // Émeraude — accent du thème iridescent
         ),
         iOS: DarwinNotificationDetails(
           categoryIdentifier: 'quiz_category',
@@ -84,7 +113,8 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time, // Répéter quotidiennement
+      matchDateTimeComponents:
+          DateTimeComponents.time, // Répéter quotidiennement
       payload: 'quiz_daily',
     );
   }
@@ -93,19 +123,20 @@ class NotificationService {
   /// Retourne true si accordées, false sinon
   static Future<bool> requestNotificationPermissions() async {
     try {
-      final androidImplementation = 
+      final androidImplementation =
           _notifications.resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>();
-      
+
       if (androidImplementation != null) {
-        final result = await androidImplementation.requestNotificationsPermission();
+        final result =
+            await androidImplementation.requestNotificationsPermission();
         return result ?? false;
       }
 
-      final iosImplementation = 
+      final iosImplementation =
           _notifications.resolvePlatformSpecificImplementation<
               IOSFlutterLocalNotificationsPlugin>();
-      
+
       if (iosImplementation != null) {
         final result = await iosImplementation.requestPermissions(
           alert: true,
@@ -158,7 +189,8 @@ class NotificationService {
 
   /// Récupère la liste des notifications en attente
   /// Utilisé pour debugger et vérifier la programmation
-  static Future<List<PendingNotificationRequest>> getPendingNotifications() async {
+  static Future<List<PendingNotificationRequest>>
+      getPendingNotifications() async {
     try {
       return await _notifications.pendingNotificationRequests();
     } catch (e) {

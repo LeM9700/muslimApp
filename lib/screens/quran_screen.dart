@@ -4,6 +4,7 @@ import '../services/quran_api_service.dart';
 import '../widgets/glass_widgets.dart';
 import '../utils/app_theme.dart';
 import '../screens/sura_detail_screen.dart';
+import '../utils/hero_tags.dart';
 
 /// Écran de liste des sourates du Coran avec API Quran Foundation v4
 /// Charge les sourates depuis l'API et permet la navigation vers le détail
@@ -87,19 +88,32 @@ class _QuranScreenState extends State<QuranScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Coran',
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  Row(
+                    children: [
+                      Hero(
+                        tag: HeroTags.quranIcon,
+                        child: const Icon(
+                          Icons.menu_book_outlined,
+                          size: 32,
+                          color: AppColors.copper,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Coran',
+                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
                   ),
                   if (_chapters.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Text(
                       '${_chapters.length} sourates disponibles',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white70,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ],
@@ -114,14 +128,14 @@ class _QuranScreenState extends State<QuranScreen> {
                           _searchQuery = value;
                         });
                       },
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: AppColors.textPrimary),
                       decoration: InputDecoration(
                         hintText: 'Rechercher une sourate...',
-                        hintStyle: const TextStyle(color: Colors.white54),
-                        prefixIcon: const Icon(Icons.search, color: Colors.white54),
+                        hintStyle: const TextStyle(color: AppColors.textMuted),
+                        prefixIcon: const Icon(Icons.search, color: AppColors.textMuted),
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
-                                icon: const Icon(Icons.clear, color: Colors.white54),
+                                icon: const Icon(Icons.clear, color: AppColors.textMuted),
                                 onPressed: () {
                                   setState(() {
                                     _searchQuery = '';
@@ -159,7 +173,7 @@ class _QuranScreenState extends State<QuranScreen> {
             SizedBox(height: 16),
             Text(
               'Chargement des sourates...',
-              style: TextStyle(color: Colors.white70),
+              style: TextStyle(color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -203,7 +217,7 @@ class _QuranScreenState extends State<QuranScreen> {
             ElevatedButton(
               onPressed: _loadChapters,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.accentBlue,
+                backgroundColor: AppColors.emerald,
               ),
               child: const Text('Réessayer'),
             ),
@@ -224,7 +238,7 @@ class _QuranScreenState extends State<QuranScreen> {
             Icon(
               Icons.book_outlined,
               size: 64,
-              color: Colors.white30,
+              color: AppColors.textMuted,
             ),
             const SizedBox(height: 16),
             Text(
@@ -232,7 +246,7 @@ class _QuranScreenState extends State<QuranScreen> {
                   ? 'Aucune sourate trouvée pour "$_searchQuery"'
                   : 'Aucune sourate disponible',
               style: const TextStyle(
-                color: Colors.white70,
+                color: AppColors.textSecondary,
                 fontSize: 16,
               ),
               textAlign: TextAlign.center,
@@ -285,7 +299,7 @@ class _QuranScreenState extends State<QuranScreen> {
           height: 45,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppTheme.accentBlue, AppTheme.accentGold],
+              colors: [AppColors.emerald, AppColors.copper],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -296,7 +310,7 @@ class _QuranScreenState extends State<QuranScreen> {
               '${chapter.number}',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 16,
               ),
             ),
@@ -312,7 +326,7 @@ class _QuranScreenState extends State<QuranScreen> {
               style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
             ),
             if (chapter.nameAr.isNotEmpty) ...[
@@ -321,7 +335,7 @@ class _QuranScreenState extends State<QuranScreen> {
                 chapter.nameAr,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white60,
+                  color: AppColors.textMuted,
                   fontFamily: 'Arabic',
                 ),
                 textDirection: TextDirection.rtl,
@@ -337,13 +351,13 @@ class _QuranScreenState extends State<QuranScreen> {
               Icon(
                 Icons.article_outlined,
                 size: 14,
-                color: Colors.white54,
+                color: AppColors.textMuted,
               ),
               const SizedBox(width: 4),
               Text(
                 '${chapter.ayahCount} versets',
                 style: const TextStyle(
-                  color: Colors.white54,
+                  color: AppColors.textMuted,
                   fontSize: 12,
                 ),
               ),
@@ -353,13 +367,13 @@ class _QuranScreenState extends State<QuranScreen> {
                     ? Icons.location_city 
                     : Icons.location_on,
                 size: 14,
-                color: Colors.white54,
+                color: AppColors.textMuted,
               ),
               const SizedBox(width: 4),
               Text(
                 chapter.revelationPlace?.toLowerCase() == 'mecca' ? 'Mecquoise' : 'Médinoise',
                 style: const TextStyle(
-                  color: Colors.white54,
+                  color: AppColors.textMuted,
                   fontSize: 12,
                 ),
               ),
@@ -371,7 +385,7 @@ class _QuranScreenState extends State<QuranScreen> {
         trailing: const Icon(
           Icons.arrow_forward_ios,
           size: 16,
-          color: Colors.white54,
+          color: AppColors.textMuted,
         ),
         
         // Navigation vers le détail

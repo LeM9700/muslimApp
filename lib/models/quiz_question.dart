@@ -7,7 +7,13 @@ class QuizQuestion {
   final int answerIndex;
   final String explanation;
   final bool reviewed;
+  final String? difficulty;
+  final int points;
+  final List<String> tags;
+  final String language;
+  final String? authorId;
   final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   const QuizQuestion({
     required this.id,
@@ -16,20 +22,40 @@ class QuizQuestion {
     required this.answerIndex,
     required this.explanation,
     required this.reviewed,
+    this.difficulty,
+    this.points = 1,
+    this.tags = const [],
+    this.language = 'fr',
+    this.authorId,
     this.createdAt,
+    this.updatedAt,
   });
 
   /// Crée une QuizQuestion depuis un document Firestore
-  /// Utilise les champs : question, options, answerIndex, explanation, reviewed
+  /// Supporte les deux formats : 'answerIndex' (legacy) et 'correctIndex' (JSON seed)
   factory QuizQuestion.fromFirestore(Map<String, dynamic> data, String id) {
     return QuizQuestion(
       id: id,
       question: data['question'] as String? ?? '',
       options: List<String>.from(data['options'] as List? ?? []),
-      answerIndex: data['answerIndex'] as int? ?? 0,
+      answerIndex: data['answerIndex'] as int? ?? data['correctIndex'] as int? ?? 0,
       explanation: data['explanation'] as String? ?? '',
       reviewed: data['reviewed'] as bool? ?? false,
-      createdAt: data['created_at']?.toDate() as DateTime?,
+      difficulty: data['difficulty'] as String?,
+      points: data['points'] as int? ?? 1,
+      tags: List<String>.from(data['tags'] as List? ?? []),
+      language: data['language'] as String? ?? 'fr',
+      authorId: data['authorId'] as String?,
+      createdAt: data['createdAt'] != null
+          ? (data['createdAt'] is String
+              ? DateTime.tryParse(data['createdAt'] as String)
+              : (data['createdAt'] as dynamic)?.toDate() as DateTime?)
+          : null,
+      updatedAt: data['updatedAt'] != null
+          ? (data['updatedAt'] is String
+              ? DateTime.tryParse(data['updatedAt'] as String)
+              : (data['updatedAt'] as dynamic)?.toDate() as DateTime?)
+          : null,
     );
   }
 
@@ -39,10 +65,16 @@ class QuizQuestion {
     return {
       'question': question,
       'options': options,
-      'answerIndex': answerIndex,
+      'correctIndex': answerIndex,
       'explanation': explanation,
       'reviewed': reviewed,
-      'created_at': createdAt,
+      'difficulty': difficulty,
+      'points': points,
+      'tags': tags,
+      'language': language,
+      'authorId': authorId,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
@@ -70,7 +102,13 @@ class QuizQuestion {
     int? answerIndex,
     String? explanation,
     bool? reviewed,
+    String? difficulty,
+    int? points,
+    List<String>? tags,
+    String? language,
+    String? authorId,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return QuizQuestion(
       id: id ?? this.id,
@@ -79,7 +117,13 @@ class QuizQuestion {
       answerIndex: answerIndex ?? this.answerIndex,
       explanation: explanation ?? this.explanation,
       reviewed: reviewed ?? this.reviewed,
+      difficulty: difficulty ?? this.difficulty,
+      points: points ?? this.points,
+      tags: tags ?? this.tags,
+      language: language ?? this.language,
+      authorId: authorId ?? this.authorId,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 

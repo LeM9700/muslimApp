@@ -1,0 +1,14 @@
+# android/key.properties — NE PAS COMMITTER (gitignored)
+# Copier ce fichier en key.properties et remplir les valeurs.
+#
+# Générer le keystore :
+#   keytool -genkey -v -keystore android/muslim-app-release.jks \
+#           -keyalg RSA -keysize 2048 -validity 10000 -alias muslimapp
+#
+# Le fichier .jks est aussi gitignored — le stocker dans un gestionnaire de secrets
+# (ex: GitHub Secrets, Bitwarden, 1Password) pour le CI/CD.
+
+storeFile=../android/muslim-app-release.jks
+storePassword=REPLACE_WITH_KEYSTORE_PASSWORD
+keyAlias=muslimapp
+keyPassword=REPLACE_WITH_KEY_PASSWORD

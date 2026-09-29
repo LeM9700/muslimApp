@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
+import '../utils/app_theme.dart';
 import 'package:geolocator/geolocator.dart';
 import '../services/qibla_service.dart';
+import '../utils/hero_tags.dart';
 import '../widgets/qibla_compass.dart';
+import '../widgets/lottie_animations.dart';
 
 /// Écran de boussole Qibla avec calibrage et informations
 /// Affiche une vraie boussole pointant vers la Kaaba avec géolocalisation
@@ -21,6 +24,12 @@ class _QiblaScreenState extends State<QiblaScreen> {
   String? _errorMessage;
   LocationPermission? _locationPermission;
   bool _isLocationServiceEnabled = false;
+
+  // ── Animation Lottie (Q10) ────────────────────────────────────────────────
+  /// Vrai quand la boussole est alignée avec la Qibla (±5°).
+  bool _showQiblaFound = false;
+  /// Garde en mémoire l'état précédent pour éviter de re-déclencher.
+  bool _wasAligned = false;
 
   @override
   void initState() {
@@ -99,11 +108,28 @@ class _QiblaScreenState extends State<QiblaScreen> {
   /// Met à jour l'orientation en temps réel
   void _listenToCompass() {
     FlutterCompass.events?.listen((CompassEvent event) {
-      if (mounted && event.heading != null) {
-        setState(() {
-          _currentHeading = event.heading;
-        });
+      if (!mounted || event.heading == null) return;
+      final heading = event.heading!;
+
+      // Détection alignement Qibla : différence angulaire ≤ 5°
+      if (_qiblaBearing != null) {
+        final diff = ((heading - _qiblaBearing!) % 360 + 360) % 360;
+        final aligned = diff <= 5 || diff >= 355;
+
+        if (aligned && !_wasAligned) {
+          // Front sur l'alignement : déclenche l'animation une seule fois
+          setState(() {
+            _showQiblaFound = true;
+            _wasAligned = true;
+          });
+        } else if (!aligned) {
+          _wasAligned = false;
+        }
       }
+
+      setState(() {
+        _currentHeading = heading;
+      });
     });
   }
 
@@ -146,7 +172,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
             SizedBox(height: 16),
             Text(
               'Calcul de la direction...',
-              style: TextStyle(color: Colors.white70),
+              style: TextStyle(color: AppColors.textSecondary),
             ),
           ],
         ),
@@ -257,7 +283,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
               children: [
                 Icon(
                   Icons.info_outline,
-                  color: Colors.white70,
+                  color: AppColors.textSecondary,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
@@ -305,19 +331,19 @@ class _QiblaScreenState extends State<QiblaScreen> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 16, color: Colors.white54),
+          Icon(icon, size: 16, color: AppColors.textMuted),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               label,
-              style: TextStyle(color: Colors.white70),
+              style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
           Text(
             value,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: AppColors.textPrimary,
             ),
           ),
         ],
@@ -329,9 +355,44 @@ class _QiblaScreenState extends State<QiblaScreen> {
   Widget _buildMainCompass() {
     return SizedBox(
       height: 300,
-      child: QiblaCompass(
-        qiblaBearing: _qiblaBearing ?? 0,
-        currentHeading: _currentHeading ?? 0,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // ── Boussole Hero ──────────────────────────────────────────────────
+          Hero(
+        tag: HeroTags.qiblaCompass,
+        // [⚡ PERF] flightShuttleBuilder désactive BackdropFilter pendant le vol
+        // pour éviter un rendu double des blurs (source + destination).
+        flightShuttleBuilder: (_, animation, __, ___, ____) {
+          return AnimatedBuilder(
+            animation: animation,
+            builder: (context, child) => Opacity(
+              opacity: animation.value,
+              child: child,
+            ),
+            child: QiblaCompass(
+              qiblaBearing: _qiblaBearing ?? 0,
+              currentHeading: _currentHeading ?? 0,
+            ),
+          );
+        },
+        child: QiblaCompass(
+          qiblaBearing: _qiblaBearing ?? 0,
+          currentHeading: _currentHeading ?? 0,
+        ),
+      ),
+
+          // ── Lottie "Qibla trouvée" ─────────────────────────────────────────
+          if (_showQiblaFound)
+            IgnorePointer(
+              child: QiblaFoundAnimation(
+                size: 300,
+                onComplete: () {
+                  if (mounted) setState(() => _showQiblaFound = false);
+                },
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -348,7 +409,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
               children: [
                 Icon(
                   Icons.lightbulb_outline,
-                  color: Colors.white70,
+                  color: AppColors.textSecondary,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
@@ -398,7 +459,7 @@ class _QiblaScreenState extends State<QiblaScreen> {
             height: 6,
             margin: const EdgeInsets.only(top: 6),
             decoration: BoxDecoration(
-              color: Colors.white54,
+              color: AppColors.textMuted,
               shape: BoxShape.circle,
             ),
           ),
@@ -411,14 +472,14 @@ class _QiblaScreenState extends State<QiblaScreen> {
                   title,
                   style: const TextStyle(
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   description,
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: AppColors.textSecondary,
                     fontSize: 13,
                   ),
                 ),

@@ -25,8 +25,17 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+// Lecture des propriétés de signature depuis android/key.properties (gitignored)
+// Générer avec : keytool -genkey -v -keystore android/muslim-app-release.jks
+//               -keyalg RSA -keysize 2048 -validity 10000 -alias muslimapp
+def keyPropertiesFile = rootProject.file('key.properties')
+def keyProperties = new Properties()
+if (keyPropertiesFile.exists()) {
+    keyPropertiesFile.withReader('UTF-8') { reader -> keyProperties.load(reader) }
+}
+
 android {
-    namespace "com.example.muslim_app"
+    namespace "com.elboazzati.muslimapp"
     compileSdk 35
     ndkVersion "25.1.8937393"
 
@@ -43,8 +52,21 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+    signingConfigs {
+        release {
+            // [🔒 SÉCURITÉ] Valeurs lues depuis android/key.properties (jamais committé)
+            // Si key.properties absent → la release ne signera pas (CI doit fournir les variables)
+            if (keyPropertiesFile.exists()) {
+                keyAlias       keyProperties['keyAlias']
+                keyPassword    keyProperties['keyPassword']
+                storeFile      file(keyProperties['storeFile'])
+                storePassword  keyProperties['storePassword']
+            }
+        }
+    }
+
     defaultConfig {
-        applicationId "com.example.muslim_app"
+        applicationId "com.elboazzati.muslimapp"
         minSdk 21
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
@@ -54,7 +76,12 @@ android {
 
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
+            signingConfig keyPropertiesFile.exists()
+                ? signingConfigs.release
+                : signingConfigs.debug  // fallback local seulement — jamais en CI/CD prod
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

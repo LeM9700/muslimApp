@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import '../utils/app_theme.dart';
 
-/// Widgets personnalisés pour l'effet glassmorphism moderne
-/// Utilise backdrop filter et gradients pour un rendu liquide
+// =============================================================================
+// Widgets glassmorphism iridescent CLAIR
+// Design DNA : fond pastel peach/lavande/rose + frosted glass cards
+// [⚡ PERF] BackdropFilter est coûteux. Max 5-6 simultanés à l'écran.
+// =============================================================================
 
+/// Conteneur glass générique — frosted glass sur fond lumineux.
 class GlassContainer extends StatelessWidget {
   final Widget child;
   final double borderRadius;
@@ -16,17 +21,17 @@ class GlassContainer extends StatelessWidget {
   final double? height;
 
   const GlassContainer({
-    Key? key,
+    super.key,
     required this.child,
     this.borderRadius = 20,
-    this.blur = 10,
-    this.color = const Color(0x40FFFFFF),
+    this.blur = 12,
+    this.color = AppColors.glassLight,
     this.border,
     this.padding,
     this.margin,
     this.width,
     this.height,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,20 +44,21 @@ class GlassContainer extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
           child: Container(
-            padding: padding ?? EdgeInsets.all(16),
+            padding: padding ?? const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: color,
               borderRadius: BorderRadius.circular(borderRadius),
-              border: border ?? Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
-              ),
+              border: border ??
+                  Border.all(
+                    color: Colors.white.withOpacity(0.35),
+                    width: 1.2,
+                  ),
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
+                  Colors.white.withOpacity(0.35),
                   Colors.white.withOpacity(0.15),
-                  Colors.white.withOpacity(0.05),
                 ],
               ),
             ),
@@ -64,6 +70,9 @@ class GlassContainer extends StatelessWidget {
   }
 }
 
+/// Card glass avec bordure iridescente (violet → rose → bleu).
+/// Utiliser pour les cards principales de l'écran d'accueil.
+/// Paramètre [heroTag] active un Hero widget pour shared element transitions.
 class LiquidGlassCard extends StatelessWidget {
   final Widget child;
   final double borderRadius;
@@ -71,67 +80,106 @@ class LiquidGlassCard extends StatelessWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final VoidCallback? onTap;
+  final bool iridescent;
+  final String? heroTag;
 
   const LiquidGlassCard({
-    Key? key,
+    super.key,
     required this.child,
-    this.borderRadius = 25,
+    this.borderRadius = 22,
     this.gradientColors,
     this.padding,
     this.margin,
     this.onTap,
-  }) : super(key: key);
+    this.iridescent = true,
+    this.heroTag,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final defaultGradient = [
-      const Color(0x30FFFFFF),
-      const Color(0x10FFFFFF),
-      const Color(0x05FFFFFF),
-    ];
-
-    return Container(
-      margin: margin ?? EdgeInsets.all(8),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(borderRadius),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-              child: Container(
-                padding: padding ?? EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: gradientColors ?? defaultGradient,
-                  ),
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
-                    width: 1,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 20,
-                      offset: Offset(0, 10),
-                    ),
+    Widget card = ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+        child: Container(
+          padding: padding ?? const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: gradientColors ??
+                  [
+                    Colors.white.withOpacity(0.40),
+                    Colors.white.withOpacity(0.22),
                   ],
-                ),
-                child: child,
-              ),
             ),
+            borderRadius: BorderRadius.circular(borderRadius),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.38),
+              width: 1.2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.iridStart.withOpacity(0.12),
+                blurRadius: 24,
+                spreadRadius: -4,
+                offset: const Offset(-4, -4),
+              ),
+              BoxShadow(
+                color: AppColors.iridEnd.withOpacity(0.12),
+                blurRadius: 24,
+                spreadRadius: -4,
+                offset: const Offset(4, 4),
+              ),
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 16,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
+          child: child,
         ),
       ),
     );
+
+    // Bordure iridescente (gradient 1.2px autour du clip)
+    if (iridescent) {
+      card = Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(borderRadius),
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.iridStart,
+              AppColors.iridMid,
+              AppColors.iridEnd,
+            ],
+          ),
+        ),
+        padding: const EdgeInsets.all(1.2),
+        child: card,
+      );
+    }
+
+    // Shared element transition
+    if (heroTag != null) {
+      card = Hero(tag: heroTag!, child: card);
+    }
+
+    if (onTap != null) {
+      return GestureDetector(
+        onTap: onTap,
+        child: card,
+      );
+    }
+
+    return Container(margin: margin ?? const EdgeInsets.all(0), child: card);
   }
 }
 
+/// Bouton glass flottant (icône)
 class FloatingGlassButton extends StatelessWidget {
   final Widget child;
   final VoidCallback? onPressed;
@@ -140,17 +188,17 @@ class FloatingGlassButton extends StatelessWidget {
   final double borderRadius;
 
   const FloatingGlassButton({
-    Key? key,
+    super.key,
     required this.child,
     this.onPressed,
     this.backgroundColor,
     this.size = 56,
     this.borderRadius = 16,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
       child: ClipRRect(
@@ -159,16 +207,16 @@ class FloatingGlassButton extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: Container(
             decoration: BoxDecoration(
-              color: backgroundColor ?? Colors.white.withOpacity(0.2),
+              color: backgroundColor ?? Colors.white.withOpacity(0.35),
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1,
+                color: Colors.white.withOpacity(0.4),
+                width: 1.2,
               ),
               gradient: RadialGradient(
                 colors: [
-                  Colors.white.withOpacity(0.3),
-                  Colors.white.withOpacity(0.1),
+                  Colors.white.withOpacity(0.4),
+                  Colors.white.withOpacity(0.15),
                 ],
               ),
             ),
@@ -187,35 +235,38 @@ class FloatingGlassButton extends StatelessWidget {
   }
 }
 
+// =============================================================================
+// IridescentBackground — fond gradient animé pastel (peach → lavande → rose)
+// Remplace AnimatedGlassBackground (dark) dans MainNavigation
+// =============================================================================
+
 class AnimatedGlassBackground extends StatefulWidget {
   final Widget child;
-  
-  const AnimatedGlassBackground({Key? key, required this.child}) : super(key: key);
+
+  const AnimatedGlassBackground({super.key, required this.child});
 
   @override
-  _AnimatedGlassBackgroundState createState() => _AnimatedGlassBackgroundState();
+  State<AnimatedGlassBackground> createState() =>
+      _AnimatedGlassBackgroundState();
 }
 
 class _AnimatedGlassBackgroundState extends State<AnimatedGlassBackground>
-    with TickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(seconds: 8),
+      duration: const Duration(seconds: 9),
       vsync: this,
-    )..repeat();
-    
-    _animation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(
+    )..repeat(reverse: true);
+
+    _animation = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
-    ));
+    );
   }
 
   @override
@@ -228,64 +279,77 @@ class _AnimatedGlassBackgroundState extends State<AnimatedGlassBackground>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Gradient de fond animé
+        // Gradient de fond iridescent animé
         AnimatedBuilder(
           animation: _animation,
-          builder: (context, child) {
+          builder: (context, _) {
             return Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  stops: [
-                    0.0,
-                    _animation.value * 0.5,
-                    _animation.value,
-                    1.0,
-                  ],
+                  stops: const [0.0, 0.45, 1.0],
                   colors: [
-                    Color(0xFF0A1E32),
-                    Color(0xFF1A2F47),
-                    Color(0xFF2A3F57),
-                    Color(0xFF0A1E32),
+                    Color.lerp(
+                      AppColors.backgroundStart,
+                      AppColors.backgroundEnd,
+                      _animation.value,
+                    )!,
+                    Color.lerp(
+                      AppColors.backgroundMid,
+                      AppColors.backgroundStart,
+                      _animation.value,
+                    )!,
+                    Color.lerp(
+                      AppColors.backgroundEnd,
+                      AppColors.backgroundMid,
+                      _animation.value,
+                    )!,
                   ],
                 ),
               ),
             );
           },
         ),
-        // Bulles flottantes
-        ...List.generate(5, (index) => _buildFloatingBubble(index)),
+
+        // Orbes lumineux flottants (ambiance éthérée)
+        ...List.generate(5, _buildFloatingOrb),
+
         // Contenu principal
         widget.child,
       ],
     );
   }
 
-  Widget _buildFloatingBubble(int index) {
-    final delays = [0.0, 0.2, 0.4, 0.6, 0.8];
-    final sizes = [80.0, 120.0, 60.0, 100.0, 90.0];
+  Widget _buildFloatingOrb(int index) {
+    final delays  = [0.0, 0.2, 0.4, 0.6, 0.8];
+    final sizes   = [120.0, 160.0, 90.0, 140.0, 110.0];
+    final colors  = [
+      AppColors.iridStart.withOpacity(0.18),
+      AppColors.iridMid.withOpacity(0.14),
+      AppColors.emerald.withOpacity(0.10),
+      AppColors.iridEnd.withOpacity(0.16),
+      AppColors.copper.withOpacity(0.10),
+    ];
     final positions = [
-      {'top': 100.0, 'left': 50.0},
-      {'top': 300.0, 'right': 30.0},
-      {'bottom': 200.0, 'left': 30.0},
-      {'top': 150.0, 'right': 100.0},
-      {'bottom': 100.0, 'right': 200.0},
+      const {'top': 60.0,  'left': 30.0},
+      const {'top': 300.0, 'right': 20.0},
+      const {'bottom': 180.0, 'left': 20.0},
+      const {'top': 130.0, 'right': 80.0},
+      const {'bottom': 80.0, 'right': 160.0},
     ];
 
     return AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
+      builder: (context, _) {
         final progress = (_animation.value + delays[index]) % 1.0;
-        final opacity = (1 - progress) * 0.3;
-        
         return Positioned(
           top: positions[index]['top'],
           bottom: positions[index]['bottom'],
           left: positions[index]['left'],
           right: positions[index]['right'],
           child: Transform.translate(
-            offset: Offset(0, -progress * 50),
+            offset: Offset(0, -progress * 40),
             child: Container(
               width: sizes[index],
               height: sizes[index],
@@ -293,7 +357,7 @@ class _AnimatedGlassBackgroundState extends State<AnimatedGlassBackground>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.white.withOpacity(opacity),
+                    colors[index],
                     Colors.transparent,
                   ],
                 ),

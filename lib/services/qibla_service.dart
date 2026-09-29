@@ -62,6 +62,22 @@ class QiblaService {
     return await Geolocator.requestPermission();
   }
 
+  /// Calcule le bearing Qibla depuis des coordonnees connues.
+  /// Methode pure pour tests et usages sans prompt de geolocalisation.
+  static double calculateBearingFromCoordinates({
+    required double startLatitude,
+    required double startLongitude,
+    double endLatitude = kaabaLatitude,
+    double endLongitude = kaabaLongitude,
+  }) {
+    return _calculateBearing(
+      startLatitude,
+      startLongitude,
+      endLatitude,
+      endLongitude,
+    );
+  }
+
   /// Calcule l'angle bearing entre deux points géographiques
   /// Formule de navigation sphérique pour calculer la direction
   static double _calculateBearing(
@@ -106,13 +122,14 @@ class QiblaService {
   static Future<double?> calculateDistanceToKaaba() async {
     try {
       final Position position = await Geolocator.getCurrentPosition();
-      
+
       return Geolocator.distanceBetween(
-        position.latitude,
-        position.longitude,
-        kaabaLatitude,
-        kaabaLongitude,
-      ) / 1000; // Conversion mètres vers kilomètres
+            position.latitude,
+            position.longitude,
+            kaabaLatitude,
+            kaabaLongitude,
+          ) /
+          1000; // Conversion mètres vers kilomètres
     } catch (e) {
       print('Erreur lors du calcul de la distance: $e');
       return null;

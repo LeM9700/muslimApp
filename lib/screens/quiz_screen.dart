@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import '../utils/app_theme.dart';
 import '../services/firebase_service.dart';
 import '../services/quiz_stats_service.dart';
 import '../models/quiz_question.dart';
 import '../models/quiz_stats.dart';
 import '../widgets/glass_widgets.dart';
+import '../widgets/lottie_animations.dart';
+import '../utils/hero_tags.dart';
 
 /// Modes d'affichage de l'écran quiz
 enum QuizScreenMode {
-  dashboard,   // Tableau de bord avec statistiques
-  difficulty,  // Sélection de difficulté
-  loading,     // Chargement des questions
-  playing,     // Quiz en cours
-  results,     // Résultats du quiz
+  dashboard, // Tableau de bord avec statistiques
+  difficulty, // Sélection de difficulté
+  loading, // Chargement des questions
+  playing, // Quiz en cours
+  results, // Résultats du quiz
 }
 
 /// Écran de quiz amélioré avec statistiques et niveaux de difficulté
@@ -26,7 +29,7 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   QuizStats? _stats;
   bool _isLoadingStats = true;
-  
+
   // État du quiz
   List<QuizQuestion> _dailyQuestions = [];
   int _currentQuestionIndex = 0;
@@ -37,9 +40,13 @@ class _QuizScreenState extends State<QuizScreen> {
   int _currentScore = 0;
   int _correctAnswersCount = 0;
   bool _isLoadingQuestions = false;
-  
+
   // Mode d'affichage
   QuizScreenMode _currentMode = QuizScreenMode.dashboard;
+
+  // [Genjutsu] Feedback animation sur réponse soumise
+  bool _showFeedback = false;
+  bool _lastAnswerCorrect = false;
 
   @override
   void initState() {
@@ -75,9 +82,12 @@ class _QuizScreenState extends State<QuizScreen> {
     });
 
     try {
-      // Charger 5 questions aléatoirement
-      final questions = await FirebaseService.getMultipleQuestions(5);
-      
+      // Charger 5 questions filtrées par difficulté
+      final questions = await FirebaseService.getMultipleQuestions(
+        5,
+        difficulty: difficulty.name,
+      );
+
       if (mounted) {
         if (questions.isNotEmpty) {
           setState(() {
@@ -113,7 +123,7 @@ class _QuizScreenState extends State<QuizScreen> {
   /// Sélectionne une réponse
   void _selectAnswer(int index) {
     if (_hasAnswered) return;
-    
+
     setState(() {
       _selectedOptionIndex = index;
     });
@@ -122,18 +132,20 @@ class _QuizScreenState extends State<QuizScreen> {
   /// Valide la réponse et affiche l'explication
   void _submitAnswer() {
     if (_selectedOptionIndex == null || _hasAnswered) return;
-    
+
     final question = _dailyQuestions[_currentQuestionIndex];
     final isCorrect = question.isCorrectAnswer(_selectedOptionIndex!);
-    
+
     if (isCorrect) {
       _correctAnswersCount++;
       _currentScore += _selectedDifficulty!.pointMultiplier;
     }
-    
+
     setState(() {
       _hasAnswered = true;
       _showExplanation = true;
+      _showFeedback = true;
+      _lastAnswerCorrect = isCorrect;
     });
   }
 
@@ -161,7 +173,7 @@ class _QuizScreenState extends State<QuizScreen> {
         totalQuestions: _dailyQuestions.length,
         correctAnswers: _correctAnswersCount,
       );
-      
+
       setState(() {
         _stats = updatedStats;
         _currentMode = QuizScreenMode.results;
@@ -200,7 +212,17 @@ class _QuizScreenState extends State<QuizScreen> {
       extendBody: true,
       appBar: _buildAppBar(),
       body: SafeArea(
-        child: _buildBody(),
+        child: Stack(
+          children: [
+            _buildBody(),
+            // [Genjutsu] Overlay feedback bonne/mauvaise réponse
+            if (_showFeedback)
+              _QuizFeedbackOverlay(
+                isCorrect: _lastAnswerCorrect,
+                onComplete: () => setState(() => _showFeedback = false),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -228,7 +250,8 @@ class _QuizScreenState extends State<QuizScreen> {
         title = 'Chargement...';
         break;
       case QuizScreenMode.playing:
-        title = 'Question ${_currentQuestionIndex + 1}/${_dailyQuestions.length}';
+        title =
+            'Question ${_currentQuestionIndex + 1}/${_dailyQuestions.length}';
         actions = [
           IconButton(
             icon: const Icon(Icons.close),
@@ -286,34 +309,36 @@ class _QuizScreenState extends State<QuizScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          
+
           // Titre de bienvenue
           Text(
-            canQuiz ? 'Quiz du jour disponible !' : 'Quiz déjà terminé aujourd\'hui',
+            canQuiz
+                ? 'Quiz du jour disponible !'
+                : 'Quiz déjà terminé aujourd\'hui',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: canQuiz ? Colors.green : Colors.orange,
-              fontWeight: FontWeight.bold,
-            ),
+                  color: canQuiz ? AppColors.emerald : AppColors.warning,
+                  fontWeight: FontWeight.bold,
+                ),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Statistiques principales
           _buildMainStatsCard(stats),
-          
+
           const SizedBox(height: 16),
-          
+
           // Progression et rang
           _buildProgressCard(stats),
-          
+
           const SizedBox(height: 16),
-          
+
           // Bouton principal
           if (canQuiz) ...[
             _buildStartQuizButton(),
             const SizedBox(height: 16),
           ],
-          
+
           // Statistiques détaillées
           _buildDetailedStats(stats),
         ],
@@ -330,19 +355,24 @@ class _QuizScreenState extends State<QuizScreen> {
           children: [
             Row(
               children: [
-                Icon(Icons.emoji_events, color: Colors.amber, size: 28),
+                Hero(
+                  tag: HeroTags.quizIcon,
+                  child: const Icon(Icons.quiz_outlined,
+                      color: AppColors.emerald, size: 28),
+                ),
+                const SizedBox(width: 8),
+                const Icon(Icons.emoji_events,
+                    color: AppColors.warning, size: 24),
                 const SizedBox(width: 12),
                 Text(
                   'Vos Statistiques',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
-            
             const SizedBox(height: 20),
-            
             Row(
               children: [
                 Expanded(
@@ -350,7 +380,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     'Quiz terminés',
                     '${stats.totalQuizzesCompleted}',
                     Icons.quiz_outlined,
-                    Colors.blue,
+                    AppColors.emerald,
                   ),
                 ),
                 Expanded(
@@ -358,14 +388,12 @@ class _QuizScreenState extends State<QuizScreen> {
                     'Points totaux',
                     '${stats.totalPoints}',
                     Icons.stars_rounded,
-                    Colors.amber,
+                    AppColors.warning,
                   ),
                 ),
               ],
             ),
-            
             const SizedBox(height: 16),
-            
             Row(
               children: [
                 Expanded(
@@ -393,7 +421,8 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   /// Construit un élément de statistique
-  Widget _buildStatItem(String label, String value, IconData icon, Color color) {
+  Widget _buildStatItem(
+      String label, String value, IconData icon, Color color) {
     return Column(
       children: [
         Icon(icon, color: color, size: 32),
@@ -401,15 +430,15 @@ class _QuizScreenState extends State<QuizScreen> {
         Text(
           value,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
         ),
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white70,
-          ),
+                color: AppColors.textMuted,
+              ),
           textAlign: TextAlign.center,
         ),
       ],
@@ -420,8 +449,9 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget _buildProgressCard(QuizStats stats) {
     final rank = QuizStatsService.getRank(stats.totalPoints);
     final nextRank = QuizStatsService.getNextRank(stats.totalPoints);
-    final pointsToNext = QuizStatsService.getPointsToNextRank(stats.totalPoints);
-    
+    final pointsToNext =
+        QuizStatsService.getPointsToNextRank(stats.totalPoints);
+
     return LiquidGlassCard(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -435,33 +465,34 @@ class _QuizScreenState extends State<QuizScreen> {
                 Text(
                   'Rang: $rank',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
-            
             if (pointsToNext > 0) ...[
               const SizedBox(height: 16),
               Text(
                 '$pointsToNext points pour devenir $nextRank',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white70,
-                ),
+                      color: AppColors.textSecondary,
+                    ),
               ),
               const SizedBox(height: 8),
               LinearProgressIndicator(
-                value: pointsToNext > 0 ? 1 - (pointsToNext / (pointsToNext + 50)) : 1,
-                backgroundColor: Colors.white24,
+                value: pointsToNext > 0
+                    ? 1 - (pointsToNext / (pointsToNext + 50))
+                    : 1,
+                backgroundColor: AppColors.glassBorder,
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
               ),
             ],
-            
             if (stats.currentStreak > 0) ...[
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Icon(Icons.local_fire_department, color: Colors.red, size: 20),
+                  Icon(Icons.local_fire_department,
+                      color: Colors.red, size: 20),
                   const SizedBox(width: 8),
                   Text(
                     'Série actuelle: ${stats.currentStreak} jour(s)',
@@ -488,7 +519,7 @@ class _QuizScreenState extends State<QuizScreen> {
           });
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green.shade600,
+          backgroundColor: AppColors.emerald,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
@@ -503,9 +534,9 @@ class _QuizScreenState extends State<QuizScreen> {
             Text(
               'Commencer le Quiz du Jour',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
             ),
           ],
         ),
@@ -528,14 +559,12 @@ class _QuizScreenState extends State<QuizScreen> {
                 Text(
                   'Statistiques par Difficulté',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
-            
             const SizedBox(height: 16),
-            
             ...QuizDifficulty.values.map((difficulty) {
               final points = stats.difficultyStats[difficulty.key] ?? 0;
               return Padding(
@@ -553,9 +582,9 @@ class _QuizScreenState extends State<QuizScreen> {
                     Text(
                       '$points pts',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: difficulty.color,
-                      ),
+                            fontWeight: FontWeight.bold,
+                            color: difficulty.color,
+                          ),
                     ),
                   ],
                 ),
@@ -569,36 +598,32 @@ class _QuizScreenState extends State<QuizScreen> {
 
   /// Construit l'écran de sélection de difficulté
   Widget _buildDifficultySelection() {
-    final suggestedDifficulty = QuizDifficultyExtension.fromString(_stats?.suggestedDifficulty ?? 'novice');
-    
+    final suggestedDifficulty = QuizDifficultyExtension.fromString(
+        _stats?.suggestedDifficulty ?? 'novice');
+
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          
           Text(
             'Choisissez votre niveau',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+                  fontWeight: FontWeight.bold,
+                ),
           ),
-          
           const SizedBox(height: 8),
-          
           Text(
             'Difficulté suggérée: ${suggestedDifficulty.label}',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white70,
-            ),
+                  color: AppColors.textSecondary,
+                ),
           ),
-          
           const SizedBox(height: 24),
-          
           ...QuizDifficulty.values.map((difficulty) {
             final isRecommended = difficulty == suggestedDifficulty;
-            
+
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: LiquidGlassCard(
@@ -623,25 +648,33 @@ class _QuizScreenState extends State<QuizScreen> {
                                 children: [
                                   Text(
                                     difficulty.label,
-                                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ),
                                   if (isRecommended) ...[
                                     const SizedBox(width: 8),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
                                       decoration: BoxDecoration(
                                         color: Colors.green.withOpacity(0.2),
                                         borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(color: Colors.green, width: 1),
+                                        border: Border.all(
+                                            color: Colors.green, width: 1),
                                       ),
                                       child: Text(
                                         'Recommandé',
-                                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -650,24 +683,30 @@ class _QuizScreenState extends State<QuizScreen> {
                               const SizedBox(height: 4),
                               Text(
                                 difficulty.description,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Colors.white70,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: AppColors.textSecondary,
+                                    ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 '+${difficulty.pointMultiplier} point${difficulty.pointMultiplier > 1 ? 's' : ''} par bonne réponse',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: difficulty.color,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: difficulty.color,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                               ),
                             ],
                           ),
                         ),
                         Icon(
                           Icons.arrow_forward_ios,
-                          color: Colors.white54,
+                          color: AppColors.textMuted,
                           size: 16,
                         ),
                       ],
@@ -693,15 +732,15 @@ class _QuizScreenState extends State<QuizScreen> {
           Text(
             'Préparation des questions...',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Colors.white70,
-            ),
+                  color: AppColors.textSecondary,
+                ),
           ),
           const SizedBox(height: 8),
           Text(
             'Niveau: ${_selectedDifficulty?.label}',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: _selectedDifficulty?.color,
-            ),
+                  color: _selectedDifficulty?.color,
+                ),
           ),
         ],
       ),
@@ -711,17 +750,17 @@ class _QuizScreenState extends State<QuizScreen> {
   /// Construit l'écran de quiz en cours
   Widget _buildQuizScreen() {
     if (_dailyQuestions.isEmpty) return const SizedBox();
-    
+
     final question = _dailyQuestions[_currentQuestionIndex];
     final progress = (_currentQuestionIndex + 1) / _dailyQuestions.length;
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 16),
-          
+
           // Barre de progression
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -732,30 +771,31 @@ class _QuizScreenState extends State<QuizScreen> {
                   Text(
                     'Difficulté: ${_selectedDifficulty!.label}',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: _selectedDifficulty!.color,
-                      fontWeight: FontWeight.w500,
-                    ),
+                          color: _selectedDifficulty!.color,
+                          fontWeight: FontWeight.w500,
+                        ),
                   ),
                   Text(
                     'Score: $_currentScore pts',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.amber,
-                      fontWeight: FontWeight.bold,
-                    ),
+                          color: AppColors.warning,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
               LinearProgressIndicator(
                 value: progress,
-                backgroundColor: Colors.white24,
-                valueColor: AlwaysStoppedAnimation<Color>(_selectedDifficulty!.color),
+                backgroundColor: AppColors.glassBorder,
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(_selectedDifficulty!.color),
               ),
             ],
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Question
           LiquidGlassCard(
             child: Padding(
@@ -767,43 +807,42 @@ class _QuizScreenState extends State<QuizScreen> {
                     children: [
                       Icon(
                         Icons.help_outline,
-                        color: Colors.white70,
+                        color: AppColors.textSecondary,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Question ${_currentQuestionIndex + 1}',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.white70,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
                       ),
                     ],
                   ),
-                  
                   const SizedBox(height: 16),
-                  
                   Text(
                     question.question,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      height: 1.4,
-                    ),
+                          height: 1.4,
+                        ),
                   ),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Options de réponse
           ...question.options.asMap().entries.map((entry) {
             final index = entry.key;
             final option = entry.value;
             return _buildAnswerOption(index, option, question);
           }),
-          
+
           const SizedBox(height: 24),
-          
+
           // Bouton de validation
           if (!_hasAnswered && _selectedOptionIndex != null)
             Container(
@@ -824,13 +863,13 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
               ),
             ),
-          
+
           // Résultat et explication
           if (_showExplanation) ...[
             const SizedBox(height: 24),
             _buildExplanationCard(question),
           ],
-          
+
           // Bouton question suivante
           if (_hasAnswered) ...[
             const SizedBox(height: 16),
@@ -839,7 +878,7 @@ class _QuizScreenState extends State<QuizScreen> {
               child: ElevatedButton(
                 onPressed: _nextQuestion,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue.shade600,
+                  backgroundColor: AppColors.emerald,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -850,7 +889,8 @@ class _QuizScreenState extends State<QuizScreen> {
                   _currentQuestionIndex < _dailyQuestions.length - 1
                       ? 'Question suivante'
                       : 'Terminer le quiz',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -865,10 +905,10 @@ class _QuizScreenState extends State<QuizScreen> {
     final isSelected = _selectedOptionIndex == index;
     final isCorrect = _hasAnswered && index == question.answerIndex;
     final isWrong = _hasAnswered && isSelected && !isCorrect;
-    
+
     Color? borderColor;
     Color? backgroundColor;
-    
+
     if (_hasAnswered) {
       if (isCorrect) {
         borderColor = Colors.green;
@@ -881,7 +921,7 @@ class _QuizScreenState extends State<QuizScreen> {
       borderColor = _selectedDifficulty!.color;
       backgroundColor = _selectedDifficulty!.color.withOpacity(0.1);
     }
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: LiquidGlassCard(
@@ -891,7 +931,9 @@ class _QuizScreenState extends State<QuizScreen> {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              border: borderColor != null ? Border.all(color: borderColor, width: 2) : null,
+              border: borderColor != null
+                  ? Border.all(color: borderColor, width: 2)
+                  : null,
               borderRadius: BorderRadius.circular(12),
               color: backgroundColor,
             ),
@@ -904,29 +946,31 @@ class _QuizScreenState extends State<QuizScreen> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: borderColor ?? Colors.white54,
+                      color: borderColor ?? AppColors.glassBorder,
                       width: 2,
                     ),
-                    color: isSelected || isCorrect ? (borderColor ?? _selectedDifficulty!.color) : null,
+                    color: isSelected || isCorrect
+                        ? (borderColor ?? _selectedDifficulty!.color)
+                        : null,
                   ),
-                  child: (isSelected || isCorrect) 
+                  child: (isSelected || isCorrect)
                       ? Icon(
                           isCorrect ? Icons.check : Icons.circle,
                           size: 16,
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                         )
                       : null,
                 ),
-                
+
                 const SizedBox(width: 16),
-                
+
                 // Texte de l'option
                 Expanded(
                   child: Text(
                     option,
                     style: TextStyle(
                       fontSize: 15,
-                      color: isWrong ? Colors.red.shade300 : Colors.white,
+                      color: isWrong ? AppColors.error : AppColors.textPrimary,
                     ),
                   ),
                 ),
@@ -941,7 +985,7 @@ class _QuizScreenState extends State<QuizScreen> {
   /// Construit la card d'explication
   Widget _buildExplanationCard(QuizQuestion question) {
     final isCorrect = _selectedOptionIndex == question.answerIndex;
-    
+
     return LiquidGlassCard(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -967,9 +1011,12 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
-                    color: isCorrect ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2),
+                    color: isCorrect
+                        ? Colors.green.withOpacity(0.2)
+                        : Colors.red.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isCorrect ? Colors.green : Colors.red,
@@ -977,7 +1024,9 @@ class _QuizScreenState extends State<QuizScreen> {
                     ),
                   ),
                   child: Text(
-                    isCorrect ? '+${_selectedDifficulty!.pointMultiplier} pts' : '+0 pts',
+                    isCorrect
+                        ? '+${_selectedDifficulty!.pointMultiplier} pts'
+                        : '+0 pts',
                     style: TextStyle(
                       color: isCorrect ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold,
@@ -986,18 +1035,18 @@ class _QuizScreenState extends State<QuizScreen> {
                 ),
               ],
             ),
-            
+
             if (!isCorrect) ...[
               const SizedBox(height: 12),
               Text(
                 'La bonne réponse était : ${question.correctAnswer}',
                 style: TextStyle(
-                  color: Colors.white70,
+                  color: AppColors.textSecondary,
                   fontStyle: FontStyle.italic,
                 ),
               ),
             ],
-            
+
             // Explication
             if (question.explanation.isNotEmpty) ...[
               const SizedBox(height: 16),
@@ -1009,8 +1058,8 @@ class _QuizScreenState extends State<QuizScreen> {
               Text(
                 question.explanation,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  height: 1.5,
-                ),
+                      height: 1.5,
+                    ),
               ),
             ],
           ],
@@ -1023,33 +1072,33 @@ class _QuizScreenState extends State<QuizScreen> {
   Widget _buildResultsScreen() {
     final accuracy = (_correctAnswersCount / _dailyQuestions.length) * 100;
     final isGoodScore = accuracy >= 80;
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
       child: Column(
         children: [
           const SizedBox(height: 32),
-          
+
           // Icône de résultat
           Icon(
             isGoodScore ? Icons.emoji_events : Icons.sentiment_satisfied,
             size: 80,
-            color: isGoodScore ? Colors.amber : Colors.blue,
+            color: isGoodScore ? AppColors.warning : AppColors.emerald,
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Titre de félicitations
           Text(
             isGoodScore ? 'Excellent travail !' : 'Bon effort !',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isGoodScore ? Colors.amber : Colors.blue,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: isGoodScore ? AppColors.warning : AppColors.emerald,
+                ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Résultats principaux
           LiquidGlassCard(
             child: Padding(
@@ -1059,12 +1108,10 @@ class _QuizScreenState extends State<QuizScreen> {
                   Text(
                     'Résultats du Quiz',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
-                  
                   const SizedBox(height: 24),
-                  
                   Row(
                     children: [
                       Expanded(
@@ -1072,7 +1119,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           'Score',
                           '$_currentScore',
                           Icons.stars,
-                          Colors.amber,
+                          AppColors.warning,
                         ),
                       ),
                       Expanded(
@@ -1085,9 +1132,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       ),
                     ],
                   ),
-                  
                   const SizedBox(height: 16),
-                  
                   Row(
                     children: [
                       Expanded(
@@ -1112,9 +1157,9 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Message d'encouragement
           LiquidGlassCard(
             child: Padding(
@@ -1126,24 +1171,24 @@ class _QuizScreenState extends State<QuizScreen> {
                   Text(
                     _getEncouragementMessage(accuracy),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      height: 1.4,
-                    ),
+                          height: 1.4,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           // Bouton retour
           Container(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: _backToDashboard,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue.shade600,
+                backgroundColor: AppColors.emerald,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
@@ -1162,7 +1207,8 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   /// Construit un élément de résultat
-  Widget _buildResultItem(String label, String value, IconData icon, Color color) {
+  Widget _buildResultItem(
+      String label, String value, IconData icon, Color color) {
     return Column(
       children: [
         Icon(icon, color: color, size: 28),
@@ -1170,15 +1216,15 @@ class _QuizScreenState extends State<QuizScreen> {
         Text(
           value,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
         ),
         Text(
           label,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white70,
-          ),
+                color: AppColors.textMuted,
+              ),
           textAlign: TextAlign.center,
         ),
       ],
@@ -1198,5 +1244,120 @@ class _QuizScreenState extends State<QuizScreen> {
     } else {
       return 'Ne vous inquiétez pas ! Chaque quiz est une opportunité d\'apprendre. Revenez demain !';
     }
+  }
+}
+
+// =============================================================================
+// [Genjutsu] _QuizFeedbackOverlay — moment-pivot : bonne ou mauvaise réponse
+// Animation : scale bounce + glow + fade out en 900ms
+// =============================================================================
+
+class _QuizFeedbackOverlay extends StatefulWidget {
+  final bool isCorrect;
+  final VoidCallback onComplete;
+
+  const _QuizFeedbackOverlay(
+      {required this.isCorrect, required this.onComplete});
+
+  @override
+  State<_QuizFeedbackOverlay> createState() => _QuizFeedbackOverlayState();
+}
+
+class _QuizFeedbackOverlayState extends State<_QuizFeedbackOverlay>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _scale;
+  late final Animation<double> _opacity;
+  late final Animation<double> _glow;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    );
+
+    // Scale : 0 → 1.25 → 1.0 → 0
+    _scale = TweenSequence<double>([
+      TweenSequenceItem(
+          tween: Tween(begin: 0.0, end: 1.25)
+              .chain(CurveTween(curve: Curves.easeOut)),
+          weight: 30),
+      TweenSequenceItem(
+          tween: Tween(begin: 1.25, end: 1.0)
+              .chain(CurveTween(curve: Curves.elasticOut)),
+          weight: 25),
+      TweenSequenceItem(tween: ConstantTween(1.0), weight: 25),
+      TweenSequenceItem(
+          tween: Tween(begin: 1.0, end: 0.0)
+              .chain(CurveTween(curve: Curves.easeIn)),
+          weight: 20),
+    ]).animate(_ctrl);
+
+    // Opacity : visible → fade out au dernier tiers
+    _opacity = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: const Interval(0.72, 1.0)),
+    );
+
+    // Glow pulse
+    _glow = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.5)),
+    );
+
+    _ctrl.forward().then((_) => widget.onComplete());
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = widget.isCorrect ? AppColors.emerald : AppColors.error;
+    final icon = widget.isCorrect ? Icons.check_rounded : Icons.close_rounded;
+
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: Stack(
+          children: [
+            // ── Lottie burst (bonne réponse uniquement) ───────────────────────
+            if (widget.isCorrect) const Center(child: QuizCorrectBurst()),
+
+            // ── Scale bounce + glow existant ──────────────────────────────────
+            AnimatedBuilder(
+              animation: _ctrl,
+              builder: (context, _) => Opacity(
+                opacity: _opacity.value,
+                child: Center(
+                  child: Transform.scale(
+                    scale: _scale.value,
+                    child: Container(
+                      width: 110,
+                      height: 110,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: color.withOpacity(0.12),
+                        border: Border.all(color: color, width: 2.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: color.withOpacity(0.35 * _glow.value),
+                            blurRadius: 30 * _glow.value,
+                            spreadRadius: 6 * _glow.value,
+                          ),
+                        ],
+                      ),
+                      child: Icon(icon, color: color, size: 60),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

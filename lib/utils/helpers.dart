@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'dart:math';
 
 /// Utilitaires et helpers généraux pour l'application
 /// Fonctions réutilisables pour dates, notifications, formatage
@@ -44,47 +43,6 @@ class Helpers {
     final hour = time.hour.toString().padLeft(2, '0');
     final minute = time.minute.toString().padLeft(2, '0');
     return '$hour:$minute';
-  }
-
-  /// Calcule l'angle bearing entre deux points géographiques
-  /// Utilisé pour calculer la direction vers la Kaaba depuis position actuelle
-  /// Retourne l'angle en degrés (0-360)
-  static double calculateBearing(
-    double startLat,
-    double startLng,
-    double endLat,
-    double endLng,
-  ) {
-    const double pi = 3.14159265359;
-    
-    // Conversion en radians
-    final double startLatRad = startLat * pi / 180;
-    final double startLngRad = startLng * pi / 180;
-    final double endLatRad = endLat * pi / 180;
-    final double endLngRad = endLng * pi / 180;
-    
-    final double dLng = endLngRad - startLngRad;
-    
-    final double y = sin(dLng) * cos(endLatRad);
-    final double x = cos(startLatRad) * sin(endLatRad) -
-        sin(startLatRad) * cos(endLatRad) * cos(dLng);
-    
-    double bearing = atan2(y, x) * 180 / pi;
-    
-    // Normaliser entre 0 et 360
-    bearing = (bearing + 360) % 360;
-    
-    return bearing;
-  }
-
-  /// Normalise un angle entre 0 et 360 degrés
-  /// Utilisé pour les calculs de boussole Qibla
-  static double normalizeAngle(double angle) {
-    angle = angle % 360;
-    if (angle < 0) {
-      angle += 360;
-    }
-    return angle;
   }
 
   /// Affiche un SnackBar d'erreur avec style cohérent

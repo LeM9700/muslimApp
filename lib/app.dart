@@ -1,38 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'routes/app_routes.dart';
 import 'utils/app_theme.dart';
 
-/// Widget racine de l'application
-/// Configure le thème, les routes et la navigation globale
+/// Widget racine de l'application — thème iridescent clair + i18n
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // Clé globale pour la navigation (utile pour notifications)
-  static final GlobalKey<NavigatorState> navigatorKey = 
+  static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Muslim App',
+      title: 'Sakina',
       debugShowCheckedModeBanner: false,
-      
-      // Thème sombre personnalisé
-      theme: AppTheme.getDarkTheme(),
-      
-      // Configuration de navigation
+
+      // Thème iridescent clair (pivot depuis dark navy)
+      theme: AppTheme.getLightTheme(),
+
+      // i18n — FR (défaut) + EN + AR (RTL)
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('fr'),
+        Locale('en'),
+        Locale('ar'),
+      ],
+
+      // Navigation — onGenerateRoute pour transitions fade+scale + Hero support
       navigatorKey: navigatorKey,
       initialRoute: AppRoutes.home,
-      routes: AppRoutes.getRoutes(),
-      
-      // Gestion des routes inconnues
+      onGenerateRoute: AppRoutes.onGenerateRoute,
+
       onUnknownRoute: (settings) {
         return MaterialPageRoute(
           builder: (context) => const Scaffold(
             body: Center(
               child: Text(
                 'Page non trouvée',
-                style: TextStyle(fontSize: 18, color: Colors.white70),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ),
           ),

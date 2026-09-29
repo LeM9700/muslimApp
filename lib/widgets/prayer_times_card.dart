@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/app_theme.dart';
 
 /// Widget pour afficher les horaires de prière du jour
 /// Reçoit une Map avec les noms des prières et leurs horaires
@@ -19,7 +20,7 @@ class PrayerTimesCard extends StatelessWidget {
           child: Center(
             child: Text(
               'Aucun horaire disponible',
-              style: TextStyle(color: Colors.white70),
+              style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
         ),
@@ -37,7 +38,7 @@ class PrayerTimesCard extends StatelessWidget {
               children: [
                 Icon(
                   Icons.access_time,
-                  color: Colors.white70,
+                  color: AppColors.textSecondary,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
@@ -80,23 +81,23 @@ class PrayerTimesCard extends StatelessWidget {
             _translatePrayerName(prayerName),
             style: TextStyle(
               fontSize: 16,
-              color: isNext ? Colors.white : Colors.white70,
+              color: isNext ? AppColors.textPrimary : AppColors.textSecondary,
               fontWeight: isNext ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: isNext ? Colors.blue.withOpacity(0.2) : Colors.transparent,
+              color: isNext ? AppColors.emerald.withOpacity(0.15) : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
-              border: isNext ? Border.all(color: Colors.blue, width: 1) : null,
+              border: isNext ? Border.all(color: AppColors.emerald, width: 1) : null,
             ),
             child: Text(
               time,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: isNext ? Colors.blue : Colors.white,
+                color: isNext ? AppColors.emerald : AppColors.textPrimary,
               ),
             ),
           ),
@@ -125,13 +126,22 @@ class PrayerTimesCard extends StatelessWidget {
   }
 
   /// Détermine si c'est la prochaine prière à venir
-  /// Compare l'heure actuelle avec l'heure de la prière
+  /// Retourne true UNIQUEMENT pour la toute prochaine prière, pas toutes les futures
   bool _isNextPrayer(String prayerName, String time) {
     final now = DateTime.now();
     final currentTime = '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
     
-    // Simple comparaison de chaînes pour MVP
-    // TODO: Améliorer avec une vraie comparaison d'heures
-    return currentTime.compareTo(time) < 0;
+    // Parcourir les prières dans l'ordre pour trouver LA prochaine
+    final prayerOrder = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+    for (final prayer in prayerOrder) {
+      final prayerTime = prayerTimes[prayer];
+      if (prayerTime != null && currentTime.compareTo(prayerTime) < 0) {
+        // C'est la première prière pas encore passée = la prochaine
+        return prayer == prayerName;
+      }
+    }
+    
+    // Toutes les prières sont passées → la prochaine est Fajr (demain)
+    return prayerName == 'Fajr';
   }
 }

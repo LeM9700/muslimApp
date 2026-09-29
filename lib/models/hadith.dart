@@ -1,4 +1,4 @@
-/// Modèle pour un hadith provenant de Firestore
+/// Modèle pour un hadith (API Sunnah.com ou Firestore)
 /// Représente un hadith avec son texte, sa source et son statut de validation
 class Hadith {
   final String id;
@@ -7,12 +7,20 @@ class Hadith {
   final bool reviewed;
   final DateTime? createdAt;
 
+  /// Champs additionnels provenant de l'API Sunnah.com
+  final String? collection;    // ex: "bukhari", "muslim"
+  final String? hadithNumber;  // ex: "1", "6018"
+  final String? grade;         // ex: "Sahih"
+
   const Hadith({
     required this.id,
     required this.text,
     required this.source,
     required this.reviewed,
     this.createdAt,
+    this.collection,
+    this.hadithNumber,
+    this.grade,
   });
 
   /// Crée un Hadith depuis un document Firestore
@@ -40,6 +48,9 @@ class Hadith {
               ? data['created_at'] as DateTime
               : data['created_at'].toDate() as DateTime?)
           : null,
+      collection: data['collection'] as String?,
+      hadithNumber: data['hadithNumber'] as String?,
+      grade: data['grade'] as String?,
     );
   }
 
@@ -51,6 +62,9 @@ class Hadith {
       'source': source,
       'reviewed': reviewed,
       'created_at': createdAt,
+      if (collection != null) 'collection': collection,
+      if (hadithNumber != null) 'hadithNumber': hadithNumber,
+      if (grade != null) 'grade': grade,
     };
   }
 
@@ -62,6 +76,9 @@ class Hadith {
     String? source,
     bool? reviewed,
     DateTime? createdAt,
+    String? collection,
+    String? hadithNumber,
+    String? grade,
   }) {
     return Hadith(
       id: id ?? this.id,
@@ -69,6 +86,9 @@ class Hadith {
       source: source ?? this.source,
       reviewed: reviewed ?? this.reviewed,
       createdAt: createdAt ?? this.createdAt,
+      collection: collection ?? this.collection,
+      hadithNumber: hadithNumber ?? this.hadithNumber,
+      grade: grade ?? this.grade,
     );
   }
 

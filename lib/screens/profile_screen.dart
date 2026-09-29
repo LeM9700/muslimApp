@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/firebase_service.dart';
+import '../services/quiz_stats_service.dart';
+import '../utils/app_theme.dart';
 
 /// Écran de profil utilisateur avec statistiques et paramètres
 /// Affiche des informations sur l'utilisation de l'application
@@ -40,10 +42,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final lastSura = prefs.getString('last_sura_name');
       final lastAyah = prefs.getInt('last_ayah');
       
-      // Calculer les statistiques locales
+      // Charger les statistiques depuis QuizStatsService (même source que quiz_screen)
+      final quizStats = await QuizStatsService.getStats();
       final readingSessions = prefs.getInt('reading_sessions') ?? 0;
-      final quizAnswered = prefs.getInt('quiz_answered') ?? 0;
-      final correctAnswers = prefs.getInt('correct_answers') ?? 0;
+      final quizAnswered = quizStats.totalQuestionsAnswered;
+      final correctAnswers = quizStats.correctAnswers;
       
       if (mounted) {
         setState(() {
@@ -211,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Text(
               'Membre depuis l\'installation',
               style: TextStyle(
-                color: Colors.white70,
+                color: AppColors.textSecondary,
                 fontSize: 14,
               ),
             ),
@@ -246,25 +249,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               'Hadiths disponibles',
               '${_stats['hadith_count'] ?? 0}',
               Icons.auto_stories,
-              Colors.green,
+              AppColors.emerald,
             ),
             _buildStatCard(
               'Questions disponibles',
               '${_stats['quiz_count'] ?? 0}',
               Icons.quiz,
-              Colors.blue,
+              AppColors.emerald,
             ),
             _buildStatCard(
               'Quiz répondus',
               '${_stats['quiz_answered'] ?? 0}',
               Icons.check_circle,
-              Colors.orange,
+              AppColors.copper,
             ),
             _buildStatCard(
               'Bonnes réponses',
               '${_stats['correct_answers'] ?? 0}',
               Icons.star,
-              Colors.amber,
+              AppColors.warning,
             ),
           ],
         ),
@@ -303,7 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.white70,
+                color: AppColors.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -329,7 +332,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: ListTile(
             leading: Icon(
               Icons.bookmark_outline,
-              color: Colors.white70,
+              color: AppColors.textSecondary,
             ),
             title: Text(
               _lastSuraName ?? 'Aucune lecture en cours',
@@ -378,7 +381,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             children: [
               ListTile(
-                leading: Icon(Icons.refresh, color: Colors.white70),
+                leading: Icon(Icons.refresh, color: AppColors.emerald),
                 title: const Text('Actualiser les données'),
                 subtitle: const Text('Recharger les statistiques'),
                 onTap: _loadProfileData,
@@ -423,7 +426,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   '• Stockage local uniquement\n'
                   '• Contenu validé par des experts',
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: AppColors.textSecondary,
                     height: 1.5,
                   ),
                 ),

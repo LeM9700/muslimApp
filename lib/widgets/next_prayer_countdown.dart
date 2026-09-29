@@ -22,6 +22,8 @@ class _NextPrayerCountdownState extends State<NextPrayerCountdown>
     with TickerProviderStateMixin {
   Timer? _countdownTimer;
   Duration? _timeLeft;
+  DateTime? _countdownStartedAt;
+  Duration? _initialDuration;
   late AnimationController _pulseController;
   late AnimationController _fadeController;
   late Animation<double> _pulseAnimation;
@@ -73,19 +75,26 @@ class _NextPrayerCountdownState extends State<NextPrayerCountdown>
 
   void _updateTimeLeft() {
     if (widget.prayerData?.timeUntilNext != null) {
-      final remaining = widget.prayerData!.timeUntilNext!;
-      final elapsed = Duration(
-        seconds: DateTime.now().difference(
-          DateTime.now().subtract(remaining)
-        ).inSeconds,
-      );
+      final currentDuration = widget.prayerData!.timeUntilNext!;
+      
+      // Initialiser ou réinitialiser si la durée source a changé
+      if (_countdownStartedAt == null || _initialDuration != currentDuration) {
+        _countdownStartedAt = DateTime.now();
+        _initialDuration = currentDuration;
+      }
+      
+      final elapsed = DateTime.now().difference(_countdownStartedAt!);
+      final remaining = _initialDuration! - elapsed;
       
       setState(() {
-        _timeLeft = remaining - elapsed;
-        if (_timeLeft!.isNegative) {
+        if (remaining.isNegative) {
           _timeLeft = Duration.zero;
+          _countdownStartedAt = null;
+          _initialDuration = null;
           // Actualiser les données si le temps est écoulé
           widget.onRefresh?.call();
+        } else {
+          _timeLeft = remaining;
         }
       });
     }

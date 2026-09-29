@@ -5,6 +5,7 @@ import '../screens/quiz_screen.dart';
 import '../screens/quran_screen.dart';
 import '../screens/qibla_screen.dart';
 import '../screens/profile_screen.dart';
+import '../utils/app_theme.dart';
 import '../widgets/glass_widgets.dart';
 import '../widgets/floating_navbar.dart';
 
@@ -32,11 +33,31 @@ class _MainNavigationState extends State<MainNavigation>
   ];
 
   final List<FloatingNavItem> _navItems = [
-    FloatingNavItem(icon: Icons.home_rounded, label: 'Accueil'),
-    FloatingNavItem(icon: Icons.menu_book_rounded, label: 'Coran'),
-    FloatingNavItem(icon: Icons.explore_rounded, label: 'Qibla'),
-    FloatingNavItem(icon: Icons.quiz_rounded, label: 'Quiz'),
-    FloatingNavItem(icon: Icons.person_rounded, label: 'Profil'),
+    FloatingNavItem(
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
+      label: 'Accueil',
+    ),
+    FloatingNavItem(
+      icon: Icons.menu_book_outlined,
+      activeIcon: Icons.menu_book_rounded,
+      label: 'Coran',
+    ),
+    FloatingNavItem(
+      icon: Icons.explore_outlined,
+      activeIcon: Icons.explore_rounded,
+      label: 'Qibla',
+    ),
+    FloatingNavItem(
+      icon: Icons.quiz_outlined,
+      activeIcon: Icons.quiz_rounded,
+      label: 'Quiz',
+    ),
+    FloatingNavItem(
+      icon: Icons.person_outline_rounded,
+      activeIcon: Icons.person_rounded,
+      label: 'Profil',
+    ),
   ];
 
   @override
@@ -48,13 +69,13 @@ class _MainNavigationState extends State<MainNavigation>
       vsync: this,
     );
     
-    // Configuration de la barre de statut
+    // [⚠️ PROD] Icônes de status bar sombres — fond lumineux iridescent
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
+      const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.dark,
         systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
   }
@@ -112,7 +133,7 @@ class _MainNavigationState extends State<MainNavigation>
                 _showGlassDialog(context);
               },
               tooltip: 'Actualiser',
-              child: Icon(
+              child: const Icon(
                 Icons.refresh_rounded,
                 color: Colors.white,
                 size: 28,
@@ -123,43 +144,43 @@ class _MainNavigationState extends State<MainNavigation>
     );
   }
 
-  /// Dialog moderne avec effet glassmorphism
+  /// Dialog moderne avec effet glassmorphism iridescent (fond clair)
   void _showGlassDialog(BuildContext context) {
     showDialog<void>(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.3),
+      barrierColor: Colors.black.withOpacity(0.15),
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
-        child: GlassContainer(
+        child: LiquidGlassCard(
           borderRadius: 25,
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.explore_rounded,
                 size: 48,
-                color: Colors.white,
+                color: AppColors.emerald,
               ),
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+              const Text(
                 'Actualiser la Qibla',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 12),
-              Text(
+              const SizedBox(height: 12),
+              const Text(
                 'Recalculer la direction de la Mecque avec votre position actuelle ?',
                 style: TextStyle(
-                  color: Colors.white70,
+                  color: AppColors.textSecondary,
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -188,23 +209,23 @@ class _MainNavigationState extends State<MainNavigation>
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           gradient: LinearGradient(
             colors: isSecondary
-                ? [Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.05)]
-                : [Colors.blue.withOpacity(0.3), Colors.blue.withOpacity(0.1)],
+                ? [Colors.white.withOpacity(0.5), Colors.white.withOpacity(0.25)]
+                : [AppColors.emerald, AppColors.emeraldLight],
           ),
           border: Border.all(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withOpacity(0.5),
             width: 1,
           ),
         ),
         child: Text(
           text,
           style: TextStyle(
-            color: Colors.white,
+            color: isSecondary ? AppColors.textPrimary : Colors.white,
             fontWeight: FontWeight.w500,
           ),
         ),

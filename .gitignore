@@ -48,6 +48,11 @@ app.*.map.json
 /ios/Runner/GoogleService-Info.plist
 /lib/firebase_options.dart
 
+# Android release signing (NEVER commit these)
+/android/key.properties
+/android/*.jks
+/android/*.keystore
+
 # Firebase files with exposed keys (legacy)
 firebase_options_legacy.dart
 
