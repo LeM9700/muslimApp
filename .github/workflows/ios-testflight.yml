@@ -112,6 +112,8 @@ jobs:
       - name: Install dependencies
         run: |
           flutter pub get
+          # Regenerates ios/Flutter/Generated.xcconfig with this runner's FLUTTER_ROOT
+          flutter build ios --config-only --release --no-codesign
           cd ios && pod install --repo-update
 
       - name: Build IPA
