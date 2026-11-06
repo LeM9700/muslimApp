@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import '../utils/app_theme.dart';
 
 /// Widget de boussole Qibla avec vraie orientation magnétique
 /// Affiche une boussole avec flèche pointant vers la Kaaba
@@ -67,42 +68,34 @@ class QiblaCompass extends StatelessWidget {
       width: 300,
       height: 300,
       child: Stack(
+        // Centré : chaque lettre part du centre du cadran puis est décalée.
+        alignment: Alignment.center,
         children: [
-          // Nord
           _buildCardinalText('N', 0),
-          // Est
           _buildCardinalText('E', 90),
-          // Sud
           _buildCardinalText('S', 180),
-          // Ouest
           _buildCardinalText('W', 270),
         ],
       ),
     );
   }
 
-  /// Construit un texte de point cardinal à une position donnée
+  /// Place un point cardinal sur le cadran, tourné selon l'orientation actuelle.
+  /// La lettre reste droite : seule sa position orbite autour du centre.
   Widget _buildCardinalText(String text, double angle) {
-    return Transform.rotate(
-      angle: -currentHeading * (math.pi / 180),
-      child: Transform.translate(
-        offset: Offset(
-          math.sin(angle * math.pi / 180) * 120,
-          -math.cos(angle * math.pi / 180) * 120,
-        ),
-        child: Transform.rotate(
-          angle: currentHeading * (math.pi / 180),
-          child: Container(
-            width: 30,
-            height: 30,
-            alignment: Alignment.center,
-            child: Text(
-              text,
-              style: TextStyle(
-                color: text == 'N' ? Colors.red.shade300 : Colors.white70,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+    final radians = (angle - currentHeading) * math.pi / 180;
+    return Transform.translate(
+      offset: Offset(math.sin(radians) * 120, -math.cos(radians) * 120),
+      child: SizedBox(
+        width: 30,
+        height: 30,
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+              color: text == 'N' ? Colors.red.shade400 : AppColors.textSecondary,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -117,7 +110,13 @@ class QiblaCompass extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Flèche vers la Qibla
+          // Pointe de la flèche, à l'extrémité
+          CustomPaint(
+            size: const Size(20, 20),
+            painter: ArrowHeadPainter(color: Colors.green.shade400),
+          ),
+
+          // Tige de la flèche, du centre vers la pointe
           Container(
             width: 4,
             height: 80,
@@ -126,15 +125,9 @@ class QiblaCompass extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
-          // Pointe de la flèche
-          CustomPaint(
-            size: Size(20, 20),
-            painter: ArrowHeadPainter(color: Colors.green.shade400),
-          ),
-          
-          // Espace pour équilibrer
-          const SizedBox(height: 60),
+
+          // Symétrique de pointe + tige : garde la base au centre du cadran
+          const SizedBox(height: 100),
         ],
       ),
     );
