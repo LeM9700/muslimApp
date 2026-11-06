@@ -11,40 +11,36 @@ Deen vous accompagne au quotidien dans votre pratique : les horaires de prière 
 
 Une application pensée pour être simple, belle et respectueuse : aucun compte à créer, aucune publicité.
 
-━━━━━━━━━━━━━━━━━━━━
+HORAIRES DE PRIÈRE
+- Fajr, Dhuhr, Asr, Maghrib et Isha calculés selon votre position
+- Compte à rebours en temps réel jusqu'à la prochaine prière
+- Possibilité de choisir une autre ville
 
-🕌 HORAIRES DE PRIÈRE
-• Fajr, Dhuhr, Asr, Maghrib et Isha calculés selon votre position
-• Compte à rebours en temps réel jusqu'à la prochaine prière
-• Possibilité de choisir une autre ville
+LE SAINT CORAN
+- Les 114 sourates en écriture uthmani
+- Traduction française verset par verset
+- Récitation audio de chaque verset ou de la sourate entière
+- Reprise de lecture : retrouvez automatiquement la sourate où vous vous êtes arrêté
+- Recherche rapide d'une sourate
 
-📖 LE SAINT CORAN
-• Les 114 sourates en écriture uthmani
-• Traduction française verset par verset
-• Récitation audio de chaque verset ou de la sourate entière
-• Reprise de lecture : retrouvez automatiquement la sourate où vous vous êtes arrêté
-• Recherche rapide d'une sourate
+BOUSSOLE QIBLA
+- Direction de la Kaaba calculée depuis votre position
+- Distance jusqu'à La Mecque
+- Indication visuelle lorsque vous êtes aligné avec la Qibla
 
-🧭 BOUSSOLE QIBLA
-• Direction de la Kaaba calculée depuis votre position
-• Distance jusqu'à La Mecque
-• Indication visuelle lorsque vous êtes aligné avec la Qibla
+HADITH DU JOUR
+- Un hadith chaque jour, en arabe et en français
+- Source citée systématiquement (recueil, numéro, rapporteur)
 
-📜 HADITH DU JOUR
-• Un hadith chaque jour, en arabe et en français
-• Source citée systématiquement (recueil, numéro, rapporteur)
+QUIZ ISLAMIQUE
+- Un quiz du jour sur le Coran, les prophètes et la pratique de l'islam
+- 4 niveaux : Novice, Intermédiaire, Difficile, Expert
+- Points, série de jours consécutifs et statistiques de progression
 
-🎯 QUIZ ISLAMIQUE
-• Un quiz du jour sur le Coran, les prophètes et la pratique de l'islam
-• 4 niveaux : Novice, Intermédiaire, Difficile, Expert
-• Points, série de jours consécutifs et statistiques de progression
+RAPPELS QUOTIDIENS
+- Notification du hadith du jour et du quiz du soir (réglables dans les Réglages iOS)
 
-🔔 RAPPELS QUOTIDIENS
-• Notification du hadith du jour et du quiz du soir (réglables dans les Réglages iOS)
-
-━━━━━━━━━━━━━━━━━━━━
-
-🔒 VOTRE VIE PRIVÉE D'ABORD
+VOTRE VIE PRIVÉE D'ABORD
 Votre position sert uniquement à calculer les horaires de prière et la direction de la Qibla. Elle n'est jamais stockée sur nos serveurs ni partagée à des fins publicitaires. Vos statistiques et votre progression restent sur votre appareil.
 
 Qu'Allah accepte vos prières et facilite votre cheminement. Pour toute suggestion, contactez-nous via le lien d'assistance : vos retours font grandir Deen.
