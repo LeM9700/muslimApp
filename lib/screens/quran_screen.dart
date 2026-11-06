@@ -16,6 +16,12 @@ class QuranScreen extends StatefulWidget {
 }
 
 class _QuranScreenState extends State<QuranScreen> {
+  /// quran.com v4 renvoie "makkah" / "madinah" ; on accepte aussi "mecca".
+  static bool _isMeccan(String? revelationPlace) {
+    final place = revelationPlace?.toLowerCase();
+    return place == 'makkah' || place == 'mecca';
+  }
+
   final QuranApiService _api = QuranApiService();
   List<ChapterInfo> _chapters = [];
   bool _isLoading = true;
@@ -363,7 +369,7 @@ class _QuranScreenState extends State<QuranScreen> {
               ),
               const SizedBox(width: 16),
               Icon(
-                chapter.revelationPlace?.toLowerCase() == 'mecca' 
+                _isMeccan(chapter.revelationPlace) 
                     ? Icons.location_city 
                     : Icons.location_on,
                 size: 14,
@@ -371,7 +377,7 @@ class _QuranScreenState extends State<QuranScreen> {
               ),
               const SizedBox(width: 4),
               Text(
-                chapter.revelationPlace?.toLowerCase() == 'mecca' ? 'Mecquoise' : 'Médinoise',
+                _isMeccan(chapter.revelationPlace) ? 'Mecquoise' : 'Médinoise',
                 style: const TextStyle(
                   color: AppColors.textMuted,
                   fontSize: 12,
