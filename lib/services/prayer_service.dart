@@ -1,8 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import '../models/prayer_data.dart';
+import '../models/prayer_schedule.dart';
+import '../repositories/prayer_settings_repository.dart';
+import 'prayer_notification_service.dart';
 
 /// Service complet pour les horaires de prière
 /// Utilise l'API Aladhan pour des calculs précis
@@ -11,9 +15,11 @@ class PrayerService {
   static const String _baseUrl = 'https://api.aladhan.com/v1';
   static final http.Client _client = http.Client();
 
-  // Cache pour éviter trop d'appels API
+  // Cache pour éviter trop d'appels API. La clé inclut position, méthode
+  // et date : avant, changer de ville pouvait renvoyer l'ancienne ville.
   static Map<String, dynamic>? _cachedData;
   static DateTime? _cacheTime;
+  static String? _cacheKey;
   static const Duration _cacheDuration = Duration(hours: 1);
 
   /// Récupère la position actuelle de l'utilisateur
@@ -49,17 +55,25 @@ class PrayerService {
   static Future<Map<String, String>> _fetchPrayerTimes(
       double latitude, double longitude) async {
     try {
+      // Même méthode de calcul que les notifications : l'heure affichée et
+      // l'heure notifiée doivent être identiques. Sans réglage, Aladhan
+      // choisit l'autorité locale (UOIF en France).
+      final methodId = (await PrayerSettingsRepository().readSettings()).methodId;
+      final today = DateTime.now();
+      final key = '${latitude.toStringAsFixed(3)},${longitude.toStringAsFixed(3)}'
+          '|$methodId|${today.year}-${today.month}-${today.day}';
+
       // Vérifier le cache
-      if (_cachedData != null && _cacheTime != null) {
-        if (DateTime.now().difference(_cacheTime!).inHours <
-            _cacheDuration.inHours) {
-          return _parsePrayerTimes(_cachedData!);
-        }
+      if (_cachedData != null &&
+          _cacheTime != null &&
+          _cacheKey == key &&
+          DateTime.now().difference(_cacheTime!) < _cacheDuration) {
+        return _parsePrayerTimes(_cachedData!);
       }
 
-      final today = DateTime.now();
       final url =
-          '$_baseUrl/timings/${today.day}-${today.month}-${today.year}?latitude=$latitude&longitude=$longitude&method=2';
+          '$_baseUrl/timings/${today.day}-${today.month}-${today.year}?latitude=$latitude&longitude=$longitude'
+          '${methodId == null ? '' : '&method=$methodId'}';
 
       print('🕒 API Prayer Request: $url');
 
@@ -78,6 +92,7 @@ class PrayerService {
       // Mettre en cache
       _cachedData = data as Map<String, dynamic>;
       _cacheTime = DateTime.now();
+      _cacheKey = key;
 
       print('✅ Horaires de prière récupérés avec succès');
       return _parsePrayerTimes(data);
@@ -167,10 +182,28 @@ class PrayerService {
           // Ignore - on garde juste le nom de ville
         }
       } else {
-        // Position automatique
+        // Position automatique : un seul appel GPS, réutilisé partout
+        // (avant : jusqu'à 4 lectures GPS par chargement).
+        final hasCoords = latitude != null && longitude != null;
+        final position = hasCoords ? null : await _getCurrentPosition();
+        finalLat = latitude ?? position?.latitude;
+        finalLng = longitude ?? position?.longitude;
         prayerTimes =
-            await getTodayPrayerTimes(latitude: latitude, longitude: longitude);
-        finalCityName = await getCurrentCityName();
+            await getTodayPrayerTimes(latitude: finalLat, longitude: finalLng);
+        finalCityName = (finalLat != null && finalLng != null)
+            ? await _cityNameFor(finalLat, finalLng)
+            : 'Position inconnue';
+      }
+
+      // Les rappels de prière suivent la position réellement affichée.
+      if (finalLat != null && finalLng != null) {
+        unawaited(PrayerNotificationService.instance.setLocation(
+          PrayerLocation(
+            latitude: finalLat,
+            longitude: finalLng,
+            cityName: _isRealCityName(finalCityName) ? finalCityName : '',
+          ),
+        ).catchError((Object e) => print('⚠️ Rappels non mis à jour : $e')));
       }
 
       // Calculer la prochaine prière
@@ -203,6 +236,29 @@ class PrayerService {
         cityName: 'Erreur de localisation',
         lastUpdated: DateTime.now(),
       );
+    }
+  }
+
+  static bool _isRealCityName(String name) => !const {
+        'Position inconnue',
+        'Ville inconnue',
+        'Erreur de localisation',
+      }.contains(name);
+
+  /// Nom de ville pour des coordonnées connues (sans relire le GPS).
+  static Future<String> _cityNameFor(double latitude, double longitude) async {
+    try {
+      final placemarks = await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        final placemark = placemarks.first;
+        return placemark.locality ??
+            placemark.administrativeArea ??
+            'Ville inconnue';
+      }
+      return 'Position inconnue';
+    } catch (e) {
+      print('❌ Erreur récupération nom ville: $e');
+      return 'Position inconnue';
     }
   }
 

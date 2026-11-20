@@ -10,6 +10,7 @@ import '../widgets/quiz_card.dart';
 import '../widgets/resume_reading_card.dart';
 import '../widgets/next_prayer_countdown.dart';
 import '../widgets/city_search_widget.dart';
+import '../widgets/prayer_reminder_prompt.dart';
 import '../widgets/onboarding_overlay.dart';
 import '../widgets/glass_widgets.dart';
 import '../navigation/main_navigation.dart';
@@ -288,6 +289,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     onRefresh: _loadPrayerData,
                   ),
                 ),
+
+                // Invitation aux rappels de prière (masquée une fois activés)
+                const PrayerReminderPrompt(),
 
                 // Widget de recherche de ville
                 Padding(
