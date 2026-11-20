@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:timezone/data/latest.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'services/firebase_service.dart';
 import 'services/firebase_data_seeder.dart';
-import 'services/notification_service.dart';
+import 'services/notification_gateway.dart';
+import 'services/prayer_notification_service.dart';
 import 'app.dart';
 
 /// Point d'entrée principal de l'application
@@ -33,29 +38,36 @@ Future<void> main() async {
     print('⚠️ Erreur notifications: $e');
   }
 
-  // Initialisation des fuseaux horaires pour les notifications
-  try {
-    tz.initializeTimeZones();
-    print('✅ Timezones initialisées');
-  } catch (e) {
-    print('⚠️ Erreur timezones: $e');
-  }
-
-  // Programmer les notifications quotidiennes (hadith 10h, quiz 20h)
-  try {
-    final notificationsEnabled =
-        await NotificationService.areNotificationsEnabled();
-    if (notificationsEnabled) {
-      await NotificationService.setupDailyNotifications();
-      print('✅ Notifications quotidiennes programmées');
-    } else {
-      print('⚠️ Permissions notifications refusées');
-    }
-  } catch (e) {
-    print('⚠️ Erreur setup notifications: $e');
-  }
+  // Fuseau horaire réel de l'appareil : sans lui, tz.local reste en UTC
+  // et le rappel « 10 h » tombait à 11 h (hiver) ou 12 h (été) en France.
+  await _initializeTimeZone();
 
   runApp(const MyApp());
+
+  // Après runApp : la reprogrammation peut appeler le réseau (calendrier
+  // Aladhan) et ne doit jamais retarder l'affichage de l'app.
+  unawaited(PrayerNotificationService.instance.reschedule(force: true));
+  _lifecycleListener = AppLifecycleListener(
+    // Retour au premier plan : prolonge la fenêtre de rappels (limite iOS
+    // de 64 notifications programmées). Limité à une fois / 30 min.
+    onResume: () => unawaited(PrayerNotificationService.instance.reschedule()),
+  );
+}
+
+/// Gardé en référence pour toute la durée de vie de l'app.
+// ignore: unused_element
+AppLifecycleListener? _lifecycleListener;
+
+Future<void> _initializeTimeZone() async {
+  tz_data.initializeTimeZones();
+  try {
+    final info = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(info.identifier));
+  } on Object catch (e) {
+    // Identifiant inconnu de la base tz : les rappels de prière restent
+    // justes (instants absolus) ; seuls hadith/quiz seraient décalés.
+    debugPrint('Fuseau horaire indisponible, UTC utilisé : $e');
+  }
 }
 
 /// Configure les notifications locales pour Android et iOS
@@ -114,4 +126,16 @@ Future<void> _createNotificationChannels() async {
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(quizChannel);
+
+  const AndroidNotificationChannel prayerChannel = AndroidNotificationChannel(
+    LocalNotificationGateway.prayerChannelId,
+    LocalNotificationGateway.prayerChannelName,
+    description: 'Notification à l’heure de chaque prière',
+    importance: Importance.high,
+  );
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(prayerChannel);
 }

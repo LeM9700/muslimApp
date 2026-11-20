@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/firebase_service.dart';
 import '../services/quiz_stats_service.dart';
 import '../utils/app_theme.dart';
+import 'notification_settings_screen.dart';
 
 /// Écran de profil utilisateur avec statistiques et paramètres
 /// Affiche des informations sur l'utilisation de l'application
@@ -380,6 +381,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Card(
           child: Column(
             children: [
+              ListTile(
+                leading: const Icon(
+                  Icons.notifications_none_rounded,
+                  color: AppColors.emeraldDark,
+                ),
+                title: const Text('Notifications'),
+                subtitle: const Text('Heures de prière, hadith et quiz'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => NotificationSettingsScreen.open(context),
+              ),
+
+              const Divider(height: 1),
+
               ListTile(
                 leading: Icon(Icons.refresh, color: AppColors.emerald),
                 title: const Text('Actualiser les données'),
