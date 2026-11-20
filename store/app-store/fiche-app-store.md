@@ -7,7 +7,7 @@ Horaires de prière, Coran en arabe et en français, boussole Qibla, hadith du j
 
 ## Description (4000 max)
 ```
-Deen vous accompagne au quotidien dans votre pratique : les horaires de prière de votre ville, le Saint Coran en arabe avec sa traduction française, la direction de la Qibla, un hadith chaque jour et des quiz pour approfondir vos connaissances.
+Deen vous accompagne au quotidien dans votre pratique : les horaires de prière de votre ville, le Saint Coran en arabe avec sa traduction française, la direction de la Qibla, un hadith expliqué chaque jour, une bibliothèque de plus de 2 000 hadiths et des quiz pour approfondir vos connaissances.
 
 Une application pensée pour être simple, belle et respectueuse : aucun compte à créer, aucune publicité.
 
@@ -30,20 +30,43 @@ BOUSSOLE QIBLA
 
 HADITH DU JOUR
 - Un hadith chaque jour, en arabe et en français
-- Source citée systématiquement (recueil, numéro, rapporteur)
+- Son degré d'authenticité (authentique, bon, faible), avec une explication de ce qu'il signifie
+- L'explication complète du hadith et les enseignements à retenir
+- La source citée systématiquement
+
+BIBLIOTHÈQUE DE HADITHS
+- Plus de 2 000 hadiths traduits et expliqués, classés par thème
+- Croyance, prière, jeûne, comportement, vie du Prophète et bien d'autres
+- Recherche par thème et navigation par sous-thème
+- Les hadiths déjà lus restent disponibles hors connexion
 
 QUIZ ISLAMIQUE
 - Un quiz du jour sur le Coran, les prophètes et la pratique de l'islam
 - 4 niveaux : Novice, Intermédiaire, Difficile, Expert
 - Points, série de jours consécutifs et statistiques de progression
 
-RAPPELS QUOTIDIENS
-- Notification du hadith du jour et du quiz du soir (réglables dans les Réglages iOS)
-
 VOTRE VIE PRIVÉE D'ABORD
 Votre position sert uniquement à calculer les horaires de prière et la direction de la Qibla. Elle n'est jamais stockée sur nos serveurs ni partagée à des fins publicitaires. Vos statistiques et votre progression restent sur votre appareil.
 
 Qu'Allah accepte vos prières et facilite votre cheminement. Pour toute suggestion, contactez-nous via le lien d'assistance : vos retours font grandir Deen.
+```
+
+## Nouveautés de la version 1.1.0
+```
+Hadiths en français
+Chaque jour, un nouveau hadith traduit en français et relu, issu de l'Encyclopédie des hadiths traduits. Les hadiths ne s'affichent plus en anglais.
+
+Degré d'authenticité expliqué
+Chaque hadith indique son degré : authentique, bon ou faible. Touchez-le pour comprendre ce que ce degré signifie et pourquoi un hadith est plus authentique qu'un autre.
+
+Explication complète
+Pour chaque hadith : la traduction, le texte arabe, l'explication, les enseignements à retenir et la source.
+
+Nouvelle bibliothèque de hadiths
+Plus de 2 000 hadiths classés par thème : croyance, prière, jeûne, comportement, vie du Prophète et bien d'autres. Recherchez un thème puis affinez par sous-thème.
+
+Lecture hors connexion
+Les hadiths déjà lus restent disponibles sans Internet.
 ```
 
 ## Mots-clés (100 max)
