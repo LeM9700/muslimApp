@@ -2,12 +2,12 @@
 
 ## Texte promotionnel (170 max)
 ```
-Horaires de prière, Coran en arabe et en français, boussole Qibla, hadith du jour et quiz islamique : tout l'essentiel de votre Deen, dans une seule app simple et sobre.
+Notification à chaque prière, Coran en arabe et en français, Qibla, hadiths expliqués et quiz : l'essentiel de votre Deen dans une app simple et sobre.
 ```
 
 ## Description (4000 max)
 ```
-Deen vous accompagne au quotidien dans votre pratique : les horaires de prière de votre ville, le Saint Coran en arabe avec sa traduction française, la direction de la Qibla, un hadith expliqué chaque jour, une bibliothèque de plus de 2 000 hadiths et des quiz pour approfondir vos connaissances.
+Deen vous accompagne au quotidien dans votre pratique : les horaires de prière de votre ville avec une notification à chaque prière, le Saint Coran en arabe avec sa traduction française, la direction de la Qibla, un hadith expliqué chaque jour, une bibliothèque de plus de 2 000 hadiths et des quiz pour approfondir vos connaissances.
 
 Une application pensée pour être simple, belle et respectueuse : aucun compte à créer, aucune publicité.
 
@@ -15,6 +15,13 @@ HORAIRES DE PRIÈRE
 - Fajr, Dhuhr, Asr, Maghrib et Isha calculés selon votre position
 - Compte à rebours en temps réel jusqu'à la prochaine prière
 - Possibilité de choisir une autre ville
+- Méthode de calcul automatique selon votre pays, ou au choix (UOIF, Ligue islamique mondiale, Maroc, Algérie, Tunisie, Turquie, Égypte, Umm al-Qura...)
+
+NOTIFICATIONS DE PRIÈRE
+- Une notification à l'heure de chaque prière, selon votre ville
+- Choisissez les prières pour lesquelles vous souhaitez être prévenu
+- Rappel optionnel 10, 15 ou 30 minutes avant la prière
+- Rappels quotidiens du hadith du jour et du quiz, activables séparément
 
 LE SAINT CORAN
 - Les 114 sourates en écriture uthmani
@@ -51,8 +58,14 @@ Votre position sert uniquement à calculer les horaires de prière et la directi
 Qu'Allah accepte vos prières et facilite votre cheminement. Pour toute suggestion, contactez-nous via le lien d'assistance : vos retours font grandir Deen.
 ```
 
-## Nouveautés de la version 1.1.0
+## Nouveautés de la version 1.2.0
 ```
+Notifications de prière
+Recevez une notification à l'heure de chaque prière, selon votre ville. Choisissez les prières concernées et ajoutez si vous le souhaitez un rappel 10, 15 ou 30 minutes avant.
+
+Méthode de calcul
+Les horaires suivent automatiquement l'autorité de votre pays (UOIF en France). Vous pouvez aussi choisir une autre méthode dans Profil puis Notifications.
+
 Hadiths en français
 Chaque jour, un nouveau hadith traduit en français et relu, issu de l'Encyclopédie des hadiths traduits. Les hadiths ne s'affichent plus en anglais.
 
@@ -65,8 +78,8 @@ Pour chaque hadith : la traduction, le texte arabe, l'explication, les enseignem
 Nouvelle bibliothèque de hadiths
 Plus de 2 000 hadiths classés par thème : croyance, prière, jeûne, comportement, vie du Prophète et bien d'autres. Recherchez un thème puis affinez par sous-thème.
 
-Lecture hors connexion
-Les hadiths déjà lus restent disponibles sans Internet.
+Corrections
+Les rappels du hadith et du quiz arrivent désormais à la bonne heure, et les horaires se mettent à jour correctement lorsque vous changez de ville.
 ```
 
 ## Mots-clés (100 max)
