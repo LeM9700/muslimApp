@@ -16,7 +16,6 @@ import '../navigation/main_navigation.dart';
 import '../services/prayer_service.dart';
 import '../services/firebase_service.dart';
 import '../services/onboarding_service.dart';
-import '../models/hadith.dart';
 import '../models/quiz_question.dart';
 import '../models/prayer_data.dart';
 
@@ -38,9 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Timer? _refreshTimer;
 
   // Données Firebase
-  Hadith? _dailyHadith;
   QuizQuestion? _dailyQuiz;
-  bool _isLoadingHadith = true;
   bool _isLoadingQuiz = true;
 
   // ── Onboarding (Q11) — GlobalKeys sur les éléments cibles ────────────────
@@ -54,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadPrayerData();
-    _loadDailyHadith();
     _loadDailyQuiz();
     _startAutoRefresh();
     // Déclenche l'onboarding après le premier rendu complet
@@ -79,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
         icon: Icons.auto_stories_outlined,
         title: 'Hadith du jour',
         description:
-            'Un hadith authentique sélectionné chaque jour. Appuyez sur ↺ pour en découvrir un autre.',
+            'Un hadith authentifié et expliqué, chaque jour. Touchez le badge pour comprendre son degré, ou ⤨ pour en découvrir un autre.',
       ),
       OnboardingStep(
         targetKey: _keyQuizCard,
@@ -129,25 +125,6 @@ class _HomeScreenState extends State<HomeScreen> {
         _loadPrayerData();
       }
     });
-  }
-
-  /// Charge le hadith du jour depuis Firebase
-  Future<void> _loadDailyHadith() async {
-    try {
-      final hadith = await FirebaseService.getHadithOfTheDay();
-      if (mounted && hadith != null) {
-        setState(() {
-          _dailyHadith = hadith;
-          _isLoadingHadith = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoadingHadith = false;
-        });
-      }
-    }
   }
 
   /// Charge le quiz du jour depuis Firebase

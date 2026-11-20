@@ -42,6 +42,12 @@ class AppColors {
   static const Color warning         = Color(0xFFF59E0B);
   static const Color error           = Color(0xFFEF4444);
 
+  // Variantes foncées pour du TEXTE sur fond clair (contraste WCAG AA ≥ 4.5:1).
+  // emerald / warning / error purs passent sous 3:1 en petite taille.
+  static const Color emeraldDark     = Color(0xFF047857); // emerald-700
+  static const Color amberDark       = Color(0xFFB45309); // amber-700
+  static const Color redDark         = Color(0xFFB91C1C); // red-700
+
   // Effet de lueur prière (prayer glow)
   static const Color prayerGlow      = Color(0x3310B981);
 }
