@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/hadith.dart';
 import '../models/hadith_category.dart';
+import '../models/hadith_page.dart';
 
 /// Erreur d'accès à l'API HadeethEnc (réseau, statut HTTP, format).
 class HadeethEncException implements Exception {
@@ -47,6 +48,37 @@ class HadeethEncRepository {
         .whereType<Map<String, dynamic>>()
         .map(HadithCategory.fromJson)
         .toList(growable: false);
+  }
+
+  /// Toutes les catégories (racines et sous-catégories, ~420 entrées).
+  Future<List<HadithCategory>> fetchAllCategories() async {
+    final body = await _getJson('/categories/list/', {'language': language});
+    if (body is! List) {
+      throw const HadeethEncException('Format inattendu pour les catégories');
+    }
+    return body
+        .whereType<Map<String, dynamic>>()
+        .map(HadithCategory.fromJson)
+        .toList(growable: false);
+  }
+
+  /// Page [page] (à partir de 1) des hadiths de [categoryId], sous-thèmes
+  /// inclus.
+  Future<HadithPage> fetchHadithPage({
+    required String categoryId,
+    required int page,
+    int perPage = 20,
+  }) async {
+    final body = await _getJson('/hadeeths/list/', {
+      'language': language,
+      'category_id': categoryId,
+      'page': '$page',
+      'per_page': '$perPage',
+    });
+    if (body is! Map<String, dynamic>) {
+      throw const HadeethEncException('Format inattendu pour la liste');
+    }
+    return HadithPage.fromJson(body);
   }
 
   /// Identifiant du hadith à la position [position] (à partir de 1) dans

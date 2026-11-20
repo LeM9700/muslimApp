@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/hadith.dart';
 import '../screens/hadith_detail_screen.dart';
+import '../screens/hadith_library_screen.dart';
 import '../services/hadith_service.dart';
 import '../utils/app_theme.dart';
 import 'glass_widgets.dart';
@@ -242,6 +243,18 @@ class _HadithCardState extends State<HadithCard> {
               hadith.hasExplanation
                   ? 'Lire l’explication complète'
                   : 'Lire le hadith en entier',
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Center(
+          child: TextButton.icon(
+            onPressed: () => HadithLibraryScreen.open(context),
+            icon: const Icon(Icons.category_outlined, size: 18),
+            label: const Text('Explorer les hadiths par thème'),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.textSecondary,
+              minimumSize: const Size(0, 48),
             ),
           ),
         ),

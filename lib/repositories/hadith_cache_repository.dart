@@ -23,6 +23,7 @@ class HadithCacheRepository {
   static const String _dailyKey = 'henc_daily_v1';
   static const String _recentKey = 'henc_recent_v1';
   static const String _rootsKey = 'henc_roots_v1';
+  static const String _allCategoriesKey = 'henc_categories_v1';
 
   /// Hadith du jour mis en cache pour [dateKey] (format AAAA-MM-JJ).
   Future<Hadith?> readDaily(String dateKey) async {
@@ -84,6 +85,51 @@ class HadithCacheRepository {
         .whereType<Map<String, dynamic>>()
         .map(HadithCategory.fromJson)
         .toList(growable: false);
+  }
+
+  /// Arborescence complète (bibliothèque) si le cache a moins de [maxAge].
+  /// [⚡ PERF] ~35 Ko : acceptable dans SharedPreferences.
+  Future<List<HadithCategory>?> readAllCategories({
+    required DateTime now,
+    Duration maxAge = const Duration(days: 7),
+  }) async {
+    final map = await _readMap(_allCategoriesKey);
+    if (map == null) return null;
+    final fetchedAt = DateTime.tryParse(map['fetchedAt'] as String? ?? '');
+    if (fetchedAt == null || now.difference(fetchedAt) > maxAge) return null;
+    final list = map['categories'];
+    if (list is! List) return null;
+    return list
+        .whereType<Map<String, dynamic>>()
+        .map(HadithCategory.fromJson)
+        .toList(growable: false);
+  }
+
+  Future<void> writeAllCategories(
+    List<HadithCategory> categories, {
+    required DateTime now,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _allCategoriesKey,
+      json.encode({
+        'fetchedAt': now.toIso8601String(),
+        'categories': categories.map((c) => c.toJson()).toList(),
+      }),
+    );
+  }
+
+  /// Hadith complet déjà en cache (récents ou hadith du jour).
+  Future<Hadith?> findById(String hadithId) async {
+    for (final h in await readRecent()) {
+      if (h.id == hadithId) return h;
+    }
+    final daily = await _readMap(_dailyKey);
+    final hadith = daily?['hadith'];
+    if (hadith is Map<String, dynamic> && hadith['id'] == hadithId) {
+      return Hadith.fromMap(hadith);
+    }
+    return null;
   }
 
   Future<void> writeRootCategories(

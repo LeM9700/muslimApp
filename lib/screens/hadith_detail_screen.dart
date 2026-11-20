@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../models/hadith.dart';
+import '../services/hadith_library_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/glass_widgets.dart';
 import '../widgets/hadith/grade_badge.dart';
@@ -16,11 +17,28 @@ import '../widgets/hadith/grade_badge.dart';
 class HadithDetailScreen extends StatefulWidget {
   const HadithDetailScreen({
     super.key,
-    required this.hadith,
+    required Hadith this.hadith,
     this.focusExplanation = false,
-  });
+  })  : hadithId = null,
+        previewTitle = null,
+        service = null;
 
-  final Hadith hadith;
+  /// Variante qui charge le hadith depuis la Bibliothèque. [previewTitle]
+  /// s'affiche immédiatement pendant le chargement (pas d'écran vide).
+  const HadithDetailScreen.byId({
+    super.key,
+    required String this.hadithId,
+    this.previewTitle,
+    this.service,
+  })  : hadith = null,
+        focusExplanation = false;
+
+  final Hadith? hadith;
+
+  /// Identifiant HadeethEnc brut (ex : « 66511 »).
+  final String? hadithId;
+  final String? previewTitle;
+  final HadithLibraryService? service;
 
   /// Fait défiler directement jusqu'à l'explication : l'utilisateur qui a
   /// touché « Lire l'explication » ne doit pas avoir à la chercher.
@@ -42,6 +60,22 @@ class HadithDetailScreen extends StatefulWidget {
     );
   }
 
+  /// Ouvre un hadith de la Bibliothèque à partir de son identifiant.
+  static Future<void> openById(
+    BuildContext context, {
+    required String hadithId,
+    String? previewTitle,
+  }) {
+    return Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => HadithDetailScreen.byId(
+          hadithId: hadithId,
+          previewTitle: previewTitle,
+        ),
+      ),
+    );
+  }
+
   @override
   State<HadithDetailScreen> createState() => _HadithDetailScreenState();
 }
@@ -49,11 +83,34 @@ class HadithDetailScreen extends StatefulWidget {
 class _HadithDetailScreenState extends State<HadithDetailScreen> {
   final GlobalKey _explanationKey = GlobalKey();
 
-  Hadith get hadith => widget.hadith;
+  Hadith? _hadith;
+  bool _loadFailed = false;
+
+  Hadith get hadith => _hadith!;
 
   @override
   void initState() {
     super.initState();
+    _hadith = widget.hadith;
+    if (_hadith == null) {
+      _load();
+    } else {
+      _maybeFocusExplanation();
+    }
+  }
+
+  Future<void> _load() async {
+    setState(() => _loadFailed = false);
+    try {
+      final service = widget.service ?? HadithLibraryService.instance;
+      final hadith = await service.getHadith(widget.hadithId!);
+      if (mounted) setState(() => _hadith = hadith);
+    } on Object {
+      if (mounted) setState(() => _loadFailed = true);
+    }
+  }
+
+  void _maybeFocusExplanation() {
     if (widget.focusExplanation && hadith.hasExplanation) {
       // Après la transition d'entrée, pour que le défilement soit visible
       // et compris (on voit qu'on « arrive » à l'explication).
@@ -73,6 +130,21 @@ class _HadithDetailScreenState extends State<HadithDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_hadith == null) {
+      return AnimatedGlassBackground(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            surfaceTintColor: Colors.transparent,
+            title: const Text('Hadith'),
+          ),
+          body: _loadFailed
+              ? _LoadError(onRetry: _load)
+              : _LoadingDetail(previewTitle: widget.previewTitle),
+        ),
+      );
+    }
+
     final textTheme = Theme.of(context).textTheme;
     final title = hadith.title?.trim() ?? '';
     // Le titre HadeethEnc reprend parfois le début du texte : on ne
@@ -272,6 +344,103 @@ class _Section extends StatelessWidget {
           const SizedBox(height: 10),
           child,
         ],
+      ),
+    );
+  }
+}
+
+/// Chargement : le titre connu s'affiche tout de suite, le reste en
+/// squelette, pour que l'utilisateur sache ce qu'il a ouvert.
+class _LoadingDetail extends StatelessWidget {
+  const _LoadingDetail({this.previewTitle});
+  final String? previewTitle;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget bar(double widthFactor) => FractionallySizedBox(
+          widthFactor: widthFactor,
+          alignment: Alignment.centerLeft,
+          child: Container(
+            height: 14,
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(7),
+            ),
+          ),
+        );
+
+    return Semantics(
+      label: 'Chargement du hadith',
+      liveRegion: true,
+      child: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        children: [
+          if (previewTitle != null) ...[
+            Text(
+              previewTitle!,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  ?.copyWith(fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+          ],
+          ExcludeSemantics(
+            child: Column(
+              children: [
+                bar(0.4),
+                const SizedBox(height: 8),
+                for (final f in [1.0, 0.95, 0.9, 1.0, 0.7]) bar(f),
+                const SizedBox(height: 16),
+                for (final f in [1.0, 0.85, 0.95, 0.6]) bar(f),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadError extends StatelessWidget {
+  const _LoadError({required this.onRetry});
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.cloud_off_outlined,
+              size: 48,
+              color: AppColors.textSecondary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Impossible de charger ce hadith',
+              style: textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Vérifiez votre connexion puis réessayez.',
+              style: textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh),
+              label: const Text('Réessayer'),
+            ),
+          ],
+        ),
       ),
     );
   }

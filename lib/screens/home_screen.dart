@@ -16,6 +16,7 @@ import '../navigation/main_navigation.dart';
 import '../services/prayer_service.dart';
 import '../services/firebase_service.dart';
 import '../services/onboarding_service.dart';
+import 'hadith_library_screen.dart';
 import '../models/quiz_question.dart';
 import '../models/prayer_data.dart';
 
@@ -549,7 +550,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
 
-        const SizedBox(width: 16),
+        const SizedBox(width: 12),
 
         // Bouton Coran
         Expanded(
@@ -575,6 +576,38 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(height: 8),
                     Text(
                       'Coran',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(width: 12),
+
+        // Bibliothèque de hadiths
+        Expanded(
+          child: Card(
+            child: InkWell(
+              onTap: () => HadithLibraryScreen.open(context),
+              borderRadius: BorderRadius.circular(12),
+              child: const Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.auto_stories_outlined,
+                      size: 48,
+                      color: AppColors.emeraldDark,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Hadiths',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
