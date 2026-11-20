@@ -5,6 +5,7 @@ import '../screens/quran_screen.dart';
 import '../screens/qibla_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/quiz_screen.dart';
+import '../screens/hadith_library_screen.dart';
 
 /// Configuration des routes nommées de l'application
 /// Centralise toute la navigation pour faciliter la maintenance
@@ -16,6 +17,7 @@ class AppRoutes {
   static const String quiz    = '/quiz';
   static const String qibla   = '/qibla';
   static const String profile = '/profile';
+  static const String hadithLibrary = '/hadith-library';
 
   // ── Builders d'écrans ────────────────────────────────────────────────────────
 
@@ -37,6 +39,8 @@ class AppRoutes {
         return const QiblaScreen();
       case profile:
         return const ProfileScreen();
+      case hadithLibrary:
+        return const HadithLibraryScreen();
       default:
         return const MainNavigation();
     }

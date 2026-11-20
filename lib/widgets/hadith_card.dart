@@ -1,311 +1,305 @@
 import 'package:flutter/material.dart';
-import '../services/firebase_service.dart';
-import '../services/hadith_api_service.dart';
-import '../services/local_content_service.dart';
+
 import '../models/hadith.dart';
+import '../screens/hadith_detail_screen.dart';
+import '../screens/hadith_library_screen.dart';
+import '../services/hadith_service.dart';
 import '../utils/app_theme.dart';
 import 'glass_widgets.dart';
+import 'hadith/grade_badge.dart';
 
-/// Widget pour afficher le hadith du jour depuis Firestore
-/// Charge automatiquement un hadith validé (reviewed == true)
+/// Carte « Hadith du jour » de l'accueil.
+///
+/// Aperçu volontairement court (6 lignes) : la carte donne envie, l'écran
+/// de détail porte la lecture complète et l'explication.
 class HadithCard extends StatefulWidget {
-  const HadithCard({super.key});
+  const HadithCard({super.key, this.service});
+
+  /// Injectable pour les tests ; par défaut le service réel.
+  final HadithService? service;
 
   @override
   State<HadithCard> createState() => _HadithCardState();
 }
 
 class _HadithCardState extends State<HadithCard> {
-  Hadith? _currentHadith;
+  late final HadithService _service = widget.service ?? HadithService();
+
+  HadithResult? _result;
   bool _isLoading = true;
-  String? _errorMessage;
+  bool _isDaily = true;
+
+  /// Jeton de requête : ignore une réponse arrivée après un clic plus récent.
+  int _requestId = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadDailyHadith();
+    _loadDaily();
   }
 
-  /// Charge le hadith du jour depuis l'API Sunnah.com (ou Firestore fallback)
-  /// Affiche un état de chargement puis le hadith ou une erreur
-  Future<void> _loadDailyHadith() async {
-    try {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
+  Future<void> _loadDaily() =>
+      _load(() => _service.getHadithOfTheDay(), isDaily: true);
 
-      final hadith = await FirebaseService.getHadithOfTheDay();
-      
-      if (mounted) {
-        setState(() {
-          _currentHadith = hadith;
-          _isLoading = false;
-          if (hadith == null) {
-            _errorMessage = 'Aucun hadith disponible';
-          }
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = 'Erreur de chargement: $e';
-        });
-      }
-    }
+  Future<void> _loadAnother() => _load(
+        () => _service.getAnotherHadith(excludeId: _result?.hadith.id),
+        isDaily: false,
+      );
+
+  Future<void> _load(
+    Future<HadithResult> Function() fetch, {
+    required bool isDaily,
+  }) async {
+    final requestId = ++_requestId;
+    setState(() => _isLoading = true);
+    final result = await fetch();
+    if (!mounted || requestId != _requestId) return;
+    setState(() {
+      _result = result;
+      _isDaily = isDaily;
+      _isLoading = false;
+    });
   }
 
-  /// Charge un nouveau hadith aléatoire depuis l'API (bouton refresh)
-  Future<void> _loadRandomHadith() async {
-    try {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
-
-      // API random (pas le cache), sinon un autre hadith Nawawi embarqué
-      final hadith = await HadithApiService.getRandomHadith() ??
-          await LocalContentService.getRandomHadith(
-            excludeId: _currentHadith?.id,
-          );
-      
-      if (mounted) {
-        setState(() {
-          _currentHadith = hadith;
-          _isLoading = false;
-          if (hadith == null) {
-            _errorMessage = 'Impossible de charger un hadith';
-          }
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = 'Erreur de chargement: $e';
-        });
-      }
-    }
+  void _openDetail({bool focusExplanation = false}) {
+    final hadith = _result?.hadith;
+    if (hadith == null) return;
+    HadithDetailScreen.open(
+      context,
+      hadith,
+      focusExplanation: focusExplanation,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return LiquidGlassCard(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // En-tête avec icône et bouton refresh
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.auto_stories_outlined,
-                      color: AppColors.textSecondary,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Hadith du jour',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                if (!_isLoading)
-                  IconButton(
-                    icon: const Icon(Icons.refresh, size: 20),
-                    onPressed: _loadRandomHadith,
-                    tooltip: 'Nouveau hadith aléatoire',
-                  ),
-              ],
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Contenu du hadith
-            _buildHadithContent(),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(context),
+          const SizedBox(height: 12),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            child: _isLoading || _result == null
+                ? const _HadithSkeleton(key: ValueKey('skeleton'))
+                : _buildContent(context, _result!),
+          ),
+        ],
       ),
     );
   }
 
-  /// Construit le contenu du hadith selon l'état actuel
-  /// Gère les états: chargement, erreur, hadith affiché
-  Widget _buildHadithContent() {
-    if (_isLoading) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    if (_errorMessage != null) {
-      return _buildErrorState();
-    }
-
-    if (_currentHadith == null) {
-      return _buildEmptyState();
-    }
-
-    return _buildHadithDisplay();
-  }
-
-  /// Affiche l'état d'erreur avec possibilité de réessayer
-  /// Bouton retry pour recharger le hadith
-  Widget _buildErrorState() {
-    return Column(
+  Widget _buildHeader(BuildContext context) {
+    return Row(
       children: [
-        Icon(
-          Icons.error_outline,
-          size: 48,
-          color: Colors.red.shade300,
+        const Icon(
+          Icons.auto_stories_outlined,
+          color: AppColors.copper,
+          size: 22,
         ),
-        const SizedBox(height: 16),
-        Text(
-          _errorMessage!,
-          style: TextStyle(color: Colors.red.shade300),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: _loadDailyHadith,
-          child: const Text('Réessayer'),
-        ),
-      ],
-    );
-  }
-
-  /// Affiche l'état vide quand aucun hadith n'est disponible
-  /// Message informatif avec suggestion
-  Widget _buildEmptyState() {
-    return Column(
-      children: [
-        Icon(
-          Icons.book_outlined,
-          size: 48,
-          color: AppColors.textMuted,
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'Aucun hadith disponible pour aujourd\'hui',
-          style: TextStyle(color: AppColors.textSecondary),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Revenez plus tard ou actualisez',
-          style: TextStyle(
-            color: AppColors.textMuted,
-            fontSize: 12,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
-
-  /// Affiche le hadith avec son texte et sa source
-  /// Utilise le style arabe si le texte contient de l'arabe
-  Widget _buildHadithDisplay() {
-    final hadith = _currentHadith!;
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Texte du hadith
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.glassLight,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            hadith.text,
-            style: _isArabicText(hadith.text)
-                ? AppTheme.getArabicTextStyle(fontSize: 20)
-                : Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    height: 1.6,
-                  ),
-            textAlign: _isArabicText(hadith.text) 
-                ? TextAlign.right 
-                : TextAlign.left,
-          ),
-        ),
-        
-        const SizedBox(height: 12),
-        
-        // Source et grade du hadith
-        Row(
-          children: [
-            Icon(
-              Icons.source_outlined,
-              size: 16,
-              color: AppColors.textMuted,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                hadith.source,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.textMuted,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-            // Badge de grade (Sahih, Hasan, etc.)
-            if (hadith.grade != null && hadith.grade!.isNotEmpty)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: _gradeColor(hadith.grade!).withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: _gradeColor(hadith.grade!).withValues(alpha: 0.5),
-                  ),
-                ),
-                child: Text(
-                  hadith.grade!,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: _gradeColor(hadith.grade!),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Semantics(
+            header: true,
+            child: Text(
+              _isDaily ? 'Hadith du jour' : 'Autre hadith',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
-                ),
-              ),
-          ],
+            ),
+          ),
+        ),
+        if (!_isDaily)
+          IconButton(
+            icon: const Icon(Icons.today_outlined),
+            tooltip: 'Revenir au hadith du jour',
+            onPressed: _isLoading ? null : _loadDaily,
+          ),
+        IconButton(
+          icon: const Icon(Icons.shuffle_rounded),
+          tooltip: 'Afficher un autre hadith',
+          onPressed: _isLoading ? null : _loadAnother,
         ),
       ],
     );
   }
 
-  /// Couleur associée au grade d'authenticité du hadith
-  Color _gradeColor(String grade) {
-    final g = grade.toLowerCase();
-    if (g.contains('sahih')) return AppColors.emeraldLight;
-    if (g.contains('hasan')) return AppColors.warning;
-    if (g.contains('da\'if') || g.contains('daif')) return AppColors.copperLight;
-    return AppColors.textMuted;
-  }
+  Widget _buildContent(BuildContext context, HadithResult result) {
+    final hadith = result.hadith;
+    final textTheme = Theme.of(context).textTheme;
+    final showOfflineNote =
+        result.isFallback && hadith.provider == HadithProvider.nawawiLocal;
 
-  /// Détermine si le texte contient principalement de l'arabe
-  /// Utilisé pour choisir le style d'affichage approprié
-  bool _isArabicText(String text) {
-    // Regex pour détecter les caractères arabes
-    final arabicRegex = RegExp(r'[\u0600-\u06FF]');
-    final arabicMatches = arabicRegex.allMatches(text).length;
-    final totalChars = text.replaceAll(RegExp(r'\s'), '').length;
-    
-    // Si plus de 30% des caractères sont arabes, considérer comme texte arabe
-    return totalChars > 0 && (arabicMatches / totalChars) > 0.3;
+    return Column(
+      key: ValueKey(hadith.id),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Texte : toucher le texte ouvre aussi le détail (cible large).
+        Semantics(
+          button: true,
+          hint: 'Ouvre le hadith complet',
+          child: InkWell(
+            onTap: _openDetail,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.45),
+                borderRadius: BorderRadius.circular(12),
+                border: const Border(
+                  left: BorderSide(color: AppColors.copper, width: 3),
+                ),
+              ),
+              child: Text(
+                hadith.displayText,
+                maxLines: 6,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodyLarge?.copyWith(
+                  color: AppColors.textPrimary,
+                  height: 1.55,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8,
+          children: [
+            GradeBadge(
+              grade: hadith.gradeLevel,
+              reinforced: hadith.isGradeReinforced,
+              rawLabel: hadith.grade,
+            ),
+          ],
+        ),
+        if (hadith.source.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 1),
+                  child: Icon(
+                    Icons.menu_book_outlined,
+                    size: 16,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    hadith.source,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        if (showOfflineNote)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.cloud_off_outlined,
+                  size: 16,
+                  color: AppColors.textSecondary,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    'Hors connexion : hadith tiré des 40 hadiths de Nawawi.',
+                    style: textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () =>
+                _openDetail(focusExplanation: hadith.hasExplanation),
+            icon: Icon(
+              hadith.hasExplanation
+                  ? Icons.lightbulb_outline
+                  : Icons.chrome_reader_mode_outlined,
+              size: 20,
+            ),
+            label: Text(
+              hadith.hasExplanation
+                  ? 'Lire l’explication complète'
+                  : 'Lire le hadith en entier',
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Center(
+          child: TextButton.icon(
+            onPressed: () => HadithLibraryScreen.open(context),
+            icon: const Icon(Icons.category_outlined, size: 18),
+            label: const Text('Explorer les hadiths par thème'),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.textSecondary,
+              minimumSize: const Size(0, 48),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Squelette de chargement : garde la hauteur de la carte stable
+/// (pas de saut de mise en page quand le hadith arrive).
+class _HadithSkeleton extends StatelessWidget {
+  const _HadithSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget bar(double widthFactor, {double height = 14}) => FractionallySizedBox(
+          widthFactor: widthFactor,
+          child: Container(
+            height: height,
+            margin: const EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(7),
+            ),
+          ),
+        );
+
+    return Semantics(
+      label: 'Chargement du hadith',
+      liveRegion: true,
+      child: ExcludeSemantics(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            bar(1),
+            bar(0.95),
+            bar(0.9),
+            bar(0.6),
+            const SizedBox(height: 6),
+            bar(0.35, height: 26),
+            const SizedBox(height: 8),
+            bar(1, height: 48),
+          ],
+        ),
+      ),
+    );
   }
 }

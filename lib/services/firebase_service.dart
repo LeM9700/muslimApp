@@ -90,9 +90,10 @@ class FirebaseService {
     debugPrint('Firebase unavailable: $reason');
   }
 
-  /// Service Hadiths - Récupère le hadith du jour
-  /// Source primaire : API Sunnah.com (avec cache quotidien)
-  /// Fallback : Firestore (hadiths Nawawi seedés localement)
+  /// Service Hadiths - Récupère le hadith du jour (toujours en français)
+  /// Source primaire : API Sunnah.com, seulement si elle fournit une
+  /// traduction FR (désactivée tant que ce n'est pas le cas)
+  /// Fallback : Firestore (hadiths Nawawi FR), puis JSON embarqué
   static Future<Hadith?> getHadithOfTheDay() async {
     // 1. Essayer l'API Sunnah.com en premier (cache quotidien intégré)
     try {

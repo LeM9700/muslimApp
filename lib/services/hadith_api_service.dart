@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/hadith.dart';
@@ -21,8 +22,16 @@ class HadithApiService {
   /// passer par un proxy serveur.
   static const String _apiKey = String.fromEnvironment('SUNNAH_API_KEY');
 
-  /// Sans clé, aucun appel réseau : fallback Firestore / JSON embarqué.
-  static bool get isConfigured => _apiKey.isNotEmpty;
+  /// Sunnah.com ne propose aucune traduction française (uniquement ar/en).
+  /// Tant que c'est le cas, on ne l'appelle pas du tout : chaque appel
+  /// coûterait un aller-retour réseau (jusqu'à 10 s de timeout sur réseau
+  /// lent) pour une réponse forcément rejetée par [parseHadithEntry].
+  /// Passer à `true` le jour où une traduction `fr` est disponible.
+  static const bool _apiProvidesFrench = false;
+
+  /// Sans clé (ou sans traduction FR), aucun appel réseau :
+  /// fallback Firestore / JSON embarqué (hadiths Nawawi en français).
+  static bool get isConfigured => _apiProvidesFrench && _apiKey.isNotEmpty;
 
   /// Headers requis par l'API
   static const Map<String, String> _headers = {
@@ -30,9 +39,16 @@ class HadithApiService {
     'x-api-key': _apiKey,
   };
 
-  /// Clé pour le cache du hadith du jour
-  static const String _cacheKey = 'hadith_of_the_day';
-  static const String _cacheDateKey = 'hadith_of_the_day_date';
+  /// Seule langue de traduction acceptée. Sunnah.com ne publie que l'arabe
+  /// et l'anglais : tant qu'aucune traduction française n'y existe, l'API ne
+  /// renvoie rien d'affichable et l'app sert les 42 hadiths Nawawi en
+  /// français (Firestore / JSON embarqué), dont la traduction est validée.
+  static const String translationLang = 'fr';
+
+  /// Clés du cache du hadith du jour. Suffixe v2 : invalide les hadiths
+  /// anglais mis en cache par les versions précédentes.
+  static const String _cacheKey = 'hadith_of_the_day_v2';
+  static const String _cacheDateKey = 'hadith_of_the_day_date_v2';
 
   // ─────────────────────────────────────────────
   //  PUBLIC API
@@ -49,7 +65,7 @@ class HadithApiService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
-        return _parseHadithEntry(data);
+        return parseHadithEntry(data);
       }
 
       print('⚠️ API Sunnah random: status ${response.statusCode}');
@@ -108,6 +124,7 @@ class HadithApiService {
     String collectionName,
     String hadithNumber,
   ) async {
+    if (!isConfigured) return null;
     try {
       final url =
           '$_baseUrl/collections/$collectionName/hadiths/$hadithNumber';
@@ -117,7 +134,7 @@ class HadithApiService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
-        return _parseHadithEntry(data);
+        return parseHadithEntry(data);
       }
 
       print('⚠️ API Sunnah byNumber: status ${response.statusCode}');
@@ -131,6 +148,7 @@ class HadithApiService {
   /// Récupère un hadith par son URN
   /// Endpoint : GET /v1/hadiths/{urn}
   static Future<Hadith?> getHadithByUrn(int urn) async {
+    if (!isConfigured) return null;
     try {
       final response = await http
           .get(Uri.parse('$_baseUrl/hadiths/$urn'), headers: _headers)
@@ -138,7 +156,7 @@ class HadithApiService {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
-        return _parseHadithEntry(data);
+        return parseHadithEntry(data);
       }
 
       print('⚠️ API Sunnah byUrn: status ${response.statusCode}');
@@ -157,6 +175,7 @@ class HadithApiService {
     int limit = 20,
     int page = 1,
   }) async {
+    if (!isConfigured) return [];
     try {
       final url = '$_baseUrl/collections/$collectionName/books/$bookNumber/hadiths'
           '?limit=$limit&page=$page';
@@ -168,7 +187,7 @@ class HadithApiService {
         final body = json.decode(response.body) as Map<String, dynamic>;
         final dataList = body['data'] as List<dynamic>? ?? [];
         return dataList
-            .map((e) => _parseHadithEntry(e as Map<String, dynamic>))
+            .map((e) => parseHadithEntry(e as Map<String, dynamic>))
             .whereType<Hadith>()
             .toList();
       }
@@ -184,6 +203,7 @@ class HadithApiService {
   /// Récupère une liste paginée de hadiths
   /// Endpoint : GET /v1/hadiths
   static Future<List<Hadith>> getHadiths({int limit = 20, int page = 1}) async {
+    if (!isConfigured) return [];
     try {
       final url = '$_baseUrl/hadiths?limit=$limit&page=$page';
       final response = await http
@@ -194,7 +214,7 @@ class HadithApiService {
         final body = json.decode(response.body) as Map<String, dynamic>;
         final dataList = body['data'] as List<dynamic>? ?? [];
         return dataList
-            .map((e) => _parseHadithEntry(e as Map<String, dynamic>))
+            .map((e) => parseHadithEntry(e as Map<String, dynamic>))
             .whereType<Hadith>()
             .toList();
       }
@@ -211,7 +231,11 @@ class HadithApiService {
   //  PARSING
   // ─────────────────────────────────────────────
 
-  /// Mappe la réponse API en objet Hadith
+  /// Mappe la réponse API en objet Hadith.
+  ///
+  /// Retourne `null` si l'entrée ne contient pas de traduction en
+  /// [translationLang] : on n'affiche jamais une traduction anglaise à un
+  /// public francophone (l'appelant tombe alors sur le contenu local FR).
   ///
   /// Structure API :
   /// ```json
@@ -224,15 +248,13 @@ class HadithApiService {
   ///   ]
   /// }
   /// ```
-  static Hadith? _parseHadithEntry(Map<String, dynamic> entry) {
+  @visibleForTesting
+  static Hadith? parseHadithEntry(Map<String, dynamic> entry) {
     try {
       final collection = entry['collection'] as String? ?? '';
       final hadithNumber = entry['hadithNumber'] as String? ?? '';
       final hadithList = entry['hadith'] as List<dynamic>? ?? [];
 
-      if (hadithList.isEmpty) return null;
-
-      // Chercher la version arabe et anglaise/française
       String arabicBody = '';
       String translationBody = '';
       String grade = '';
@@ -243,14 +265,10 @@ class HadithApiService {
 
         if (lang == 'ar') {
           arabicBody = body;
-        } else {
-          // Prendre la première traduction disponible (en, fr, etc.)
-          if (translationBody.isEmpty) {
-            translationBody = body;
-          }
+        } else if (lang == translationLang) {
+          translationBody = body;
         }
 
-        // Récupérer le grade du premier qui en a un
         if (grade.isEmpty) {
           final grades = h['grades'] as List<dynamic>? ?? [];
           if (grades.isNotEmpty) {
@@ -260,15 +278,12 @@ class HadithApiService {
         }
       }
 
-      // Construire le texte : arabe + traduction
-      String text;
-      if (arabicBody.isNotEmpty && translationBody.isNotEmpty) {
-        text = '$arabicBody\n\n$translationBody';
-      } else if (arabicBody.isNotEmpty) {
-        text = arabicBody;
-      } else {
-        text = translationBody;
-      }
+      // Pas de traduction française → rien d'affichable pour nos utilisateurs.
+      if (translationBody.isEmpty) return null;
+
+      final text = arabicBody.isNotEmpty
+          ? '$arabicBody\n\n$translationBody'
+          : translationBody;
 
       if (text.isEmpty) return null;
 

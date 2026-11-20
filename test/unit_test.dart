@@ -4,6 +4,8 @@ import 'package:muslim_app/models/hadith.dart';
 import 'package:muslim_app/models/prayer_data.dart';
 import 'package:muslim_app/models/quiz_question.dart';
 import 'package:muslim_app/services/firebase_service.dart';
+import 'package:muslim_app/services/hadith_api_service.dart';
+import 'package:muslim_app/services/local_content_service.dart';
 import 'package:muslim_app/services/onboarding_service.dart';
 import 'package:muslim_app/services/prayer_service.dart';
 import 'package:muslim_app/services/qibla_service.dart';
@@ -201,6 +203,52 @@ void main() {
       expect(question.correctAnswer, isNotEmpty);
       expect(questions, hasLength(3));
       expect(questions.every((item) => item.reviewed), isTrue);
+    });
+  });
+
+  group('Hadiths en français', () {
+    test('rejette une réponse Sunnah.com sans traduction française', () {
+      final hadith = HadithApiService.parseHadithEntry({
+        'collection': 'bukhari',
+        'hadithNumber': '1',
+        'hadith': [
+          {'lang': 'ar', 'body': 'إنما الأعمال بالنيات', 'grades': <dynamic>[]},
+          {'lang': 'en', 'body': 'Actions are judged by intentions', 'grades': <dynamic>[]},
+        ],
+      });
+
+      expect(hadith, isNull);
+    });
+
+    test('accepte une réponse avec traduction française', () {
+      final hadith = HadithApiService.parseHadithEntry({
+        'collection': 'bukhari',
+        'hadithNumber': '1',
+        'hadith': [
+          {'lang': 'ar', 'body': 'إنما الأعمال بالنيات', 'grades': <dynamic>[]},
+          {'lang': 'en', 'body': 'Actions are judged by intentions', 'grades': <dynamic>[]},
+          {'lang': 'fr', 'body': '<p>Les actes ne valent que par les intentions</p>', 'grades': <dynamic>[]},
+        ],
+      });
+
+      expect(hadith, isNotNull);
+      expect(hadith!.text, contains('Les actes ne valent que par les intentions'));
+      expect(hadith.text, isNot(contains('Actions are judged')));
+      expect(hadith.text, isNot(contains('<p>')));
+    });
+
+    test("l'API n'est pas appelée tant qu'elle ne fournit pas le français", () async {
+      expect(HadithApiService.isConfigured, isFalse);
+      expect(await HadithApiService.getRandomHadith(), isNull);
+    });
+
+    test('le hadith local du jour contient le texte français', () async {
+      final hadith = await LocalContentService.getHadithOfTheDay();
+
+      expect(hadith, isNotNull);
+      expect(hadith!.collection, 'nawawi40');
+      // Arabe + traduction française séparés par une ligne vide
+      expect(hadith.text.split('\n\n').length, greaterThanOrEqualTo(2));
     });
   });
 }

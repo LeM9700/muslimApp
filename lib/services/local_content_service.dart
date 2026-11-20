@@ -34,13 +34,19 @@ class LocalContentService {
     _hadiths = list.map((e) {
       final h = e as Map<String, dynamic>;
       // Même format que les hadiths seedés dans Firestore (firebase_data_seeder)
+      final narrator = h['narrator'] as String? ?? '';
       return Hadith(
         id: 'nawawi_${h['number']}',
         text: '${h['textArabic']}\n\n${h['textFrench']}',
-        source: '${h['source']} — Rapporté par ${h['narrator']}',
+        source: '${h['source']} — Rapporté par $narrator',
         reviewed: true,
         collection: 'nawawi40',
         hadithNumber: h['number'].toString(),
+        title: h['title'] as String?,
+        translation: h['textFrench'] as String?,
+        textArabic: h['textArabic'] as String?,
+        narratorIntro: narrator.isEmpty ? null : 'D’après $narrator :',
+        provider: HadithProvider.nawawiLocal,
       );
     }).toList();
     return _hadiths!;
