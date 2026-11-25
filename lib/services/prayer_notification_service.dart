@@ -150,6 +150,9 @@ class PrayerNotificationService {
     await reschedule(force: true);
   }
 
+  /// Crée les canaux et installe les sons (au démarrage de l'app).
+  Future<void> prepare() => _gateway.prepare();
+
   Future<void> sendTest() => _gateway.showTest(
         title: 'Notifications activées',
         body: 'Vous recevrez ainsi l’heure de chaque prière.',

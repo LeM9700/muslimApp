@@ -9,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'services/firebase_service.dart';
 import 'services/firebase_data_seeder.dart';
 import 'services/notification_gateway.dart';
+import 'services/notification_router.dart';
 import 'services/prayer_notification_service.dart';
 import 'app.dart';
 
@@ -16,6 +17,10 @@ import 'app.dart';
 /// Initialise Firebase et les notifications locales avant de lancer l'app
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+
+/// Ouvre le lecteur d'adhan quand on appuie sur une notification.
+final NotificationRouter _notificationRouter =
+    NotificationRouter(navigatorKey: MyApp.navigatorKey);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +48,8 @@ Future<void> main() async {
   await _initializeTimeZone();
 
   runApp(const MyApp());
+  WidgetsBinding.instance
+      .addPostFrameCallback((_) => unawaited(_handleLaunchFromNotification()));
 
   // Après runApp : la reprogrammation peut appeler le réseau (calendrier
   // Aladhan) et ne doit jamais retarder l'affichage de l'app.
@@ -70,72 +77,64 @@ Future<void> _initializeTimeZone() async {
   }
 }
 
-/// Configure les notifications locales pour Android et iOS
-/// Prépare les canaux de notification pour hadiths et quiz
+/// Configure les notifications locales pour Android et iOS.
 Future<void> _initializeNotifications() async {
-  const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher');
-
-  const DarwinInitializationSettings initializationSettingsIOS =
-      DarwinInitializationSettings(
-    requestAlertPermission: false,
-    requestBadgePermission: false,
-    requestSoundPermission: false,
-  );
-
-  const InitializationSettings initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-    iOS: initializationSettingsIOS,
+  const initializationSettings = InitializationSettings(
+    android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    iOS: DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    ),
   );
 
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
-    onDidReceiveNotificationResponse: (NotificationResponse response) {
-      // TODO: Navigation vers écran approprié selon le type de notification
-      debugPrint('Notification reçue: ${response.payload}');
+    // App ouverte ou en arrière-plan : appui sur la notification.
+    onDidReceiveNotificationResponse: (response) {
+      if (response.actionId == LocalNotificationGateway.stopAdhanActionId) {
+        return; // « Arrêter » : la notification (et le son) est déjà coupée.
+      }
+      _notificationRouter.handle(response.payload);
     },
   );
 
-  // Création des canaux de notification Android
   await _createNotificationChannels();
+  // Canaux de prière (un par son) + sons iOS dans Library/Sounds.
+  await PrayerNotificationService.instance.prepare();
 }
 
-/// Crée les canaux de notification pour Android
-/// Un canal pour les hadiths (10h) et un pour les quiz (20h)
+/// [⚠️ PROD] App tuée puis lancée par un appui sur la notification :
+/// `onDidReceiveNotificationResponse` n'est pas appelé dans ce cas, il faut
+/// lire le lancement explicitement, une fois le navigateur monté.
+Future<void> _handleLaunchFromNotification() async {
+  try {
+    final details =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    if (details?.didNotificationLaunchApp ?? false) {
+      _notificationRouter.handle(details!.notificationResponse?.payload);
+    }
+  } on Object catch (e) {
+    debugPrint('Lancement depuis une notification illisible ($e)');
+  }
+}
+
+/// Canaux des rappels quotidiens (hadith 10 h, quiz 20 h). Les canaux de
+/// prière sont créés par le gateway (voir AdhanSoundResolver).
 Future<void> _createNotificationChannels() async {
-  const AndroidNotificationChannel hadithChannel = AndroidNotificationChannel(
+  final android = flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+  await android?.createNotificationChannel(const AndroidNotificationChannel(
     'hadith_channel',
     'Hadith du jour',
     description: 'Notifications pour le hadith quotidien à 10h',
     importance: Importance.defaultImportance,
-  );
-
-  const AndroidNotificationChannel quizChannel = AndroidNotificationChannel(
+  ));
+  await android?.createNotificationChannel(const AndroidNotificationChannel(
     'quiz_channel',
     'Quiz du jour',
     description: 'Notifications pour le quiz quotidien à 20h',
     importance: Importance.defaultImportance,
-  );
-
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(hadithChannel);
-
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(quizChannel);
-
-  const AndroidNotificationChannel prayerChannel = AndroidNotificationChannel(
-    LocalNotificationGateway.prayerChannelId,
-    LocalNotificationGateway.prayerChannelName,
-    description: 'Notification à l’heure de chaque prière',
-    importance: Importance.high,
-  );
-
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(prayerChannel);
+  ));
 }

@@ -1,3 +1,4 @@
+import '../models/adhan_mode.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 
@@ -12,6 +13,9 @@ class PlannedNotification {
   final PlannedKind kind;
   final Prayer prayer;
 
+  /// Son à utiliser. Jamais [AdhanMode.off] (filtré par le planificateur).
+  final AdhanMode mode;
+
   const PlannedNotification({
     required this.id,
     required this.when,
@@ -19,9 +23,54 @@ class PlannedNotification {
     required this.body,
     required this.kind,
     required this.prayer,
+    this.mode = AdhanMode.notification,
   });
 
-  String get payload => 'prayer:${prayer.name}';
+  /// Lu au tap sur la notification (voir `NotificationPayload`).
+  String get payload => NotificationPayload.prayer(prayer, mode).encode();
+
+  PlannedNotification withId(int newId) => PlannedNotification(
+        id: newId,
+        when: when,
+        title: title,
+        body: body,
+        kind: kind,
+        prayer: prayer,
+        mode: mode,
+      );
+}
+
+/// Contenu transporté par une notification de prière, relu quand
+/// l'utilisateur appuie dessus (`prayer:<prière>:<mode>`).
+///
+/// [🔒 SÉCURITÉ] Le payload revient du système : on le parse de façon
+/// défensive, toute valeur inattendue donne `null` (jamais d'exception).
+class NotificationPayload {
+  final Prayer prayer;
+  final AdhanMode mode;
+
+  const NotificationPayload.prayer(this.prayer, this.mode);
+
+  static const String _prefix = 'prayer';
+
+  String encode() => '$_prefix:${prayer.name}:${mode.name}';
+
+  static NotificationPayload? decode(String? raw) {
+    if (raw == null) return null;
+    final parts = raw.split(':');
+    if (parts.length < 2 || parts.length > 3 || parts[0] != _prefix) {
+      return null;
+    }
+    final prayer = Prayer.fromName(parts[1]);
+    if (prayer == null) return null;
+    // Format v1.2.0 (`prayer:fajr`) : notifications programmées avant la
+    // mise à jour, encore en attente dans le système.
+    final mode = parts.length == 3
+        ? AdhanMode.fromName(parts[2])
+        : AdhanMode.notification;
+    if (mode == null || mode == AdhanMode.off) return null;
+    return NotificationPayload.prayer(prayer, mode);
+  }
 }
 
 /// Résultat de la planification : les notifications et la date jusqu'à
@@ -76,6 +125,7 @@ class PrayerNotificationPlanner {
         final at = day.times[prayer];
         if (at == null) continue;
         final time = fmt(at);
+        final mode = settings.modeOf(prayer);
 
         if (settings.reminderMinutes > 0) {
           final before = at.subtract(Duration(minutes: settings.reminderMinutes));
@@ -87,6 +137,11 @@ class PrayerNotificationPlanner {
                 '${cityName.isEmpty ? '' : ' ($cityName)'}.',
             kind: PlannedKind.reminder,
             prayer: prayer,
+            // Le rappel avant n'est qu'une annonce : jamais d'adhan, mais
+            // il reste silencieux si la prière l'est.
+            mode: mode == AdhanMode.silent
+                ? AdhanMode.silent
+                : AdhanMode.notification,
           ));
         }
         candidates.add(PlannedNotification(
@@ -97,6 +152,7 @@ class PrayerNotificationPlanner {
               '${cityName.isEmpty ? '' : ' à $cityName'}.',
           kind: PlannedKind.prayer,
           prayer: prayer,
+          mode: mode,
         ));
       }
     }
@@ -108,15 +164,7 @@ class PrayerNotificationPlanner {
     // Une prière couverte sans son rappel (budget épuisé entre les deux)
     // compte quand même : « couvert jusqu'à » = dernière notification.
     final notifications = [
-      for (var i = 0; i < kept.length; i++)
-        PlannedNotification(
-          id: firstId + i,
-          when: kept[i].when,
-          title: kept[i].title,
-          body: kept[i].body,
-          kind: kept[i].kind,
-          prayer: kept[i].prayer,
-        ),
+      for (var i = 0; i < kept.length; i++) kept[i].withId(firstId + i),
     ];
     return PrayerPlan(
       notifications,
