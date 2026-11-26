@@ -44,6 +44,9 @@ NOTIF="$ROOT/assets/audio/notification"
 AUDIO="$ROOT/assets/audio"
 mkdir -p "$RAW" "$NOTIF" "$AUDIO"
 
+# Repères saisis à la main (formulaire CI, terminal) : espaces ignorés.
+SHORT="${SHORT//[[:space:]]/}"
+LONG_START="${LONG_START//[[:space:]]/}"
 SHORT_START="${SHORT%-*}"
 SHORT_END="${SHORT#*-}"
 # iOS refuse (silencieusement) un son de 30 s ou plus : marge de sécurité.
@@ -60,12 +63,31 @@ render() { # $1=source $2=filtre $3=ss $4=to|"" $5..=sortie+options
   "${FFMPEG[@]}" "${range[@]}" -i "$src" -af "$filter" -ac 1 "$@"
 }
 
+# Encodeur .ogg (Android) : libvorbis n'est plus fourni par le ffmpeg de
+# Homebrew (macOS, runners GitHub). Repli sur Opus (lu par Android ≥ 5.0,
+# notre minSdk est 21), puis sur l'encodeur Vorbis natif de ffmpeg.
+# OGG_CODEC permet de forcer un choix (tests).
+pick_ogg_codec() {
+  local encoders; encoders="$(ffmpeg -hide_banner -encoders 2>/dev/null)"
+  if grep -q ' libvorbis ' <<<"$encoders"; then echo "libvorbis"
+  elif grep -q ' libopus ' <<<"$encoders"; then echo "libopus"
+  else echo "vorbis"; fi
+}
+OGG_CODEC="${OGG_CODEC:-$(pick_ogg_codec)}"
+case "$OGG_CODEC" in
+  libvorbis) OGG_ARGS=(-ar 44100 -c:a libvorbis -q:a 4) ;;
+  libopus)   OGG_ARGS=(-ar 48000 -c:a libopus -b:a 64k) ;;
+  vorbis)    OGG_ARGS=(-ar 44100 -ac 2 -c:a vorbis -q:a 4 -strict experimental) ;; # natif : stéréo uniquement
+  *) echo "OGG_CODEC inconnu : $OGG_CODEC" >&2; exit 2 ;;
+esac
+echo "→ Encodeur Android (.ogg) : $OGG_CODEC"
+
 LONG_END_FILTER="afade=t=in:d=0.05,afade=t=out:st=$(echo "$LONG_DURATION - 2" | bc):d=2,$NORM"
 SHORT_FILTER="afade=t=in:d=0.05,areverse,afade=t=in:d=0.4,areverse,$NORM"
 
 echo "→ Extrait court ($SHORT_START → $SHORT_END)"
 render "$SOURCE" "$SHORT_FILTER" "$SHORT_START" "$SHORT_END" \
-  -ar 44100 -c:a libvorbis -q:a 4 "$RAW/adhan_short.ogg"
+  "${OGG_ARGS[@]}" "$RAW/adhan_short.ogg"
 render "$SOURCE" "$SHORT_FILTER" "$SHORT_START" "$SHORT_END" \
   -ar 22050 -c:a adpcm_ima_qt -f caf "$NOTIF/adhan_short.caf"
 render "$SOURCE" "$SHORT_FILTER" "$SHORT_START" "$SHORT_END" \
@@ -73,7 +95,7 @@ render "$SOURCE" "$SHORT_FILTER" "$SHORT_START" "$SHORT_END" \
 
 echo "→ Extrait de ${LONG_DURATION} s (à partir de $LONG_START)"
 render "$SOURCE" "atrim=duration=$LONG_DURATION,$LONG_END_FILTER" "$LONG_START" "" \
-  -ar 44100 -c:a libvorbis -q:a 4 "$RAW/adhan_long.ogg"
+  "${OGG_ARGS[@]}" "$RAW/adhan_long.ogg"
 render "$SOURCE" "atrim=duration=$LONG_DURATION,$LONG_END_FILTER" "$LONG_START" "" \
   -ar 22050 -c:a adpcm_ima_qt -f caf "$NOTIF/adhan_long.caf"
 render "$SOURCE" "atrim=duration=$LONG_DURATION,$LONG_END_FILTER" "$LONG_START" "" \
