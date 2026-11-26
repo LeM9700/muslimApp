@@ -38,7 +38,10 @@ ext.build_configurations.each do |config|
   s['INFOPLIST_FILE'] = 'PrayerWidget/Info.plist'
   s['GENERATE_INFOPLIST_FILE'] = 'NO'
   s['CODE_SIGN_ENTITLEMENTS'] = 'PrayerWidget/PrayerWidget.entitlements'
-  s['CODE_SIGN_STYLE'] = 'Automatic'
+  # Pas de CODE_SIGN_STYLE ici : il est dans PrayerWidget.xcconfig, pour que
+  # le CI puisse passer en signature manuelle (un réglage de cible
+  # l'emporterait sur le xcconfig).
+  s.delete('CODE_SIGN_STYLE')
   s['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
   s['SWIFT_VERSION'] = '5.0'
   s['TARGETED_DEVICE_FAMILY'] = '1,2'

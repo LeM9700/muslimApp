@@ -1,3 +1,10 @@
 // Version et numéro de build identiques à l'app (exigence App Store) :
 // FLUTTER_BUILD_NAME / FLUTTER_BUILD_NUMBER viennent de Generated.xcconfig.
 #include "../Flutter/Generated.xcconfig"
+
+// Signature automatique en local. [⚠️ PROD] Ne jamais fixer CODE_SIGN_STYLE
+// dans la cible (project.pbxproj) : un réglage de cible l'emporte sur ce
+// fichier, et le CI ne pourrait plus passer en signature manuelle
+// (« conflicting provisioning settings »). Le CI l'écrase dans
+// PrayerWidgetRelease.xcconfig, après cet include.
+CODE_SIGN_STYLE = Automatic
