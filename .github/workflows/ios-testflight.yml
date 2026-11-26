@@ -57,6 +57,11 @@ jobs:
         run: |
           # [🔒] Entrées passées par variables d'environnement (jamais
           # interpolées dans le script) et URL limitée à https.
+          # Espaces parasites (copier-coller) : curl rejette l'URL sinon.
+          trim() { local v="$1"; v="${v#"${v%%[![:space:]]*}"}"; printf '%s' "${v%"${v##*[![:space:]]}"}"; }
+          TEST_AUDIO_URL="$(trim "$TEST_AUDIO_URL")"
+          TEST_AUDIO_SHORT="$(trim "$TEST_AUDIO_SHORT")"
+          TEST_AUDIO_LONG_START="$(trim "$TEST_AUDIO_LONG_START")"
           case "$TEST_AUDIO_URL" in
             https://*) ;;
             *) echo "::error::test_audio_url doit commencer par https://"; exit 1 ;;
