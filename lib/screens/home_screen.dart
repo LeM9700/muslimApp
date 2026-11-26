@@ -21,6 +21,7 @@ import '../services/firebase_service.dart';
 import '../services/onboarding_service.dart';
 import 'hadith_library_screen.dart';
 import 'tasbih_screen.dart';
+import 'adhkar_screen.dart';
 import 'fasting_screen.dart';
 import '../models/quiz_question.dart';
 import '../models/prayer_data.dart';
@@ -530,7 +531,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Section de navigation rapide vers Qibla et Coran
   /// Boutons larges avec icônes pour accès facile
-  /// Raccourcis vers les pratiques : Tasbih, Jeûnes.
+  /// Raccourcis vers les pratiques : Tasbih, Adhkar, Jeûnes.
   Widget _buildPracticeSection() {
     return Row(
       children: [
@@ -539,6 +540,13 @@ class _HomeScreenState extends State<HomeScreen> {
           label: 'Tasbih',
           color: AppColors.emeraldDark,
           onTap: () => TasbihScreen.open(context),
+        ),
+        const SizedBox(width: 12),
+        _PracticeCard(
+          icon: Icons.wb_twilight_outlined,
+          label: 'Adhkar',
+          color: AppColors.copper,
+          onTap: () => AdhkarScreen.open(context),
         ),
         const SizedBox(width: 12),
         _PracticeCard(

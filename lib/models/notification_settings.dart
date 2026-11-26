@@ -1,4 +1,5 @@
 import 'adhan_mode.dart';
+import 'adhkar.dart';
 import 'fasting.dart';
 import 'friday_reminders.dart';
 import 'night_prayer_settings.dart';
@@ -32,6 +33,9 @@ class NotificationSettings {
   /// Rappels du vendredi (al-Kahf, Jumu‘a).
   final FridaySettings friday;
 
+  /// Rappels des adhkar du matin et du soir.
+  final AdhkarSettings adhkar;
+
   /// Chronologie des prières sur l'écran verrouillé (widget iOS).
   /// Désactivée par défaut ; ne demande pas l'autorisation de notifier.
   final bool lockScreenWidget;
@@ -47,6 +51,7 @@ class NotificationSettings {
     this.lockScreenWidget = false,
     this.fasting = const FastingSettings(),
     this.friday = const FridaySettings(),
+    this.adhkar = const AdhkarSettings(),
   }) : _modes = modes;
 
   // Champ privé + getter : permet un constructeur `const` avec un profil
@@ -76,6 +81,7 @@ class NotificationSettings {
     bool? lockScreenWidget,
     FastingSettings? fasting,
     FridaySettings? friday,
+    AdhkarSettings? adhkar,
   }) {
     return NotificationSettings(
       prayersEnabled: prayersEnabled ?? this.prayersEnabled,
@@ -88,6 +94,7 @@ class NotificationSettings {
       lockScreenWidget: lockScreenWidget ?? this.lockScreenWidget,
       fasting: fasting ?? this.fasting,
       friday: friday ?? this.friday,
+      adhkar: adhkar ?? this.adhkar,
     );
   }
 
@@ -98,7 +105,8 @@ class NotificationSettings {
       night.isActive ||
       lockScreenWidget ||
       fasting.isActive ||
-      friday.isActive;
+      friday.isActive ||
+      adhkar.isActive;
 
   /// Change le mode d'une seule prière.
   NotificationSettings withMode(Prayer prayer, AdhanMode mode) =>
@@ -110,8 +118,8 @@ class NotificationSettings {
   /// On ne bascule jamais un utilisateur existant sur l'adhan sans son accord.
   ///
   /// [⚠️ PROD] v1.3.0 → v1.4.0 : les clés `night`, `lockScreenWidget`,
-  /// `fasting` et `friday` sont absentes des réglages existants : tout
-  /// reste désactivé.
+  /// `fasting`, `friday` et `adhkar` sont absentes des réglages existants :
+  /// tout reste désactivé.
   factory NotificationSettings.fromJson(Map<String, dynamic> json) {
     final reminder = json['reminderMinutes'] as int? ?? 0;
     return NotificationSettings(
@@ -125,6 +133,7 @@ class NotificationSettings {
       lockScreenWidget: json['lockScreenWidget'] == true,
       fasting: FastingSettings.fromJson(json['fasting']),
       friday: FridaySettings.fromJson(json['friday']),
+      adhkar: AdhkarSettings.fromJson(json['adhkar']),
     );
   }
 
@@ -158,5 +167,6 @@ class NotificationSettings {
         'lockScreenWidget': lockScreenWidget,
         'fasting': fasting.toJson(),
         'friday': friday.toJson(),
+        'adhkar': adhkar.toJson(),
       };
 }

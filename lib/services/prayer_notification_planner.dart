@@ -1,4 +1,5 @@
 import '../models/adhan_mode.dart';
+import '../models/adhkar.dart';
 import '../models/calendar_settings.dart';
 import '../models/fasting.dart';
 import '../models/friday_reminders.dart';
@@ -14,7 +15,8 @@ import 'night_prayer_calculator.dart';
 /// [night] : prière de nuit, liée à un [NightSlot] et non à une [Prayer].
 /// [fast] : rappel de jeûne la veille, lié à un [FastKind].
 /// [friday] : rappel du vendredi, lié à un [FridayReminder].
-enum PlannedKind { prayer, reminder, night, fast, friday }
+/// [adhkar] : rappel des adhkar, lié à une [AdhkarPeriod].
+enum PlannedKind { prayer, reminder, night, fast, friday, adhkar }
 
 /// Une notification à programmer, sans dépendance au plugin.
 class PlannedNotification {
@@ -36,6 +38,9 @@ class PlannedNotification {
   /// Rappel du vendredi ; `null` sauf pour [PlannedKind.friday].
   final FridayReminder? fridayReminder;
 
+  /// Adhkar rappelés ; `null` sauf pour [PlannedKind.adhkar].
+  final AdhkarPeriod? adhkarPeriod;
+
   /// Son à utiliser. Jamais [AdhanMode.off] (filtré par le planificateur).
   final AdhanMode mode;
 
@@ -49,7 +54,8 @@ class PlannedNotification {
     this.mode = AdhanMode.notification,
   })  : nightSlot = null,
         fastKind = null,
-        fridayReminder = null;
+        fridayReminder = null,
+        adhkarPeriod = null;
 
   /// Notification de prière de nuit (jamais d'adhan).
   const PlannedNotification.night({
@@ -63,7 +69,8 @@ class PlannedNotification {
         prayer = null,
         nightSlot = slot,
         fastKind = null,
-        fridayReminder = null;
+        fridayReminder = null,
+        adhkarPeriod = null;
 
   /// Rappel de jeûne (son de notification simple).
   const PlannedNotification.fast({
@@ -77,6 +84,7 @@ class PlannedNotification {
         nightSlot = null,
         fastKind = kind,
         fridayReminder = null,
+        adhkarPeriod = null,
         mode = AdhanMode.notification;
 
   /// Rappel du vendredi (son de notification simple).
@@ -91,6 +99,22 @@ class PlannedNotification {
         nightSlot = null,
         fastKind = null,
         fridayReminder = reminder,
+        adhkarPeriod = null,
+        mode = AdhanMode.notification;
+
+  /// Rappel des adhkar (son de notification simple).
+  const PlannedNotification.adhkar({
+    required this.id,
+    required this.when,
+    required this.title,
+    required this.body,
+    required AdhkarPeriod period,
+  })  : kind = PlannedKind.adhkar,
+        prayer = null,
+        nightSlot = null,
+        fastKind = null,
+        fridayReminder = null,
+        adhkarPeriod = period,
         mode = AdhanMode.notification;
 
   const PlannedNotification._copy({
@@ -103,6 +127,7 @@ class PlannedNotification {
     required this.nightSlot,
     required this.fastKind,
     required this.fridayReminder,
+    required this.adhkarPeriod,
     required this.mode,
   });
 
@@ -112,6 +137,7 @@ class PlannedNotification {
         PlannedKind.night => NightPayload(nightSlot!, mode).encode(),
         PlannedKind.fast => FastPayload(fastKind!).encode(),
         PlannedKind.friday => FridayPayload(fridayReminder!).encode(),
+        PlannedKind.adhkar => AdhkarPayload(adhkarPeriod!).encode(),
         _ => NotificationPayload.prayer(prayer!, mode).encode(),
       };
 
@@ -125,6 +151,7 @@ class PlannedNotification {
         nightSlot: nightSlot,
         fastKind: fastKind,
         fridayReminder: fridayReminder,
+        adhkarPeriod: adhkarPeriod,
         mode: mode,
       );
 }
@@ -239,6 +266,28 @@ class FridayPayload {
   }
 }
 
+/// Payload d'un rappel d'adhkar (`adhkar:<matin|soir>`) : ouvre l'écran
+/// Adhkar sur le bon moment.
+///
+/// [🔒 SÉCURITÉ] Parsing défensif : toute valeur inattendue donne `null`.
+class AdhkarPayload {
+  final AdhkarPeriod period;
+
+  const AdhkarPayload(this.period);
+
+  static const String _prefix = 'adhkar';
+
+  String encode() => '$_prefix:${period.name}';
+
+  static AdhkarPayload? decode(String? raw) {
+    if (raw == null) return null;
+    final parts = raw.split(':');
+    if (parts.length != 2 || parts[0] != _prefix) return null;
+    final p = AdhkarPeriod.fromName(parts[1]);
+    return p == null ? null : AdhkarPayload(p);
+  }
+}
+
 /// Résultat de la planification : les notifications et la date jusqu'à
 /// laquelle les rappels sont garantis (affichée à l'utilisateur).
 class PrayerPlan {
@@ -295,6 +344,7 @@ class PrayerNotificationPlanner {
             days, settings.fasting, calendar, shawwalCompletedYears),
       if (settings.friday.isActive)
         ..._fridayCandidates(days, settings.friday, fmt),
+      if (settings.adhkar.isActive) ..._adhkarCandidates(days, settings.adhkar),
     ];
     final prayersOn = settings.prayersEnabled && settings.prayers.isNotEmpty;
 
@@ -474,6 +524,32 @@ class PrayerNotificationPlanner {
       ));
     }
     return result;
+  }
+
+  /// Adhkar du matin (après le Fajr) et du soir (après l'Asr).
+  static List<PlannedNotification> _adhkarCandidates(
+    List<PrayerDay> days,
+    AdhkarSettings adhkar,
+  ) {
+    const anchors = {
+      AdhkarPeriod.morning: Prayer.fajr,
+      AdhkarPeriod.evening: Prayer.asr,
+    };
+    return [
+      for (final day in days)
+        for (final period in AdhkarPeriod.values)
+          if (adhkar.has(period) && day.times[anchors[period]!] != null)
+            PlannedNotification.adhkar(
+              id: 0,
+              when: day.times[anchors[period]!]!.add(AdhkarSettings.afterPrayer),
+              title: period.title,
+              body: period == AdhkarPeriod.morning
+                  ? 'Âyat al-Kursî, les trois Qul, « Asbahnâ »… quelques minutes '
+                      'pour se placer sous la protection d’Allah.'
+                  : 'Âyat al-Kursî, les trois Qul, « Amsaynâ »… avant le Maghrib.',
+              period: period,
+            ),
+    ];
   }
 
   /// Rappels du vendredi, pour chaque vendredi du calendrier.

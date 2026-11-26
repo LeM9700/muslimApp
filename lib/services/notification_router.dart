@@ -4,7 +4,9 @@ import '../models/prayer_schedule.dart';
 import '../screens/adhan_player_screen.dart';
 import '../screens/fasting_screen.dart';
 import '../screens/sura_detail_screen.dart';
+import '../models/adhkar.dart';
 import '../models/friday_reminders.dart';
+import '../screens/adhkar_screen.dart';
 import 'prayer_notification_planner.dart';
 
 /// Ouvre le bon écran quand l'utilisateur appuie sur une notification.
@@ -16,7 +18,8 @@ import 'prayer_notification_planner.dart';
 /// Les notifications de prière de nuit (`night:…`, voir `NightPayload`)
 /// ne sont pas reconnues ici : elles ouvrent simplement l'app. Un rappel
 /// de jeûne (`fast:…`) ouvre l'écran « Jeûnes », le rappel al-Kahf
-/// (`friday:kahf`) ouvre la sourate 18.
+/// (`friday:kahf`) ouvre la sourate 18, un rappel d'adhkar
+/// (`adhkar:<moment>`) ouvre l'écran Adhkar.
 class NotificationRouter {
   /// [navigatorKey] est injecté (celui de `MyApp`) plutôt qu'importé : le
   /// routeur reste indépendant de l'arbre de l'app, donc testable seul.
@@ -26,17 +29,20 @@ class NotificationRouter {
     void Function(NavigatorState navigator, Prayer prayer)? openPlayer,
     void Function(NavigatorState navigator)? openFasting,
     void Function(NavigatorState navigator)? openKahf,
+    void Function(NavigatorState navigator, AdhkarPeriod period)? openAdhkar,
   })  : _navigatorKey = navigatorKey,
         _clock = clock ?? DateTime.now,
         _openPlayer = openPlayer ?? _defaultOpenPlayer,
         _openFasting = openFasting ?? _defaultOpenFasting,
-        _openKahf = openKahf ?? _defaultOpenKahf;
+        _openKahf = openKahf ?? _defaultOpenKahf,
+        _openAdhkar = openAdhkar ?? _defaultOpenAdhkar;
 
   final GlobalKey<NavigatorState> _navigatorKey;
   final DateTime Function() _clock;
   final void Function(NavigatorState navigator, Prayer prayer) _openPlayer;
   final void Function(NavigatorState navigator) _openFasting;
   final void Function(NavigatorState navigator) _openKahf;
+  final void Function(NavigatorState navigator, AdhkarPeriod period) _openAdhkar;
 
   /// Un même appui peut arriver deux fois (callback + détails de lancement
   /// sur certains appareils) : on ignore le doublon proche.
@@ -50,8 +56,9 @@ class NotificationRouter {
     final prayer = NotificationPayload.decode(rawPayload);
     final fast = FastPayload.decode(rawPayload);
     final kahf = FridayPayload.decode(rawPayload)?.reminder == FridayReminder.kahf;
+    final adhkar = AdhkarPayload.decode(rawPayload);
     final opensPlayer = prayer != null && prayer.mode.playsAdhan;
-    if (!opensPlayer && fast == null && !kahf) return false;
+    if (!opensPlayer && fast == null && !kahf && adhkar == null) return false;
 
     final now = _clock();
     if (rawPayload == _lastPayload &&
@@ -68,10 +75,18 @@ class NotificationRouter {
       _openPlayer(navigator, prayer.prayer);
     } else if (kahf) {
       _openKahf(navigator);
+    } else if (adhkar != null) {
+      _openAdhkar(navigator, adhkar.period);
     } else {
       _openFasting(navigator);
     }
     return true;
+  }
+
+  static void _defaultOpenAdhkar(NavigatorState navigator, AdhkarPeriod period) {
+    navigator.push(MaterialPageRoute<void>(
+      builder: (_) => AdhkarScreen(initialPeriod: period),
+    ));
   }
 
   static void _defaultOpenKahf(NavigatorState navigator) {

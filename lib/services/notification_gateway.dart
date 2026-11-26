@@ -173,6 +173,7 @@ class LocalNotificationGateway implements NotificationGateway {
         PlannedKind.night => nightDetailsFor(n.nightSlot!, n.mode),
         PlannedKind.fast => fastDetails(),
         PlannedKind.friday => fridayDetails(),
+        PlannedKind.adhkar => adhkarDetails(),
         _ => detailsFor(n.mode),
       },
       payload: n.payload,
@@ -273,6 +274,11 @@ class LocalNotificationGateway implements NotificationGateway {
   @visibleForTesting
   static NotificationDetails fridayDetails() =>
       _reminderDetails(AdhanSoundResolver.friday, 'friday');
+
+  /// Détails d'un rappel d'adhkar.
+  @visibleForTesting
+  static NotificationDetails adhkarDetails() =>
+      _reminderDetails(AdhanSoundResolver.adhkar, 'adhkar');
 
   static NotificationDetails _reminderDetails(AdhanSound sound, String thread) {
     return NotificationDetails(

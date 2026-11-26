@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../models/adhan_mode.dart';
+import '../models/adhkar.dart';
 import '../models/calendar_settings.dart';
 import '../models/friday_reminders.dart';
 import '../models/night_prayer_settings.dart';
@@ -68,7 +69,8 @@ class NotificationSettingsController extends ChangeNotifier {
         s.settings.prayersEnabled ||
         s.settings.night.enabled ||
         s.settings.fasting.enabled ||
-        s.settings.friday.isActive;
+        s.settings.friday.isActive ||
+        s.settings.adhkar.isActive;
   }
 
   Future<void> load() async {
@@ -134,6 +136,20 @@ class NotificationSettingsController extends ChangeNotifier {
           return;
         }
         _notice = switch (await _service.enableFriday(reminder)) {
+          EnableOutcome.enabled => SettingsNotice.none,
+          EnableOutcome.permissionDenied => SettingsNotice.permissionDenied,
+          EnableOutcome.noLocation => SettingsNotice.noLocation,
+        };
+      });
+
+  /// Rappel des adhkar du matin ou du soir.
+  Future<void> setAdhkar(AdhkarPeriod period, bool enabled) => _run(() async {
+        if (!enabled) {
+          await _service.updateSettings(
+              settings.copyWith(adhkar: settings.adhkar.toggle(period, false)));
+          return;
+        }
+        _notice = switch (await _service.enableAdhkar(period)) {
           EnableOutcome.enabled => SettingsNotice.none,
           EnableOutcome.permissionDenied => SettingsNotice.permissionDenied,
           EnableOutcome.noLocation => SettingsNotice.noLocation,

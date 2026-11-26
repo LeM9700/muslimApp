@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../controllers/notification_settings_controller.dart';
 import '../models/adhan_mode.dart';
+import '../models/adhkar.dart';
 import '../models/calendar_settings.dart';
 import '../models/friday_reminders.dart';
 import '../models/night_prayer_settings.dart';
@@ -497,6 +498,15 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           title: const Text('Quiz du jour'),
           subtitle: const Text('Chaque jour à 20 h'),
         ),
+        for (final period in AdhkarPeriod.values)
+          SwitchListTile.adaptive(
+            key: ValueKey('adhkar-${period.name}'),
+            contentPadding: EdgeInsets.zero,
+            value: settings.adhkar.has(period),
+            onChanged: busy ? null : (on) => _controller.setAdhkar(period, on),
+            title: Text(period.title),
+            subtitle: Text(period.when),
+          ),
         for (final reminder in FridayReminder.values)
           SwitchListTile.adaptive(
             key: ValueKey('friday-${reminder.name}'),

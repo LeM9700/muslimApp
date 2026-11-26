@@ -121,8 +121,22 @@ class AdhanSoundResolver {
     playSound: true,
   );
 
+  /// Rappels des adhkar du matin et du soir.
+  static const adhkar = AdhanSound(
+    androidChannelId: 'adhkar_v1',
+    androidChannelName: 'Adhkar',
+    androidChannelDescription: 'Adhkar du matin et du soir',
+    playSound: true,
+  );
+
   /// Tous les canaux à créer au démarrage de l'app.
-  static const List<AdhanSound> channels = [...all, ...night, fasting, friday];
+  static const List<AdhanSound> channels = [
+    ...all,
+    ...night,
+    fasting,
+    friday,
+    adhkar,
+  ];
 
   /// [AdhanMode.off] n'est jamais programmé : appeler avec ce mode est une
   /// erreur de l'appelant, signalée tôt plutôt que masquée.

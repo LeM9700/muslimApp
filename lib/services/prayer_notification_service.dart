@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../models/adhkar.dart';
 import '../models/friday_reminders.dart';
 import '../models/notification_settings.dart';
 import '../models/shawwal_progress.dart';
@@ -164,6 +165,11 @@ class PrayerNotificationService {
   /// Active un rappel du vendredi (Dhuhr de la position pour la Jumu‘a).
   Future<EnableOutcome> enableFriday(FridayReminder reminder) =>
       _enable((s) => s.copyWith(friday: s.friday.toggle(reminder, true)));
+
+  /// Active le rappel des adhkar du matin ou du soir (heure du Fajr ou de
+  /// l'Asr : position nécessaire).
+  Future<EnableOutcome> enableAdhkar(AdhkarPeriod period) =>
+      _enable((s) => s.copyWith(adhkar: s.adhkar.toggle(period, true)));
 
   /// Suivi des 6 jours de Chawwal (dernière année suivie).
   Future<ShawwalProgress?> shawwalProgress() => _store.readShawwal();
