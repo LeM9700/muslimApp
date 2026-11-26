@@ -6,10 +6,10 @@ class ShareConfig {
 
   static const String appName = 'Deen';
 
-  /// Lien App Store de Deen. [⚠️ PROD] À renseigner dès que possible
-  /// (App Store Connect → l'app → Informations sur l'app → lien
-  /// « Voir sur l'App Store ») : sans lien, la signature reste sans URL.
-  static const String? appStoreUrl = null;
+  /// Lien App Store de Deen, sans pays ni nom : Apple redirige chacun vers
+  /// la boutique de son pays (le lien en « /us/ » ouvrait la fiche
+  /// américaine aux utilisateurs français).
+  static const String? appStoreUrl = 'https://apps.apple.com/app/id6817428500';
 
   /// « Partagé depuis Deen, l’app pour la prière, le Coran et les hadiths
   /// (lien) ».
