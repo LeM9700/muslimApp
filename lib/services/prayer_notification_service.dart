@@ -8,6 +8,8 @@ import '../repositories/aladhan_repository.dart';
 import '../repositories/prayer_settings_repository.dart';
 import 'night_prayer_calculator.dart';
 import 'notification_gateway.dart';
+import 'prayer_timeline_builder.dart';
+import 'prayer_widget_gateway.dart';
 import 'prayer_notification_planner.dart';
 
 enum EnableOutcome { enabled, permissionDenied, noLocation }
@@ -59,10 +61,12 @@ class PrayerNotificationService {
     PrayerSettingsRepository? store,
     AladhanRepository? aladhan,
     NotificationGateway? gateway,
+    PrayerWidgetGateway? widget,
     DateTime Function()? clock,
   })  : _store = store ?? PrayerSettingsRepository(),
         _aladhan = aladhan ?? AladhanRepository(),
         _gateway = gateway ?? LocalNotificationGateway(),
+        _widget = widget ?? MethodChannelPrayerWidgetGateway(),
         _clock = clock ?? DateTime.now;
 
   static final PrayerNotificationService instance = PrayerNotificationService();
@@ -70,6 +74,7 @@ class PrayerNotificationService {
   final PrayerSettingsRepository _store;
   final AladhanRepository _aladhan;
   final NotificationGateway _gateway;
+  final PrayerWidgetGateway _widget;
   final DateTime Function() _clock;
 
   /// Re-télécharger le calendrier quand il couvre moins de N jours.
@@ -148,6 +153,16 @@ class PrayerNotificationService {
     return EnableOutcome.enabled;
   }
 
+  /// Active la chronologie sur l'écran verrouillé. Seule la position est
+  /// nécessaire : un widget n'a pas besoin de l'autorisation de notifier.
+  Future<EnableOutcome> enableLockScreenWidget() async {
+    if (await _store.readLocation() == null) return EnableOutcome.noLocation;
+    final settings = await _store.readSettings();
+    await _store.writeSettings(settings.copyWith(lockScreenWidget: true));
+    await reschedule(force: true);
+    return EnableOutcome.enabled;
+  }
+
   /// Active un rappel quotidien (hadith ou quiz) : même logique de
   /// demande d'autorisation au moment du geste.
   Future<bool> ensurePermission() async =>
@@ -189,6 +204,19 @@ class PrayerNotificationService {
     _lastRun = now;
 
     final settings = await _store.readSettings();
+    final location = await _store.readLocation();
+    List<PrayerDay>? days;
+
+    // Le widget passe avant les notifications : il ne dépend pas de
+    // l'autorisation de notifier.
+    if (settings.lockScreenWidget && location != null) {
+      days = await _calendarFor(location, settings, now);
+      _calendarUnavailable = days.isEmpty;
+      await _publishWidget(days, location, now);
+    } else {
+      await _widget.clear();
+    }
+
     if (!await _gateway.hasPermission()) {
       // Sans autorisation, rien ne serait délivré : inutile de programmer.
       _lastPlan = PrayerPlan.empty;
@@ -199,14 +227,15 @@ class PrayerNotificationService {
     if (settings.hadithDaily) await _gateway.scheduleDaily(DailyNotification.hadith);
     if (settings.quizDaily) await _gateway.scheduleDaily(DailyNotification.quiz);
 
-    final location = await _store.readLocation();
     if (!settings.needsCalendar || location == null) {
       _lastPlan = PrayerPlan.empty;
       return;
     }
 
-    final days = await _calendarFor(location, settings, now);
-    _calendarUnavailable = days.isEmpty;
+    if (days == null) {
+      days = await _calendarFor(location, settings, now);
+      _calendarUnavailable = days.isEmpty;
+    }
     final plan = PrayerNotificationPlanner.plan(
       days: days,
       settings: settings,
@@ -220,6 +249,25 @@ class PrayerNotificationService {
     _lastPlan = plan;
     debugPrint('Notifications : ${plan.notifications.length} rappels '
         'programmés jusqu’au ${plan.coveredUntil?.toLocal()}');
+  }
+
+  /// Publie la chronologie ; sans horaires (hors connexion sans cache),
+  /// le widget est vidé plutôt que de montrer des heures fausses.
+  Future<void> _publishWidget(
+    List<PrayerDay> days,
+    PrayerLocation location,
+    DateTime now,
+  ) async {
+    final timeline = PrayerTimelineBuilder.build(
+      days: days,
+      now: now,
+      cityName: location.cityName,
+    );
+    if (timeline.isEmpty) {
+      await _widget.clear();
+    } else {
+      await _widget.publish(timeline.encode());
+    }
   }
 
   /// Calendrier couvrant au moins [minDaysAhead] jours : cache si possible,

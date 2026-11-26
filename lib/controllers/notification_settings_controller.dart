@@ -13,7 +13,14 @@ import '../services/prayer_notification_service.dart';
 ///
 /// [nightNoLocation] : même cause que [noLocation], affichée dans la
 /// section « Prière de nuit » (là où l'utilisateur a agi).
-enum SettingsNotice { none, permissionDenied, noLocation, nightNoLocation, testSent }
+enum SettingsNotice {
+  none,
+  permissionDenied,
+  noLocation,
+  nightNoLocation,
+  widgetNoLocation,
+  testSent,
+}
 
 /// État et actions de l'écran « Notifications ».
 class NotificationSettingsController extends ChangeNotifier {
@@ -113,6 +120,19 @@ class NotificationSettingsController extends ChangeNotifier {
           EnableOutcome.permissionDenied => SettingsNotice.permissionDenied,
           EnableOutcome.noLocation => SettingsNotice.nightNoLocation,
         };
+      });
+
+  /// Chronologie des prières sur l'écran verrouillé (widget iOS).
+  Future<void> setLockScreenWidget(bool enabled) => _run(() async {
+        if (!enabled) {
+          await _service
+              .updateSettings(settings.copyWith(lockScreenWidget: false));
+          return;
+        }
+        final outcome = await _service.enableLockScreenWidget();
+        if (outcome == EnableOutcome.noLocation) {
+          _notice = SettingsNotice.widgetNoLocation;
+        }
       });
 
   /// Mode d'un créneau de nuit (Désactivé, Silencieux ou Notification).

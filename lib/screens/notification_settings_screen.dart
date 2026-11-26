@@ -123,6 +123,11 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                   const SizedBox(height: 16),
                   _buildCalendarSection(context),
                   const SizedBox(height: 16),
+                  // [⚠️ PROD] Android n'a plus de widgets d'écran verrouillé.
+                  if (Theme.of(context).platform == TargetPlatform.iOS) ...[
+                    _buildLockScreenSection(context),
+                    const SizedBox(height: 16),
+                  ],
                   _buildDailySection(context),
                   const SizedBox(height: 20),
                   _buildTestButton(),
@@ -321,6 +326,51 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
         adjustment: _controller.calendar.hijriAdjustment);
     if (hijri == null || !hijri.isRamadan) return base;
     return 'Ce soir : ${PrayerNotificationPlanner.ramadanNight(hijri)} · $base';
+  }
+
+  Widget _buildLockScreenSection(BuildContext context) {
+    final enabled = _controller.settings.lockScreenWidget;
+    final busy = _controller.isBusy;
+    final textTheme = Theme.of(context).textTheme;
+    return _Panel(
+      title: 'Écran verrouillé',
+      icon: Icons.lock_clock_outlined,
+      children: [
+        SwitchListTile.adaptive(
+          key: const ValueKey('widget-switch'),
+          contentPadding: EdgeInsets.zero,
+          value: enabled,
+          onChanged: busy ? null : _controller.setLockScreenWidget,
+          title: const Text('Chronologie des prières'),
+          subtitle: const Text('Widget pour l’écran verrouillé (iOS 16 ou plus)'),
+        ),
+        if (_controller.notice == SettingsNotice.widgetNoLocation)
+          const _InlineMessage(
+            icon: Icons.location_off_outlined,
+            text: 'Activez la localisation ou choisissez une ville depuis '
+                'l’accueil : la chronologie en dépend.',
+          ),
+        if (enabled) ...[
+          const SizedBox(height: 4),
+          Text('Pour l’ajouter', style: textTheme.titleSmall),
+          const SizedBox(height: 4),
+          for (final (i, step) in const [
+            'Verrouillez l’iPhone, puis touchez longuement l’écran.',
+            'Touchez « Personnaliser », puis « Écran verrouillé ».',
+            'Touchez la zone des widgets et choisissez « Deen ».',
+          ].indexed)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Text('${i + 1}. $step', style: textTheme.bodyMedium),
+            ),
+          const _InlineMessage(
+            icon: Icons.info_outline,
+            text: 'Les horaires couvrent les 7 prochains jours et se mettent '
+                'à jour à chaque ouverture de Deen.',
+          ),
+        ],
+      ],
+    );
   }
 
   Widget _buildCalendarSection(BuildContext context) {

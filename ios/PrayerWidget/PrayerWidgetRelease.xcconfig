@@ -1,0 +1,2 @@
+#include "PrayerWidget.xcconfig"
+// Le CI ajoute ici la signature manuelle de l'extension (profil dédié).

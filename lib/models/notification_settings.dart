@@ -24,6 +24,10 @@ class NotificationSettings {
   /// Prière de nuit (désactivée par défaut, indépendante de [prayersEnabled]).
   final NightPrayerSettings night;
 
+  /// Chronologie des prières sur l'écran verrouillé (widget iOS).
+  /// Désactivée par défaut ; ne demande pas l'autorisation de notifier.
+  final bool lockScreenWidget;
+
   const NotificationSettings({
     this.prayersEnabled = false,
     Map<Prayer, AdhanMode>? modes,
@@ -32,6 +36,7 @@ class NotificationSettings {
     this.hadithDaily = true,
     this.quizDaily = true,
     this.night = const NightPrayerSettings(),
+    this.lockScreenWidget = false,
   }) : _modes = modes;
 
   // Champ privé + getter : permet un constructeur `const` avec un profil
@@ -58,6 +63,7 @@ class NotificationSettings {
     bool? hadithDaily,
     bool? quizDaily,
     NightPrayerSettings? night,
+    bool? lockScreenWidget,
   }) {
     return NotificationSettings(
       prayersEnabled: prayersEnabled ?? this.prayersEnabled,
@@ -67,12 +73,13 @@ class NotificationSettings {
       hadithDaily: hadithDaily ?? this.hadithDaily,
       quizDaily: quizDaily ?? this.quizDaily,
       night: night ?? this.night,
+      lockScreenWidget: lockScreenWidget ?? this.lockScreenWidget,
     );
   }
 
   /// Les notifications de prière (5 prières ou prière de nuit) ont besoin
   /// du calendrier et de la position.
-  bool get needsCalendar => prayersEnabled || night.isActive;
+  bool get needsCalendar => prayersEnabled || night.isActive || lockScreenWidget;
 
   /// Change le mode d'une seule prière.
   NotificationSettings withMode(Prayer prayer, AdhanMode mode) =>
@@ -83,8 +90,8 @@ class NotificationSettings {
   /// comportement qu'avait l'utilisateur), une prière décochée « Désactivé ».
   /// On ne bascule jamais un utilisateur existant sur l'adhan sans son accord.
   ///
-  /// [⚠️ PROD] v1.3.0 → v1.4.0 : la clé `night` est absente des réglages
-  /// existants, ce qui donne une prière de nuit désactivée.
+  /// [⚠️ PROD] v1.3.0 → v1.4.0 : les clés `night` et `lockScreenWidget`
+  /// sont absentes des réglages existants : tout reste désactivé.
   factory NotificationSettings.fromJson(Map<String, dynamic> json) {
     final reminder = json['reminderMinutes'] as int? ?? 0;
     return NotificationSettings(
@@ -95,6 +102,7 @@ class NotificationSettings {
       hadithDaily: json['hadithDaily'] as bool? ?? true,
       quizDaily: json['quizDaily'] as bool? ?? true,
       night: NightPrayerSettings.fromJson(json['night']),
+      lockScreenWidget: json['lockScreenWidget'] == true,
     );
   }
 
@@ -125,5 +133,6 @@ class NotificationSettings {
         'hadithDaily': hadithDaily,
         'quizDaily': quizDaily,
         'night': night.toJson(),
+        'lockScreenWidget': lockScreenWidget,
       };
 }

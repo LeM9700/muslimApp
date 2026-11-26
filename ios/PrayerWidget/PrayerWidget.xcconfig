@@ -1,0 +1,3 @@
+// Version et numéro de build identiques à l'app (exigence App Store) :
+// FLUTTER_BUILD_NAME / FLUTTER_BUILD_NUMBER viennent de Generated.xcconfig.
+#include "../Flutter/Generated.xcconfig"
