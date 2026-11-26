@@ -14,10 +14,14 @@ Identifiers → **+** → **App Groups** → Continue
 - Description : `Deen`
 - Identifier : `group.com.elboazzati.muslimapp`
 
-## 2. Ajouter l'App Group à l'app
+## 2. Ajouter l'App Group et « Time Sensitive » à l'app
 
-Identifiers → `com.elboazzati.muslimapp` → cocher **App Groups** →
-**Configure** → cocher `group.com.elboazzati.muslimapp` → Save.
+Identifiers → `com.elboazzati.muslimapp` :
+- cocher **App Groups** → **Configure** → cocher `group.com.elboazzati.muslimapp` ;
+- cocher **Time Sensitive Notifications** (le rappel du dernier tiers de
+  la nuit et l'adhan passent alors les modes Concentration, comme
+  « Sommeil ») ;
+- Save.
 
 ⚠️ Cela invalide le profil App Store actuel de l'app (étape 4).
 
@@ -59,8 +63,9 @@ Le certificat (`IOS_DIST_CERT_P12_BASE64`) ne change pas.
 Actions → **iOS TestFlight** → Run workflow → choisir la branche, remplir
 `test_audio_url` tant que les sons d'adhan sont de substitution.
 
-Le CI vérifie que **les deux profils** contiennent l'App Group : sinon le
-widget resterait vide sans aucune erreur visible.
+Le CI vérifie que **les deux profils** contiennent l'App Group (sinon le
+widget resterait vide sans aucune erreur visible) et que celui de l'app
+contient « Time Sensitive » (sinon l'archive échouerait à la signature).
 
 ## Vérifier sur l'iPhone (iOS 16 ou plus)
 
