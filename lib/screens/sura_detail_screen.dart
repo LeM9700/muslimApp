@@ -48,10 +48,15 @@ class _SuraDetailScreenState extends State<SuraDetailScreen> {
   static const String _keyLastSuraId   = 'last_sura_id';
   static const String _keyLastSuraName = 'last_sura_name';
   static const String _keyLastAyah     = 'last_ayah';
+  static const String _keyTransliteration = 'quran_show_transliteration_v1';
+
+  /// Phonétique affichée sous l'arabe (préférence retenue, visible par défaut).
+  bool _showTransliteration = true;
 
   @override
   void initState() {
     super.initState();
+    _loadTransliterationPref();
     _loadAll();
     _setupAudioListeners();
   }
@@ -223,6 +228,26 @@ class _SuraDetailScreenState extends State<SuraDetailScreen> {
   // Persistance
   // ---------------------------------------------------------------------------
 
+  Future<void> _loadTransliterationPref() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final show = prefs.getBool(_keyTransliteration) ?? true;
+      if (mounted) setState(() => _showTransliteration = show);
+    } catch (e) {
+      debugPrint('Préférence phonétique illisible : $e');
+    }
+  }
+
+  Future<void> _toggleTransliteration() async {
+    setState(() => _showTransliteration = !_showTransliteration);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_keyTransliteration, _showTransliteration);
+    } catch (e) {
+      debugPrint('Préférence phonétique non enregistrée : $e');
+    }
+  }
+
   Future<void> _saveProgress(int ayahNumber) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -265,6 +290,17 @@ class _SuraDetailScreenState extends State<SuraDetailScreen> {
               onPressed: _stopAudio,
               tooltip: 'Arrêter',
             ),
+          IconButton(
+            key: const ValueKey('toggle-transliteration'),
+            icon: Icon(_showTransliteration
+                ? Icons.abc
+                : Icons.abc_outlined),
+            color: _showTransliteration ? AppColors.emeraldDark : null,
+            tooltip: _showTransliteration
+                ? 'Masquer la phonétique'
+                : 'Afficher la phonétique',
+            onPressed: _toggleTransliteration,
+          ),
           IconButton(
             icon: const Icon(Icons.info_outline),
             onPressed: _showChapterInfo,
@@ -386,6 +422,21 @@ class _SuraDetailScreenState extends State<SuraDetailScreen> {
                   .copyWith(height: 2.0),
             ),
           ),
+
+          // Phonétique (adaptée au français)
+          if (_showTransliteration && verse.transliteration != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 0, 18, 12),
+              child: Text(
+                verse.transliteration!,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontStyle: FontStyle.italic,
+                  height: 1.5,
+                  color: AppColors.emeraldDark,
+                ),
+              ),
+            ),
 
           // Traduction française
           if (verse.translationText != null)

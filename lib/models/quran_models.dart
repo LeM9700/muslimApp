@@ -1,5 +1,6 @@
 /// Modèles pour l'API Quran Foundation v4
 /// https://api.quran.com/api/v4
+import '../utils/quran_transliteration.dart';
 
 /// Modèle pour un verset avec texte arabe, traduction FR et audio
 class Verse {
@@ -7,6 +8,8 @@ class Verse {
   final int verseNumber;
   final String textUthmani;        // arabe (uthmani)
   final String? translationText;   // texte français
+  /// Phonétique adaptée au français (« Bismi Allahi arrahmani arrahîm »).
+  final String? transliteration;
   final String? audioUrl;          // URL audio (si demandé)
   final String? verseKey;          // ex: "1:1" (sourate:verset)
 
@@ -15,6 +18,7 @@ class Verse {
     required this.verseNumber,
     required this.textUthmani,
     this.translationText,
+    this.transliteration,
     this.audioUrl,
     this.verseKey,
   });
@@ -22,17 +26,26 @@ class Verse {
   /// Parse depuis l'API Quran Foundation v4
   /// API format: "verse_key", "text_uthmani", "translations"[0]["text"], "audio":{"url":...}
   factory Verse.fromApi(Map<String, dynamic> json) {
-    final translations = (json['translations'] as List?) ?? const [];
-    final firstTr = translations.isNotEmpty ? translations.first : null;
+    final translations =
+        ((json['translations'] as List?) ?? const []).whereType<Map<String, dynamic>>().toList();
+    // La phonétique arrive comme une « traduction » (ressource 57) : on la
+    // sépare de la traduction française, quel que soit l'ordre renvoyé.
+    bool isTranslit(Map<String, dynamic> t) => t['resource_id'] == QuranTransliteration.resourceId;
+    final firstTr = translations.where((t) => !isTranslit(t)).firstOrNull;
+    final translit = translations.where(isTranslit).firstOrNull;
 
     final audio = json['audio'];
     final rawTranslation = firstTr != null ? (firstTr['text'] as String?) : null;
+    final rawTranslit = translit != null ? (translit['text'] as String?) : null;
 
     return Verse(
       id: json['id'] as int? ?? 0,
       verseNumber: json['verse_number'] as int? ?? 0,
       textUthmani: json['text_uthmani'] as String? ?? '',
       translationText: rawTranslation != null ? _cleanTranslation(rawTranslation) : null,
+      transliteration: rawTranslit == null || rawTranslit.trim().isEmpty
+          ? null
+          : QuranTransliteration.toFrench(rawTranslit),
       audioUrl: (audio != null) ? _absoluteAudioUrl(audio['url'] as String?) : null,
       verseKey: json['verse_key'] as String?,
     );

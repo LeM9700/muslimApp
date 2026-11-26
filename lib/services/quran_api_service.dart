@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/quran_models.dart';
+import '../utils/quran_transliteration.dart';
 
 /// Service pour interagir avec l'API Quran Foundation v4
 /// https://api.quran.com/api/v4
@@ -39,7 +40,9 @@ class QuranApiService {
           'per_page': '$perPage',
           // Champs demandés selon la doc API
           'fields': 'text_uthmani,verse_key,verse_number',
-          'translations': '$effectiveTranslationId',
+          // Traduction FR + phonétique, dans la même requête.
+          'translations':
+              '$effectiveTranslationId,${QuranTransliteration.resourceId}',
           'audio': '$reciterId',
         },
       );
