@@ -6,6 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:muslim_app/models/adhan_mode.dart';
+import 'package:muslim_app/models/calendar_settings.dart';
+import 'package:muslim_app/models/hijri_date.dart';
 import 'package:muslim_app/models/night_prayer_settings.dart';
 import 'package:muslim_app/models/notification_settings.dart';
 import 'package:muslim_app/models/prayer_schedule.dart';
@@ -37,7 +39,6 @@ Map<String, dynamic> _entry({
   required String fajr,
   required String maghrib,
   required String isha,
-  int? hijriMonth,
 }) {
   final offset = fajr.substring(19);
   return {
@@ -52,10 +53,6 @@ Map<String, dynamic> _entry({
       'gregorian': {
         'date': '${date.substring(8, 10)}-${date.substring(5, 7)}-${date.substring(0, 4)}',
       },
-      if (hijriMonth != null)
-        'hijri': {
-          'month': {'number': hijriMonth},
-        },
     },
     'meta': {
       'method': {'id': 12, 'name': 'Union Organization Islamic de France'},
@@ -68,23 +65,21 @@ List<PrayerDay> _parse(List<Map<String, dynamic>> entries) =>
 
 /// Jour synthétique (UTC+1) : Fajr 06:00, Maghrib 17:30, Isha 19:00.
 /// Nuit de 12 h 30 → dernier tiers à 01:50 (00:50 UTC).
-Map<String, dynamic> _synthetic(DateTime d, {int? hijriMonth = 5}) {
+Map<String, dynamic> _synthetic(DateTime d) {
   final date = '${d.year}-${_pad(d.month)}-${_pad(d.day)}';
   return _entry(
     date: date,
     fajr: '${date}T06:00:00+01:00',
     maghrib: '${date}T17:30:00+01:00',
     isha: '${date}T19:00:00+01:00',
-    hijriMonth: hijriMonth,
   );
 }
 
-List<PrayerDay> _days(int count, {DateTime? from, int? Function(DateTime)? hijri}) {
+List<PrayerDay> _days(int count, {DateTime? from}) {
   final start = from ?? DateTime(2026, 11, 20);
   return _parse([
     for (var i = 0; i < count; i++)
-      _synthetic(start.add(Duration(days: i)),
-          hijriMonth: hijri == null ? 5 : hijri(start.add(Duration(days: i)))),
+      _synthetic(start.add(Duration(days: i))),
   ]);
 }
 
@@ -101,11 +96,13 @@ PrayerPlan _plan(
   List<PrayerDay> days,
   NotificationSettings settings, {
   DateTime? now,
+  CalendarSettings calendar = const CalendarSettings(),
   int budget = PrayerNotificationPlanner.defaultBudget,
 }) =>
     PrayerNotificationPlanner.plan(
       days: days,
       settings: settings,
+      calendar: calendar,
       now: now ?? _now,
       cityName: 'Paris',
       budget: budget,
@@ -137,12 +134,16 @@ MockClient _aladhan({List<Uri>? calls, bool offline = false}) {
   });
 }
 
-PrayerNotificationService _service(FakeGateway gateway, {http.Client? client}) =>
+PrayerNotificationService _service(
+  FakeGateway gateway, {
+  http.Client? client,
+  DateTime? now,
+}) =>
     PrayerNotificationService(
       store: PrayerSettingsRepository(),
       aladhan: AladhanRepository(client: client ?? _aladhan()),
       gateway: gateway,
-      clock: () => _now,
+      clock: () => now ?? _now,
     );
 
 void main() {
@@ -157,14 +158,12 @@ void main() {
         fajr: '2026-03-01T06:25:00+01:00',
         maghrib: '2026-03-01T18:34:00+01:00',
         isha: '2026-03-01T19:42:00+01:00',
-        hijriMonth: 9,
       ),
       _entry(
         date: '2026-03-02',
         fajr: '2026-03-02T06:23:00+01:00',
         maghrib: '2026-03-02T18:35:00+01:00',
         isha: '2026-03-02T19:44:00+01:00',
-        hijriMonth: 9,
       ),
     ]);
 
@@ -274,16 +273,20 @@ void main() {
     });
 
     test('Ramadan : la nuit appartient au jour hégirien du lendemain', () {
-      int hijri(DateTime d) =>
-          d.isBefore(DateTime(2026, 2, 18)) ? 8 : (d.isBefore(DateTime(2026, 3, 20)) ? 9 : 10);
-      final days = _days(32, from: DateTime(2026, 2, 17), hijri: hijri);
-      bool ramadan(int i) => NightPrayerCalculator.isRamadanNight(days[i], days[i + 1]);
-      expect(ramadan(0), isTrue, reason: '17 fév. : veille du 1er jeûne');
-      expect(ramadan(29), isTrue, reason: '18 mars : veille du 30 Ramadan');
-      expect(ramadan(30), isFalse, reason: '19 mars : veille de l’Aïd');
-      expect(NightPrayerCalculator.isRamadanNight(days[31], null), isFalse);
-      final unknown = _days(2, hijri: (_) => null);
-      expect(NightPrayerCalculator.isRamadanNight(unknown[0], unknown[1]), isFalse);
+      // 1er Ramadan 1447 = 18 février 2026 (Umm al-Qura), Aïd le 20 mars.
+      HijriDate? night(String date, {int adjustment = 0}) =>
+          NightPrayerCalculator.hijriOfNight(
+              PrayerDay(dateKey: date, times: const {}),
+              adjustment: adjustment);
+      expect(night('2026-02-17'), const HijriDate(1447, 9, 1),
+          reason: 'veille du 1er jeûne : 1re nuit de Tarawih');
+      expect(night('2026-03-18'), const HijriDate(1447, 9, 30));
+      expect(night('2026-03-19')!.isRamadan, isFalse, reason: 'veille de l’Aïd');
+      // Annonce locale un jour plus tard : tout se décale.
+      expect(night('2026-02-17', adjustment: 1)!.isRamadan, isFalse);
+      expect(night('2026-02-18', adjustment: 1), const HijriDate(1447, 9, 1));
+      expect(night('2026-03-19', adjustment: 1), const HijriDate(1447, 9, 30));
+      expect(night('pas une date'), isNull);
     });
   });
 
@@ -507,26 +510,55 @@ void main() {
     });
 
     test('Ramadan : Tarawih à Isha + 15 min remplace le rappel du soir', () {
-      int hijri(DateTime d) => d.day >= 22 ? 9 : 8;
-      final plan = _plan(_days(4, hijri: hijri), _nightOnly);
-      // Nuits du 20 (lendemain en Chaabane), du 21 (veille du 1er jeûne)
-      // et du 22 (Ramadan).
+      final feb16 = DateTime.utc(2026, 2, 16, 8);
+      final plan = _plan(_days(4, from: DateTime(2026, 2, 16)), _nightOnly, now: feb16);
+      // Nuit du 16 : 29 Cha‘bane → rappel du soir ; nuits du 17 et du 18 :
+      // 1re et 2e nuits de Ramadan → Tarawih.
       expect(_slot(plan, NightSlot.evening).map((n) => n.when),
-          [DateTime.utc(2026, 11, 20, 19)]);
+          [DateTime.utc(2026, 2, 16, 19)]);
       expect(_slot(plan, NightSlot.tarawih).map((n) => n.when), [
-        DateTime.utc(2026, 11, 21, 18, 15),
-        DateTime.utc(2026, 11, 22, 18, 15),
+        DateTime.utc(2026, 2, 17, 18, 15),
+        DateTime.utc(2026, 2, 18, 18, 15),
       ]);
+      expect(_slot(plan, NightSlot.tarawih).map((n) => n.title),
+          ['Tarawih · 1re nuit de Ramadan', 'Tarawih · 2e nuit de Ramadan']);
       expect(_slot(plan, NightSlot.lastThird), hasLength(3));
       final t = _slot(plan, NightSlot.tarawih).first;
       expect(t.payload, 'night:tarawih:notification');
       expect(t.body, contains('Bukhari 37'));
     });
 
+    test('ajustement +1 jour : les Tarawih commencent un soir plus tard', () {
+      final plan = _plan(
+        _days(4, from: DateTime(2026, 2, 16)),
+        _nightOnly,
+        now: DateTime.utc(2026, 2, 16, 8),
+        calendar: const CalendarSettings(hijriAdjustment: 1),
+      );
+      expect(_slot(plan, NightSlot.tarawih).map((n) => n.title),
+          ['Tarawih · 1re nuit de Ramadan']);
+      expect(_slot(plan, NightSlot.tarawih).single.when,
+          DateTime.utc(2026, 2, 18, 18, 15));
+      expect(_slot(plan, NightSlot.evening), hasLength(2));
+    });
+
+    test('dix dernières nuits : numéro de la nuit dans le titre du dernier tiers',
+        () {
+      final plan = _plan(_days(3, from: DateTime(2026, 3, 8)), _nightOnly,
+          now: DateTime.utc(2026, 3, 8, 8));
+      // Nuit du 8 mars : 20e nuit (pas de numéro) ; du 9 : 21e nuit.
+      expect(_slot(plan, NightSlot.lastThird).map((n) => n.title), [
+        'Prière de nuit · 00:50',
+        'Prière de nuit · 00:50 · 21e nuit de Ramadan',
+      ]);
+    });
+
     test('Ramadan avec Tarawih désactivé : le rappel du soir reste', () {
       final night = const NightPrayerSettings(enabled: true)
           .withMode(NightSlot.tarawih, AdhanMode.off);
-      final plan = _plan(_days(3, hijri: (_) => 9), NotificationSettings(night: night));
+      final plan = _plan(_days(3, from: DateTime(2026, 2, 20)),
+          NotificationSettings(night: night),
+          now: DateTime.utc(2026, 2, 20, 8));
       expect(_slot(plan, NightSlot.tarawih), isEmpty);
       expect(_slot(plan, NightSlot.evening), hasLength(2));
     });
@@ -622,55 +654,23 @@ void main() {
       expect(status.tonightLastThird, DateTime.utc(2026, 11, 21, 0, 50));
     });
 
-    test('[⚠️ cache v1.3.0] sans mois hégirien : retéléchargé si Tarawih actif',
-        () async {
-      final store = PrayerSettingsRepository();
-      await store.writeLocation(_paris);
-      await store.writeCalendar(CachedCalendar(
-        locationKey: _paris.cacheKey,
-        methodId: null,
-        methodName: 'UOIF',
-        days: _days(20, hijri: (_) => null),
-      ));
-
-      // Tarawih désactivé : le cache suffit, aucun appel réseau.
-      final noTarawih = const NightPrayerSettings(enabled: true)
-          .withMode(NightSlot.tarawih, AdhanMode.off);
-      await store.writeSettings(NotificationSettings(night: noTarawih));
-      final calls = <Uri>[];
-      await _service(FakeGateway(), client: _aladhan(calls: calls))
-          .reschedule(force: true);
-      expect(calls, isEmpty);
-
-      // Tarawih actif : un seul téléchargement, le cache est complété.
-      await store.writeSettings(_nightOnly);
-      await _service(FakeGateway(), client: _aladhan(calls: calls))
-          .reschedule(force: true);
-      expect(calls, isNotEmpty);
-      final refreshed = await store.readCalendar();
-      expect(refreshed!.days.every((d) => d.hijriMonth != null), isTrue);
-
-      calls.clear();
-      await _service(FakeGateway(), client: _aladhan(calls: calls))
-          .reschedule(force: true);
-      expect(calls, isEmpty);
-    });
-
-    test('cache v1.3.0 hors connexion : repli sur le cache, sans Tarawih',
-        () async {
+    test('l’ajustement enregistré déplace les Tarawih programmés', () async {
       final store = PrayerSettingsRepository();
       await store.writeLocation(_paris);
       await store.writeSettings(_nightOnly);
-      await store.writeCalendar(CachedCalendar(
-        locationKey: _paris.cacheKey,
-        methodId: null,
-        methodName: 'UOIF',
-        days: _days(20, hijri: (_) => null),
-      ));
-      final gateway = FakeGateway();
-      await _service(gateway, client: _aladhan(offline: true)).reschedule(force: true);
-      expect(gateway.prayers, isNotEmpty);
-      expect(gateway.prayers.where((n) => n.nightSlot == NightSlot.tarawih), isEmpty);
+      final feb16 = DateTime.utc(2026, 2, 16, 8);
+
+      Future<DateTime> firstTarawih() async {
+        final gateway = FakeGateway();
+        await _service(gateway, now: feb16).reschedule(force: true);
+        return gateway.prayers
+            .firstWhere((n) => n.nightSlot == NightSlot.tarawih)
+            .when;
+      }
+
+      expect(await firstTarawih(), DateTime.utc(2026, 2, 17, 18, 15));
+      await store.writeCalendarSettings(const CalendarSettings(hijriAdjustment: 1));
+      expect(await firstTarawih(), DateTime.utc(2026, 2, 18, 18, 15));
     });
   });
 
