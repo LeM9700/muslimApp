@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../models/hadith.dart';
 import '../services/hadith_library_service.dart';
+import '../services/share_service.dart';
 import '../utils/app_theme.dart';
 import '../widgets/glass_widgets.dart';
 import '../widgets/hadith/grade_badge.dart';
@@ -19,6 +20,7 @@ class HadithDetailScreen extends StatefulWidget {
     super.key,
     required Hadith this.hadith,
     this.focusExplanation = false,
+    this.shareService,
   })  : hadithId = null,
         previewTitle = null,
         service = null;
@@ -30,6 +32,7 @@ class HadithDetailScreen extends StatefulWidget {
     required String this.hadithId,
     this.previewTitle,
     this.service,
+    this.shareService,
   })  : hadith = null,
         focusExplanation = false;
 
@@ -39,6 +42,9 @@ class HadithDetailScreen extends StatefulWidget {
   final String? hadithId;
   final String? previewTitle;
   final HadithLibraryService? service;
+
+  /// Injectable pour les tests.
+  final ShareService? shareService;
 
   /// Fait défiler directement jusqu'à l'explication : l'utilisateur qui a
   /// touché « Lire l'explication » ne doit pas avoir à la chercher.
@@ -160,6 +166,17 @@ class _HadithDetailScreenState extends State<HadithDetailScreen> {
           surfaceTintColor: Colors.transparent,
           title: const Text('Hadith'),
           actions: [
+            Builder(
+              builder: (buttonContext) => IconButton(
+                icon: const Icon(Icons.ios_share_rounded),
+                tooltip: 'Partager le hadith',
+                onPressed: () => (widget.shareService ?? ShareService()).shareHadith(
+                  hadith,
+                  origin: ShareService.originOf(buttonContext),
+                  context: context,
+                ),
+              ),
+            ),
             IconButton(
               icon: const Icon(Icons.copy_rounded),
               tooltip: 'Copier le hadith',

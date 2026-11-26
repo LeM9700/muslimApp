@@ -5,6 +5,7 @@ import '../services/quiz_stats_service.dart';
 import '../models/quiz_question.dart';
 import '../models/quiz_stats.dart';
 import '../widgets/glass_widgets.dart';
+import '../services/share_service.dart';
 import '../widgets/lottie_animations.dart';
 import '../utils/hero_tags.dart';
 
@@ -1180,7 +1181,35 @@ class _QuizScreenState extends State<QuizScreen> {
             ),
           ),
 
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
+
+          // Partager mon score (faire connaître l'app)
+          SizedBox(
+            width: double.infinity,
+            child: Builder(
+              builder: (buttonContext) => OutlinedButton.icon(
+                key: const ValueKey('share-quiz-score'),
+                onPressed: () => ShareService().shareQuizScore(
+                  correct: _correctAnswersCount,
+                  total: _dailyQuestions.length,
+                  level: _selectedDifficulty?.label,
+                  origin: ShareService.originOf(buttonContext),
+                  context: context,
+                ),
+                icon: const Icon(Icons.ios_share_rounded),
+                label: const Text('Partager mon score'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.emeraldDark,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 12),
 
           // Bouton retour
           Container(

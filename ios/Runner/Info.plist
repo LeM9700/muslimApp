@@ -47,6 +47,8 @@
 	<string>Votre position est utilisee uniquement pour calculer la direction de la Qibla et les horaires de priere locaux. L'app n'utilise pas votre position en arriere-plan.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Deen n'enregistre pas de son. Cet acces est requis par le composant de lecture audio des recitations du Coran et ne sera jamais utilise pour enregistrer.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Pour enregistrer dans vos Photos l'image d'un hadith ou de votre score au quiz, quand vous choisissez « Enregistrer l'image » en partageant.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>UIUserInterfaceStyle</key>

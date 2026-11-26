@@ -4,6 +4,7 @@ import '../models/hadith.dart';
 import '../screens/hadith_detail_screen.dart';
 import '../screens/hadith_library_screen.dart';
 import '../services/hadith_service.dart';
+import '../services/share_service.dart';
 import '../utils/app_theme.dart';
 import 'glass_widgets.dart';
 import 'hadith/grade_badge.dart';
@@ -13,10 +14,11 @@ import 'hadith/grade_badge.dart';
 /// Aperçu volontairement court (6 lignes) : la carte donne envie, l'écran
 /// de détail porte la lecture complète et l'explication.
 class HadithCard extends StatefulWidget {
-  const HadithCard({super.key, this.service});
+  const HadithCard({super.key, this.service, this.shareService});
 
-  /// Injectable pour les tests ; par défaut le service réel.
+  /// Injectables pour les tests ; par défaut les services réels.
   final HadithService? service;
+  final ShareService? shareService;
 
   @override
   State<HadithCard> createState() => _HadithCardState();
@@ -116,6 +118,19 @@ class _HadithCardState extends State<HadithCard> {
             tooltip: 'Revenir au hadith du jour',
             onPressed: _isLoading ? null : _loadDaily,
           ),
+        Builder(
+          builder: (buttonContext) => IconButton(
+            icon: const Icon(Icons.ios_share_rounded),
+            tooltip: 'Partager le hadith',
+            onPressed: _isLoading || _result == null
+                ? null
+                : () => (widget.shareService ?? ShareService()).shareHadith(
+                      _result!.hadith,
+                      origin: ShareService.originOf(buttonContext),
+                      context: context,
+                    ),
+          ),
+        ),
         IconButton(
           icon: const Icon(Icons.shuffle_rounded),
           tooltip: 'Afficher un autre hadith',
