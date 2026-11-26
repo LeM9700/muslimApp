@@ -189,17 +189,13 @@ class _TasbihScreenState extends State<TasbihScreen> {
     );
   }
 
-  String _statusText(TasbihCounter counter) {
-    final event = _controller.lastEvent;
-    if (event == TasbihEvent.sequenceDone)
-      return 'Les 100 sont faits, qu’Allah les accepte';
-    if (event == TasbihEvent.targetReached)
-      return 'Objectif atteint · tour ${counter.rounds}';
-    if (counter.isSequence) {
-      return 'Étape ${counter.stepIndex + 1} / ${counter.steps.length}';
-    }
-    return counter.current.target == 0 ? 'Sans limite' : 'Touchez pour compter';
-  }
+  String _statusText(TasbihCounter counter) => switch (_controller.lastEvent) {
+        TasbihEvent.sequenceDone => 'Les 100 sont faits, qu’Allah les accepte',
+        TasbihEvent.targetReached => 'Objectif atteint · tour ${counter.rounds}',
+        _ when counter.isSequence =>
+          'Étape ${counter.stepIndex + 1} / ${counter.steps.length}',
+        _ => counter.current.target == 0 ? 'Sans limite' : 'Touchez pour compter',
+      };
 }
 
 class _CounterRing extends StatelessWidget {
