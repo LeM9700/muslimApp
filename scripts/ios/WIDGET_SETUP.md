@@ -46,11 +46,28 @@ Profiles → **+** → **App Store Connect** (Distribution) → Continue
 
 ## 6. Mettre à jour les secrets GitHub
 
-Sur un Mac, pour chaque fichier téléchargé :
+Pour chaque fichier téléchargé, encoder en base64 **sur une seule ligne** :
 
 ```bash
+# Linux (-w 0 : sans retour à la ligne, sinon le secret peut être corrompu)
+base64 -w 0 <fichier>.mobileprovision > profil.b64      # puis copier le contenu
+base64 -w 0 <fichier>.mobileprovision | xclip -selection clipboard   # X11
+base64 -w 0 <fichier>.mobileprovision | wl-copy                      # Wayland
+
+# macOS
 base64 -i <fichier>.mobileprovision | pbcopy
 ```
+
+Vérifier avant de coller (Linux ou macOS) :
+
+```bash
+openssl smime -inform der -verify -noverify -in <fichier>.mobileprovision 2>/dev/null \
+  | grep -A3 -E "application-groups|time-sensitive"
+```
+
+Les deux profils doivent contenir `group.com.elboazzati.muslimapp`, celui de
+l'app aussi `usernotifications.time-sensitive`. Supprimer ensuite les
+fichiers `.b64` (ce sont vos profils de signature).
 
 GitHub → Settings → Secrets and variables → Actions :
 - **mettre à jour** `IOS_PROVISIONING_PROFILE_BASE64` (profil de l'étape 4) ;
