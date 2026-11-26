@@ -1,4 +1,6 @@
 import '../models/adhan_mode.dart';
+import '../models/calendar_settings.dart';
+import '../models/hijri_date.dart';
 import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
@@ -183,6 +185,7 @@ class PrayerNotificationPlanner {
     required NotificationSettings settings,
     required DateTime now,
     required String cityName,
+    CalendarSettings calendar = const CalendarSettings(),
     int budget = defaultBudget,
     String Function(DateTime instant)? formatTime,
   }) {
@@ -191,7 +194,7 @@ class PrayerNotificationPlanner {
     final threshold = now.toUtc().add(minimumLead);
     final candidates = <PlannedNotification>[
       if (settings.night.isActive)
-        ..._nightCandidates(days, settings.night, fmt),
+        ..._nightCandidates(days, settings.night, calendar, fmt),
     ];
     final prayersOn = settings.prayersEnabled && settings.prayers.isNotEmpty;
 
@@ -253,6 +256,7 @@ class PrayerNotificationPlanner {
   static List<PlannedNotification> _nightCandidates(
     List<PrayerDay> days,
     NightPrayerSettings night,
+    CalendarSettings calendar,
     String Function(DateTime) fmt,
   ) {
     final result = <PlannedNotification>[];
@@ -267,13 +271,16 @@ class PrayerNotificationPlanner {
           fajrMarginMinutes: night.fajrMarginMinutes);
 
       // Soirée : Tarawih pendant le Ramadan (s'il est activé), sinon rappel.
-      final ramadan = NightPrayerCalculator.isRamadanNight(day, next);
+      // Le mois suit l'ajustement choisi par le croyant (annonce locale).
+      final hijri = NightPrayerCalculator.hijriOfNight(day,
+          adjustment: calendar.hijriAdjustment);
+      final ramadan = hijri?.isRamadan ?? false;
       if (ramadan && night.tarawih != AdhanMode.off) {
         final at = isha.add(NightPrayerSettings.tarawihDelay);
         result.add(PlannedNotification.night(
           id: 0,
           when: at,
-          title: 'Tarawih · ${fmt(at)}',
+          title: 'Tarawih · ${ramadanNight(hijri!)}',
           body: 'Celui qui prie les nuits de Ramadan avec foi et espérance '
               'voit ses péchés passés pardonnés (Bukhari 37, Muslim 759).',
           slot: NightSlot.tarawih,
@@ -302,7 +309,9 @@ class PrayerNotificationPlanner {
         result.add(PlannedNotification.night(
           id: 0,
           when: lastThird.at,
-          title: 'Prière de nuit · ${fmt(lastThird.at)}',
+          title: 'Prière de nuit · ${fmt(lastThird.at)}'
+              // Dix dernières nuits : on donne le numéro (Laylat al-Qadr).
+              '${ramadan && hijri!.day >= 21 ? ' · ${ramadanNight(hijri)}' : ''}',
           body: lastThird.clampedByMargin
               ? 'Le dernier tiers de la nuit est entamé, Fajr à '
                   '${fmt(window.fajrNext)}. Notre Seigneur descend au ciel le '
@@ -317,6 +326,10 @@ class PrayerNotificationPlanner {
     }
     return result;
   }
+
+  /// « 1re nuit de Ramadan », « 27e nuit de Ramadan ».
+  static String ramadanNight(HijriDate date) =>
+      '${date.day == 1 ? '1re' : '${date.day}e'} nuit de Ramadan';
 
   /// Nombre de jours restant couverts par [days] à partir de [now] :
   /// sert à décider s'il faut retélécharger le calendrier.

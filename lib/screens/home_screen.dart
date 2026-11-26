@@ -13,6 +13,7 @@ import '../widgets/city_search_widget.dart';
 import '../widgets/prayer_reminder_prompt.dart';
 import '../widgets/onboarding_overlay.dart';
 import '../widgets/glass_widgets.dart';
+import '../widgets/today_date_label.dart';
 import '../navigation/main_navigation.dart';
 import '../services/prayer_service.dart';
 import '../services/firebase_service.dart';
@@ -382,12 +383,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
         ),
         const SizedBox(height: 4),
-        Text(
-          _formatDate(now),
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppColors.textMuted,
-              ),
-        ),
+        // Calendrier grégorien ou hégirien, selon la préférence.
+        const TodayDateLabel(),
       ],
     );
   }
@@ -625,26 +622,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ],
     );
-  }
-
-  /// Formate la date en français (ex: "14 octobre 2025")
-  /// Utilisé dans la section de bienvenue
-  String _formatDate(DateTime date) {
-    const List<String> months = [
-      'janvier',
-      'février',
-      'mars',
-      'avril',
-      'mai',
-      'juin',
-      'juillet',
-      'août',
-      'septembre',
-      'octobre',
-      'novembre',
-      'décembre'
-    ];
-
-    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 }

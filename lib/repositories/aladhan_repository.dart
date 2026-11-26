@@ -90,13 +90,12 @@ class AladhanRepository {
       }
       if (times.length != Prayer.values.length) continue;
 
-      final date = entry['date'] as Map<String, dynamic>?;
-      final gregorian = date?['gregorian'] as Map<String, dynamic>?;
+      final gregorian =
+          (entry['date'] as Map<String, dynamic>?)?['gregorian'] as Map<String, dynamic>?;
       days.add(PrayerDay(
         dateKey: _isoDate(gregorian?['date'] as String?) ??
             times[Prayer.fajr]!.toIso8601String().substring(0, 10),
         times: times,
-        hijriMonth: _hijriMonth(date?['hijri']),
       ));
       methodName = ((entry['meta'] as Map<String, dynamic>?)?['method']
               as Map<String, dynamic>?)?['name'] as String? ??
@@ -104,15 +103,6 @@ class AladhanRepository {
     }
     if (days.isEmpty) throw const AladhanException('Aucun horaire exploitable');
     return PrayerMonth(days, methodName);
-  }
-
-  /// `date.hijri.month.number` (1 à 12), `null` si absent ou invalide.
-  static int? _hijriMonth(Object? hijri) {
-    if (hijri is! Map) return null;
-    final month = hijri['month'];
-    final number = month is Map ? month['number'] : null;
-    final value = number is int ? number : int.tryParse('$number');
-    return value != null && value >= 1 && value <= 12 ? value : null;
   }
 
   /// « 20-11-2026 » → « 2026-11-20 ».

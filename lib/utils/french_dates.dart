@@ -24,4 +24,13 @@ class FrenchDates {
     final day = local.day == 1 ? '1er' : '${local.day}';
     return '${_weekdays[local.weekday - 1]} $day ${_months[local.month - 1]}';
   }
+
+  /// « jeudi 26 novembre 2026 » pour une journée civile (sans conversion
+  /// de fuseau : seuls l'année, le mois et le jour comptent).
+  static String fullDate(DateTime civilDate) {
+    final weekday = DateTime.utc(civilDate.year, civilDate.month, civilDate.day).weekday;
+    final day = civilDate.day == 1 ? '1er' : '${civilDate.day}';
+    return '${_weekdays[weekday - 1]} $day ${_months[civilDate.month - 1]} '
+        '${civilDate.year}';
+  }
 }

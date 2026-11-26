@@ -1,4 +1,6 @@
+import '../models/hijri_date.dart';
 import '../models/prayer_schedule.dart';
+import 'hijri_converter.dart';
 
 /// Nuit allant du Maghrib du jour J au Fajr du jour J+1 (instants UTC).
 class NightWindow {
@@ -66,15 +68,17 @@ class NightPrayerCalculator {
         : LastThirdTime(natural, clampedByMargin: false);
   }
 
-  /// Vrai si la soirée de [day] est une nuit de Ramadan.
+  /// Date hégirienne de la nuit qui suit le jour civil [day].
   ///
   /// Le jour hégirien commence au Maghrib : la nuit de J appartient au
   /// jour hégirien de J+1. La 1re nuit de Tarawih est donc la veille du
-  /// 1er jeûne, et la veille de l'Aïd n'en est pas une. Sans lendemain
-  /// connu ou sans mois hégirien, on répond `false`.
-  static bool isRamadanNight(PrayerDay day, PrayerDay? next) {
-    if (next == null || !_isNextDay(day.dateKey, next.dateKey)) return false;
-    return next.hijriMonth == PrayerDay.ramadan;
+  /// 1er jeûne, et la veille de l'Aïd n'en est pas une. `null` hors de la
+  /// table Umm al-Qura.
+  static HijriDate? hijriOfNight(PrayerDay day, {int adjustment = 0}) {
+    final d = DateTime.tryParse(day.dateKey);
+    if (d == null) return null;
+    return HijriConverter.fromCivil(DateTime.utc(d.year, d.month, d.day + 1),
+        adjustment: adjustment);
   }
 
   static bool _isNextDay(String dateKey, String nextKey) {

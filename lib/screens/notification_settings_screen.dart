@@ -3,10 +3,15 @@ import 'package:geolocator/geolocator.dart';
 
 import '../controllers/notification_settings_controller.dart';
 import '../models/adhan_mode.dart';
+import '../models/calendar_settings.dart';
 import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 import '../services/adhan_audio.dart';
+import '../services/calendar_preferences.dart';
+import '../services/hijri_converter.dart';
+import '../services/night_prayer_calculator.dart';
+import '../services/prayer_notification_planner.dart';
 import '../services/prayer_notification_service.dart';
 import '../utils/app_theme.dart';
 import '../utils/french_dates.dart';
@@ -14,11 +19,17 @@ import '../widgets/glass_widgets.dart';
 
 /// Réglages des notifications : rappels de prière, hadith et quiz.
 class NotificationSettingsScreen extends StatefulWidget {
-  const NotificationSettingsScreen({super.key, this.service, this.preview});
+  const NotificationSettingsScreen({
+    super.key,
+    this.service,
+    this.preview,
+    this.calendar,
+  });
 
   /// Injectables pour les tests.
   final PrayerNotificationService? service;
   final AdhanPlayback? preview;
+  final CalendarPreferences? calendar;
 
   static Future<void> open(BuildContext context) {
     return Navigator.of(context).push(
@@ -37,7 +48,9 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     with WidgetsBindingObserver {
   late final NotificationSettingsController _controller =
       NotificationSettingsController(
-          service: widget.service, preview: widget.preview);
+          service: widget.service,
+          preview: widget.preview,
+          calendar: widget.calendar);
 
   @override
   void initState() {
@@ -107,6 +120,8 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                   _buildPrayerSection(context),
                   const SizedBox(height: 16),
                   _buildNightSection(context),
+                  const SizedBox(height: 16),
+                  _buildCalendarSection(context),
                   const SizedBox(height: 16),
                   _buildDailySection(context),
                   const SizedBox(height: 20),
@@ -201,7 +216,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
             trailing: const Icon(Icons.chevron_right),
             onTap: busy ? null : () => _pickMethod(context, settings.methodId),
           ),
-          _CoverageNote(status: status),
+          _CoverageNote(status: status, calendar: _controller.calendar),
         ],
       ],
     );
@@ -291,16 +306,84 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
             ),
           ],
           const SizedBox(height: 4),
-          slotTile(
-            NightSlot.tarawih,
-            '15 min après l’Isha, remplace le rappel du soir',
-          ),
-          const _InlineMessage(
-            icon: Icons.info_outline,
-            text: 'Dates du Ramadan selon le calendrier hégirien calculé : '
-                'elles peuvent différer d’un jour de l’annonce locale.',
-          ),
+          slotTile(NightSlot.tarawih, _tarawihSubtitle(status)),
         ],
+      ],
+    );
+  }
+
+  /// « Ce soir : 12e nuit de Ramadan » pendant le Ramadan.
+  String _tarawihSubtitle(NotificationStatus status) {
+    const base = '15 min après l’Isha, remplace le rappel du soir';
+    final today = status.today;
+    if (today == null) return base;
+    final hijri = NightPrayerCalculator.hijriOfNight(today,
+        adjustment: _controller.calendar.hijriAdjustment);
+    if (hijri == null || !hijri.isRamadan) return base;
+    return 'Ce soir : ${PrayerNotificationPlanner.ramadanNight(hijri)} · $base';
+  }
+
+  Widget _buildCalendarSection(BuildContext context) {
+    final calendar = _controller.calendar;
+    final busy = _controller.isBusy;
+    final textTheme = Theme.of(context).textTheme;
+    final labels = DateLabels.of(DateTime.now(), calendar);
+
+    return _Panel(
+      title: 'Calendrier',
+      icon: Icons.calendar_month_outlined,
+      children: [
+        const SizedBox(height: 4),
+        Text(labels.primary,
+            key: const ValueKey('calendar-primary'),
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+        if (labels.secondary.isNotEmpty)
+          Text(labels.secondary,
+              key: const ValueKey('calendar-secondary'),
+              style: textTheme.bodyMedium
+                  ?.copyWith(color: AppColors.textSecondary)),
+        const SizedBox(height: 12),
+        Text('Afficher les dates en', style: textTheme.titleSmall),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: double.infinity,
+          child: SegmentedButton<DateCalendar>(
+            showSelectedIcon: false,
+            segments: [
+              for (final c in DateCalendar.values)
+                ButtonSegment(value: c, label: Text(c.label)),
+            ],
+            selected: {calendar.primary},
+            onSelectionChanged:
+                busy ? null : (s) => _controller.setPrimaryCalendar(s.first),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text('Ajuster la date hégirienne', style: textTheme.titleSmall),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: double.infinity,
+          child: SegmentedButton<int>(
+            showSelectedIcon: false,
+            segments: [
+              for (final d in CalendarSettings.adjustmentChoices)
+                ButtonSegment(
+                  value: d,
+                  label: Text(d == 0 ? '0' : '${d > 0 ? '+' : '−'}${d.abs()} j'),
+                ),
+            ],
+            selected: {calendar.hijriAdjustment},
+            onSelectionChanged:
+                busy ? null : (s) => _controller.setHijriAdjustment(s.first),
+          ),
+        ),
+        const _InlineMessage(
+          icon: Icons.info_outline,
+          text: 'Calendrier Umm al-Qura. Le début des mois suit souvent '
+              'l’observation de la lune : décalez d’un jour pour suivre '
+              'l’annonce de votre mosquée. Le Ramadan et les Tarawih suivent '
+              'ce réglage.',
+        ),
       ],
     );
   }
@@ -457,8 +540,9 @@ class _Panel extends StatelessWidget {
 }
 
 class _CoverageNote extends StatelessWidget {
-  const _CoverageNote({required this.status});
+  const _CoverageNote({required this.status, required this.calendar});
   final NotificationStatus status;
+  final CalendarSettings calendar;
 
   @override
   Widget build(BuildContext context) {
@@ -473,7 +557,8 @@ class _CoverageNote extends StatelessWidget {
     if (until == null || !status.hasPermission) return const SizedBox.shrink();
     return _InlineMessage(
       icon: Icons.event_available_outlined,
-      text: 'Rappels programmés jusqu’au ${FrenchDates.dayMonth(until)}. '
+      text: 'Rappels programmés jusqu’au '
+          '${DateLabels.inSentence(until, calendar)}. '
           'Ils se prolongent automatiquement à chaque ouverture de Deen.',
     );
   }

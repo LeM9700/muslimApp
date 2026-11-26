@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
 
 import '../models/adhan_mode.dart';
+import '../models/calendar_settings.dart';
 import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 import '../services/adhan_audio.dart';
+import '../services/calendar_preferences.dart';
 import '../services/prayer_notification_service.dart';
 
 /// Message ponctuel à afficher après une action (bandeau / snackbar).
@@ -18,13 +20,18 @@ class NotificationSettingsController extends ChangeNotifier {
   NotificationSettingsController({
     PrayerNotificationService? service,
     AdhanPlayback? preview,
+    CalendarPreferences? calendar,
   })  : _service = service ?? PrayerNotificationService.instance,
-        _previewFactory = _factoryFor(preview);
+        _calendar = calendar ?? CalendarPreferences.instance,
+        _previewFactory = _factoryFor(preview) {
+    _calendar.addListener(_notify);
+  }
 
   static AdhanPlayback Function() _factoryFor(AdhanPlayback? preview) =>
       preview == null ? JustAudioAdhanPlayback.new : () => preview;
 
   final PrayerNotificationService _service;
+  final CalendarPreferences _calendar;
 
   /// Lecteur d'aperçu créé à la première écoute (pas de player natif
   /// alloué pour rien si l'utilisateur n'écoute jamais).
@@ -55,9 +62,25 @@ class NotificationSettingsController extends ChangeNotifier {
   }
 
   Future<void> load() async {
+    await _calendar.load();
     _status = await _service.status();
     _notify();
   }
+
+  /// Préférences de calendrier (partagées avec l'accueil).
+  CalendarSettings get calendar => _calendar.settings;
+
+  Future<void> setPrimaryCalendar(DateCalendar primary) =>
+      _setCalendar(calendar.copyWith(primary: primary));
+
+  /// L'ajustement déplace aussi le Ramadan : on reprogramme.
+  Future<void> setHijriAdjustment(int days) =>
+      _setCalendar(calendar.copyWith(hijriAdjustment: days));
+
+  Future<void> _setCalendar(CalendarSettings next) => _run(() async {
+        await _calendar.update(next);
+        await _service.reschedule(force: true);
+      });
 
   void clearNotice() {
     if (_notice == SettingsNotice.none) return;
@@ -202,6 +225,7 @@ class NotificationSettingsController extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    _calendar.removeListener(_notify);
     _preview?.dispose();
     super.dispose();
   }

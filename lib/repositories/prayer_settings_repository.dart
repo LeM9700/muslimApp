@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/calendar_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 
@@ -48,6 +49,7 @@ class PrayerSettingsRepository {
   static const String _locationKey = 'prayer_location_v1';
   static const String _calendarKey = 'prayer_calendar_v1';
   static const String _promptDismissedKey = 'notif_prompt_dismissed_v1';
+  static const String _calendarSettingsKey = 'calendar_settings_v1';
 
   Future<NotificationSettings> readSettings() async {
     final map = await _readMap(_settingsKey);
@@ -79,6 +81,13 @@ class PrayerSettingsRepository {
 
   Future<void> writeCalendar(CachedCalendar calendar) =>
       _write(_calendarKey, calendar.toJson());
+
+  /// Préférences de calendrier (grégorien / hégirien, ajustement).
+  Future<CalendarSettings> readCalendarSettings() async =>
+      CalendarSettings.fromJson(await _readMap(_calendarSettingsKey));
+
+  Future<void> writeCalendarSettings(CalendarSettings settings) =>
+      _write(_calendarSettingsKey, settings.toJson());
 
   Future<bool> isPromptDismissed() async {
     final prefs = await SharedPreferences.getInstance();

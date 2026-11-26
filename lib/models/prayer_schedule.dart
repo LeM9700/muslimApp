@@ -34,15 +34,7 @@ class PrayerDay {
   /// Instants UTC de chaque prière.
   final Map<Prayer, DateTime> times;
 
-  /// Mois hégirien de la journée (9 = Ramadan), tel que calculé par
-  /// Aladhan. `null` pour un calendrier mis en cache avant la v1.4.0 :
-  /// le mois est alors inconnu, jamais deviné.
-  final int? hijriMonth;
-
-  const PrayerDay({required this.dateKey, required this.times, this.hijriMonth});
-
-  /// Numéro du mois de Ramadan dans le calendrier hégirien.
-  static const int ramadan = 9;
+  const PrayerDay({required this.dateKey, required this.times});
 
   factory PrayerDay.fromJson(Map<String, dynamic> json) {
     final raw = json['times'] as Map<String, dynamic>? ?? const {};
@@ -54,7 +46,6 @@ class PrayerDay {
               DateTime.tryParse('${entry.value}') != null)
             Prayer.fromName(entry.key)!: DateTime.parse('${entry.value}').toUtc(),
       },
-      hijriMonth: json['hijriMonth'] is int ? json['hijriMonth'] as int : null,
     );
   }
 
@@ -63,7 +54,6 @@ class PrayerDay {
         'times': {
           for (final e in times.entries) e.key.name: e.value.toIso8601String(),
         },
-        if (hijriMonth != null) 'hijriMonth': hijriMonth,
       };
 }
 

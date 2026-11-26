@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../models/adhan_mode.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 import '../repositories/aladhan_repository.dart';
@@ -211,6 +210,7 @@ class PrayerNotificationService {
     final plan = PrayerNotificationPlanner.plan(
       days: days,
       settings: settings,
+      calendar: await _store.readCalendarSettings(),
       now: now,
       cityName: location.cityName,
     );
@@ -225,10 +225,6 @@ class PrayerNotificationService {
   /// Calendrier couvrant au moins [minDaysAhead] jours : cache si possible,
   /// sinon Aladhan (mois courant + suivant si besoin). Hors connexion, un
   /// cache même court vaut mieux que rien ; sans cache, liste vide.
-  ///
-  /// [⚠️ PROD] Un cache antérieur à la v1.4.0 n'a pas le mois hégirien :
-  /// si les Tarawih sont activés, on le retélécharge une fois (le cache
-  /// reste lisible et sert de repli hors connexion, sans Tarawih).
   Future<List<PrayerDay>> _calendarFor(
     PrayerLocation location,
     NotificationSettings settings,
@@ -237,10 +233,7 @@ class PrayerNotificationService {
     final methodId = settings.methodId;
     final cached = await _store.readCalendar();
     final cacheOk = cached != null && cached.matches(location, methodId);
-    final needsHijri = settings.night.isActive &&
-        settings.night.tarawih != AdhanMode.off;
     if (cacheOk &&
-        (!needsHijri || cached.days.every((d) => d.hijriMonth != null)) &&
         PrayerNotificationPlanner.daysAhead(cached.days, now) >= minDaysAhead) {
       _methodName = cached.methodName;
       return cached.days;
