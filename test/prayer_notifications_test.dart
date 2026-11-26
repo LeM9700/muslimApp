@@ -13,12 +13,12 @@ import 'package:muslim_app/models/adhan_dua.dart';
 import 'package:muslim_app/screens/adhan_player_screen.dart';
 import 'package:muslim_app/screens/notification_settings_screen.dart';
 import 'package:muslim_app/services/adhan_audio.dart';
-import 'package:muslim_app/services/notification_gateway.dart';
 import 'package:muslim_app/services/prayer_notification_planner.dart';
 import 'package:muslim_app/services/prayer_notification_service.dart';
 import 'package:muslim_app/utils/french_dates.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'support/fake_gateway.dart';
 import 'support/fake_playback.dart';
 
 const _paris = PrayerLocation(latitude: 48.8566, longitude: 2.3522, cityName: 'Paris');
@@ -66,48 +66,6 @@ MockClient _aladhan({bool offline = false, List<Uri>? calls}) {
       200,
     );
   });
-}
-
-class FakeGateway implements NotificationGateway {
-  bool permission;
-  bool grantOnRequest;
-  int requests = 0;
-  final List<DailyNotification> daily = [];
-  final List<PlannedNotification> prayers = [];
-  int tests = 0;
-
-  int prepared = 0;
-
-  FakeGateway({this.permission = true, this.grantOnRequest = true});
-
-  @override
-  Future<void> prepare() async => prepared++;
-
-  @override
-  Future<bool> hasPermission() async => permission;
-
-  @override
-  Future<bool> requestPermission() async {
-    requests++;
-    permission = grantOnRequest;
-    return permission;
-  }
-
-  @override
-  Future<void> cancelAll() async {
-    daily.clear();
-    prayers.clear();
-  }
-
-  @override
-  Future<void> scheduleDaily(DailyNotification n) async => daily.add(n);
-
-  @override
-  Future<void> schedulePrayer(PlannedNotification n) async => prayers.add(n);
-
-  @override
-  Future<void> showTest({required String title, required String body}) async =>
-      tests++;
 }
 
 /// 20 novembre 2026, 08:00 UTC (09:00 à Paris).
@@ -564,7 +522,7 @@ void main() {
 
     Map<Prayer, AdhanMode> scheduledModes(FakeGateway gateway) => {
           for (final n in gateway.prayers.where((n) => n.kind == PlannedKind.prayer))
-            n.prayer: n.mode,
+            n.prayer!: n.mode,
         };
 
     testWidgets('profil Équilibré par défaut, mode affiché par prière',
