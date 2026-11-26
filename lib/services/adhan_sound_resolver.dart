@@ -105,8 +105,16 @@ class AdhanSoundResolver {
 
   static const List<AdhanSound> night = [nightSilent, nightNotification];
 
+  /// Rappels de jeûne (la veille) : canal à part, réglable dans Android.
+  static const fasting = AdhanSound(
+    androidChannelId: 'fasting_v1',
+    androidChannelName: 'Jeûnes',
+    androidChannelDescription: 'Rappel la veille des jeûnes surérogatoires',
+    playSound: true,
+  );
+
   /// Tous les canaux à créer au démarrage de l'app.
-  static const List<AdhanSound> channels = [...all, ...night];
+  static const List<AdhanSound> channels = [...all, ...night, fasting];
 
   /// [AdhanMode.off] n'est jamais programmé : appeler avec ce mode est une
   /// erreur de l'appelant, signalée tôt plutôt que masquée.

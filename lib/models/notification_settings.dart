@@ -1,4 +1,5 @@
 import 'adhan_mode.dart';
+import 'fasting.dart';
 import 'night_prayer_settings.dart';
 import 'prayer_schedule.dart';
 
@@ -24,6 +25,9 @@ class NotificationSettings {
   /// Prière de nuit (désactivée par défaut, indépendante de [prayersEnabled]).
   final NightPrayerSettings night;
 
+  /// Rappels des jeûnes surérogatoires (la veille, après l'Isha).
+  final FastingSettings fasting;
+
   /// Chronologie des prières sur l'écran verrouillé (widget iOS).
   /// Désactivée par défaut ; ne demande pas l'autorisation de notifier.
   final bool lockScreenWidget;
@@ -37,6 +41,7 @@ class NotificationSettings {
     this.quizDaily = true,
     this.night = const NightPrayerSettings(),
     this.lockScreenWidget = false,
+    this.fasting = const FastingSettings(),
   }) : _modes = modes;
 
   // Champ privé + getter : permet un constructeur `const` avec un profil
@@ -64,6 +69,7 @@ class NotificationSettings {
     bool? quizDaily,
     NightPrayerSettings? night,
     bool? lockScreenWidget,
+    FastingSettings? fasting,
   }) {
     return NotificationSettings(
       prayersEnabled: prayersEnabled ?? this.prayersEnabled,
@@ -74,12 +80,14 @@ class NotificationSettings {
       quizDaily: quizDaily ?? this.quizDaily,
       night: night ?? this.night,
       lockScreenWidget: lockScreenWidget ?? this.lockScreenWidget,
+      fasting: fasting ?? this.fasting,
     );
   }
 
   /// Les notifications de prière (5 prières ou prière de nuit) ont besoin
   /// du calendrier et de la position.
-  bool get needsCalendar => prayersEnabled || night.isActive || lockScreenWidget;
+  bool get needsCalendar =>
+      prayersEnabled || night.isActive || lockScreenWidget || fasting.isActive;
 
   /// Change le mode d'une seule prière.
   NotificationSettings withMode(Prayer prayer, AdhanMode mode) =>
@@ -90,8 +98,8 @@ class NotificationSettings {
   /// comportement qu'avait l'utilisateur), une prière décochée « Désactivé ».
   /// On ne bascule jamais un utilisateur existant sur l'adhan sans son accord.
   ///
-  /// [⚠️ PROD] v1.3.0 → v1.4.0 : les clés `night` et `lockScreenWidget`
-  /// sont absentes des réglages existants : tout reste désactivé.
+  /// [⚠️ PROD] v1.3.0 → v1.4.0 : les clés `night`, `lockScreenWidget` et
+  /// `fasting` sont absentes des réglages existants : tout reste désactivé.
   factory NotificationSettings.fromJson(Map<String, dynamic> json) {
     final reminder = json['reminderMinutes'] as int? ?? 0;
     return NotificationSettings(
@@ -103,6 +111,7 @@ class NotificationSettings {
       quizDaily: json['quizDaily'] as bool? ?? true,
       night: NightPrayerSettings.fromJson(json['night']),
       lockScreenWidget: json['lockScreenWidget'] == true,
+      fasting: FastingSettings.fromJson(json['fasting']),
     );
   }
 
@@ -134,5 +143,6 @@ class NotificationSettings {
         'quizDaily': quizDaily,
         'night': night.toJson(),
         'lockScreenWidget': lockScreenWidget,
+        'fasting': fasting.toJson(),
       };
 }

@@ -14,6 +14,7 @@ import '../widgets/prayer_reminder_prompt.dart';
 import '../widgets/onboarding_overlay.dart';
 import '../widgets/glass_widgets.dart';
 import '../widgets/today_date_label.dart';
+import '../widgets/next_fast_card.dart';
 import '../navigation/main_navigation.dart';
 import '../services/prayer_service.dart';
 import '../services/firebase_service.dart';
@@ -311,6 +312,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       // Horaires de prière complets
                       _buildPrayerTimesSection(),
+
+                      const SizedBox(height: 16),
+
+                      // Prochain jeûne surérogatoire (ouvre l'écran Jeûnes)
+                      const NextFastCard(),
 
                       const SizedBox(height: 16),
 

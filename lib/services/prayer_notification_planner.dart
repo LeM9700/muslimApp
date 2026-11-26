@@ -1,15 +1,18 @@
 import '../models/adhan_mode.dart';
 import '../models/calendar_settings.dart';
+import '../models/fasting.dart';
 import '../models/hijri_date.dart';
 import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
+import 'fast_calendar.dart';
 import 'night_prayer_calculator.dart';
 
 /// Nature d'une notification planifiée.
 ///
 /// [night] : prière de nuit, liée à un [NightSlot] et non à une [Prayer].
-enum PlannedKind { prayer, reminder, night }
+/// [fast] : rappel de jeûne la veille, lié à un [FastKind].
+enum PlannedKind { prayer, reminder, night, fast }
 
 /// Une notification à programmer, sans dépendance au plugin.
 class PlannedNotification {
@@ -25,6 +28,9 @@ class PlannedNotification {
   /// Créneau de la prière de nuit ; `null` sauf pour [PlannedKind.night].
   final NightSlot? nightSlot;
 
+  /// Jeûne rappelé ; `null` sauf pour [PlannedKind.fast].
+  final FastKind? fastKind;
+
   /// Son à utiliser. Jamais [AdhanMode.off] (filtré par le planificateur).
   final AdhanMode mode;
 
@@ -36,7 +42,8 @@ class PlannedNotification {
     required this.kind,
     required Prayer this.prayer,
     this.mode = AdhanMode.notification,
-  }) : nightSlot = null;
+  })  : nightSlot = null,
+        fastKind = null;
 
   /// Notification de prière de nuit (jamais d'adhan).
   const PlannedNotification.night({
@@ -48,7 +55,21 @@ class PlannedNotification {
     this.mode = AdhanMode.notification,
   })  : kind = PlannedKind.night,
         prayer = null,
-        nightSlot = slot;
+        nightSlot = slot,
+        fastKind = null;
+
+  /// Rappel de jeûne (son de notification simple).
+  const PlannedNotification.fast({
+    required this.id,
+    required this.when,
+    required this.title,
+    required this.body,
+    required FastKind kind,
+  })  : kind = PlannedKind.fast,
+        prayer = null,
+        nightSlot = null,
+        fastKind = kind,
+        mode = AdhanMode.notification;
 
   const PlannedNotification._copy({
     required this.id,
@@ -58,14 +79,17 @@ class PlannedNotification {
     required this.kind,
     required this.prayer,
     required this.nightSlot,
+    required this.fastKind,
     required this.mode,
   });
 
   /// Lu au tap sur la notification (voir `NotificationPayload` et
   /// `NightPayload`).
-  String get payload => kind == PlannedKind.night
-      ? NightPayload(nightSlot!, mode).encode()
-      : NotificationPayload.prayer(prayer!, mode).encode();
+  String get payload => switch (kind) {
+        PlannedKind.night => NightPayload(nightSlot!, mode).encode(),
+        PlannedKind.fast => FastPayload(fastKind!).encode(),
+        _ => NotificationPayload.prayer(prayer!, mode).encode(),
+      };
 
   PlannedNotification withId(int newId) => PlannedNotification._copy(
         id: newId,
@@ -75,6 +99,7 @@ class PlannedNotification {
         kind: kind,
         prayer: prayer,
         nightSlot: nightSlot,
+        fastKind: fastKind,
         mode: mode,
       );
 }
@@ -145,6 +170,28 @@ class NightPayload {
   }
 }
 
+/// Payload d'un rappel de jeûne (`fast:<type>`) : le tap ouvre l'écran
+/// « Jeûnes ».
+///
+/// [🔒 SÉCURITÉ] Parsing défensif : toute valeur inattendue donne `null`.
+class FastPayload {
+  final FastKind kind;
+
+  const FastPayload(this.kind);
+
+  static const String _prefix = 'fast';
+
+  String encode() => '$_prefix:${kind.name}';
+
+  static FastPayload? decode(String? raw) {
+    if (raw == null) return null;
+    final parts = raw.split(':');
+    if (parts.length != 2 || parts[0] != _prefix) return null;
+    final kind = FastKind.fromName(parts[1]);
+    return kind == null ? null : FastPayload(kind);
+  }
+}
+
 /// Résultat de la planification : les notifications et la date jusqu'à
 /// laquelle les rappels sont garantis (affichée à l'utilisateur).
 class PrayerPlan {
@@ -195,6 +242,8 @@ class PrayerNotificationPlanner {
     final candidates = <PlannedNotification>[
       if (settings.night.isActive)
         ..._nightCandidates(days, settings.night, calendar, fmt),
+      if (settings.fasting.isActive)
+        ..._fastCandidates(days, settings.fasting, calendar),
     ];
     final prayersOn = settings.prayersEnabled && settings.prayers.isNotEmpty;
 
@@ -325,6 +374,54 @@ class PrayerNotificationPlanner {
       }
     }
     return result;
+  }
+
+  /// Rappels de jeûne : la veille, 30 min après l'Isha (moment de
+  /// l'intention et de prévoir le sahour). Il faut l'Isha de la veille :
+  /// sans horaires, pas de rappel (jamais d'heure devinée).
+  static List<PlannedNotification> _fastCandidates(
+    List<PrayerDay> days,
+    FastingSettings fasting,
+    CalendarSettings calendar,
+  ) {
+    final result = <PlannedNotification>[];
+    for (final day in days) {
+      final isha = day.times[Prayer.isha];
+      final eve = DateTime.tryParse(day.dateKey);
+      if (isha == null || eve == null) continue;
+      final fast = FastCalendar.on(
+        DateTime(eve.year, eve.month, eve.day + 1),
+        adjustment: calendar.hijriAdjustment,
+        kinds: fasting.kinds,
+      );
+      if (fast == null) continue;
+      final main = fast.mainKind;
+      result.add(PlannedNotification.fast(
+        id: 0,
+        when: isha.add(FastingSettings.reminderAfterIsha),
+        title: main == FastKind.ramadanStart
+            ? 'Le Ramadan commence demain'
+            : 'Demain : ${fast.title}',
+        body: switch (main) {
+          FastKind.ramadanStart => '${_cited(main)} '
+              'Formulez l’intention du jeûne et pensez au sahour.',
+          FastKind.shawwal when fast.hijri.day != 2 =>
+            'Il reste la moitié du mois pour jeûner les 6 jours de Chawwal '
+                '(${main.reference}).',
+          _ => '${_cited(main)} Pensez à l’intention et au sahour.',
+        },
+        kind: main,
+      ));
+    }
+    return result;
+  }
+
+  /// « Mérite du jeûne (Référence). »
+  static String _cited(FastKind kind) {
+    final virtue = kind.virtue.endsWith('.')
+        ? kind.virtue.substring(0, kind.virtue.length - 1)
+        : kind.virtue;
+    return '$virtue (${kind.reference}).';
   }
 
   /// « 1re nuit de Ramadan », « 27e nuit de Ramadan ».

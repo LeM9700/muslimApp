@@ -153,6 +153,14 @@ class PrayerNotificationService {
     return EnableOutcome.enabled;
   }
 
+  /// Active les rappels de jeûne (la veille, après l'Isha) : position
+  /// pour l'heure de l'Isha, autorisation au moment du geste.
+  Future<EnableOutcome> enableFasting() =>
+      _enable((s) => s.copyWith(fasting: s.fasting.copyWith(enabled: true)));
+
+  /// Réglages enregistrés, sans téléchargement (contrairement à [status]).
+  Future<NotificationSettings> readSettings() => _store.readSettings();
+
   /// Active la chronologie sur l'écran verrouillé. Seule la position est
   /// nécessaire : un widget n'a pas besoin de l'autorisation de notifier.
   Future<EnableOutcome> enableLockScreenWidget() async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/prayer_schedule.dart';
 import '../screens/adhan_player_screen.dart';
+import '../screens/fasting_screen.dart';
 import 'prayer_notification_planner.dart';
 
 /// Ouvre le bon écran quand l'utilisateur appuie sur une notification.
@@ -11,7 +12,8 @@ import 'prayer_notification_planner.dart';
 /// juste l'app, sans écran inattendu.
 ///
 /// Les notifications de prière de nuit (`night:…`, voir `NightPayload`)
-/// ne sont pas reconnues ici : elles ouvrent simplement l'app.
+/// ne sont pas reconnues ici : elles ouvrent simplement l'app. Un rappel
+/// de jeûne (`fast:…`) ouvre l'écran « Jeûnes ».
 class NotificationRouter {
   /// [navigatorKey] est injecté (celui de `MyApp`) plutôt qu'importé : le
   /// routeur reste indépendant de l'arbre de l'app, donc testable seul.
@@ -19,13 +21,16 @@ class NotificationRouter {
     required GlobalKey<NavigatorState> navigatorKey,
     DateTime Function()? clock,
     void Function(NavigatorState navigator, Prayer prayer)? openPlayer,
+    void Function(NavigatorState navigator)? openFasting,
   })  : _navigatorKey = navigatorKey,
         _clock = clock ?? DateTime.now,
-        _openPlayer = openPlayer ?? _defaultOpenPlayer;
+        _openPlayer = openPlayer ?? _defaultOpenPlayer,
+        _openFasting = openFasting ?? _defaultOpenFasting;
 
   final GlobalKey<NavigatorState> _navigatorKey;
   final DateTime Function() _clock;
   final void Function(NavigatorState navigator, Prayer prayer) _openPlayer;
+  final void Function(NavigatorState navigator) _openFasting;
 
   /// Un même appui peut arriver deux fois (callback + détails de lancement
   /// sur certains appareils) : on ignore le doublon proche.
@@ -36,8 +41,10 @@ class NotificationRouter {
 
   /// Retourne vrai si un écran a été ouvert.
   bool handle(String? rawPayload) {
-    final payload = NotificationPayload.decode(rawPayload);
-    if (payload == null || !payload.mode.playsAdhan) return false;
+    final prayer = NotificationPayload.decode(rawPayload);
+    final fast = FastPayload.decode(rawPayload);
+    final opensPlayer = prayer != null && prayer.mode.playsAdhan;
+    if (!opensPlayer && fast == null) return false;
 
     final now = _clock();
     if (rawPayload == _lastPayload &&
@@ -50,8 +57,16 @@ class NotificationRouter {
 
     _lastPayload = rawPayload;
     _lastAt = now;
-    _openPlayer(navigator, payload.prayer);
+    if (opensPlayer) {
+      _openPlayer(navigator, prayer.prayer);
+    } else {
+      _openFasting(navigator);
+    }
     return true;
+  }
+
+  static void _defaultOpenFasting(NavigatorState navigator) {
+    navigator.push(MaterialPageRoute<void>(builder: (_) => const FastingScreen()));
   }
 
   static void _defaultOpenPlayer(NavigatorState navigator, Prayer prayer) {

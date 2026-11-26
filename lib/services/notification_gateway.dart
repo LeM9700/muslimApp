@@ -169,9 +169,11 @@ class LocalNotificationGateway implements NotificationGateway {
       body: n.body,
       // Instant absolu → converti dans le fuseau de l'appareil.
       at: tz.TZDateTime.from(n.when, tz.local),
-      details: n.kind == PlannedKind.night
-          ? nightDetailsFor(n.nightSlot!, n.mode)
-          : detailsFor(n.mode),
+      details: switch (n.kind) {
+        PlannedKind.night => nightDetailsFor(n.nightSlot!, n.mode),
+        PlannedKind.fast => fastDetails(),
+        _ => detailsFor(n.mode),
+      },
       payload: n.payload,
     );
   }
@@ -257,6 +259,28 @@ class LocalNotificationGateway implements NotificationGateway {
         interruptionLevel: sound.playSound && slot == NightSlot.lastThird
             ? InterruptionLevel.timeSensitive
             : InterruptionLevel.active,
+      ),
+    );
+  }
+
+  /// Détails d'un rappel de jeûne : simple notification, jamais urgente.
+  @visibleForTesting
+  static NotificationDetails fastDetails() {
+    const sound = AdhanSoundResolver.fasting;
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        sound.androidChannelId,
+        sound.androidChannelName,
+        channelDescription: sound.androidChannelDescription,
+        importance: Importance.high,
+        priority: Priority.defaultPriority,
+        category: AndroidNotificationCategory.reminder,
+        icon: '@mipmap/ic_launcher',
+        color: const Color(0xFF10B981),
+      ),
+      iOS: const DarwinNotificationDetails(
+        threadIdentifier: 'fasting',
+        interruptionLevel: InterruptionLevel.active,
       ),
     );
   }
