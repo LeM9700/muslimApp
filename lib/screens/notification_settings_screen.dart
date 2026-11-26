@@ -8,6 +8,7 @@ import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 import '../services/adhan_audio.dart';
+import 'fasting_screen.dart';
 import '../services/calendar_preferences.dart';
 import '../services/hijri_converter.dart';
 import '../services/night_prayer_calculator.dart';
@@ -16,6 +17,7 @@ import '../services/prayer_notification_service.dart';
 import '../utils/app_theme.dart';
 import '../utils/french_dates.dart';
 import '../widgets/glass_widgets.dart';
+import '../widgets/settings_panel.dart';
 
 /// Réglages des notifications : rappels de prière, hadith et quiz.
 class NotificationSettingsScreen extends StatefulWidget {
@@ -106,7 +108,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                   if (AdhanAudioCatalog.isTestAudio) ...[
                     // [⚠️ PROD] Visible par les testeurs : un build TestFlight
                     // peut être soumis à l'App Store en deux clics.
-                    const _InlineMessage(
+                    const InlineNote(
                       icon: Icons.science_outlined,
                       text: 'Build de test : l’audio de l’adhan n’est pas '
                           'publiable. Ne pas soumettre ce build à l’App Store.',
@@ -147,7 +149,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     final city = status.location?.cityName ?? '';
     final textTheme = Theme.of(context).textTheme;
 
-    return _Panel(
+    return SettingsPanel(
       title: 'Heures de prière',
       icon: Icons.mosque_outlined,
       children: [
@@ -166,7 +168,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           ),
         ),
         if (_controller.notice == SettingsNotice.noLocation)
-          const _InlineMessage(
+          const InlineNote(
             icon: Icons.location_off_outlined,
             text: 'Activez la localisation ou choisissez une ville depuis '
                 'l’accueil : les horaires en dépendent.',
@@ -244,7 +246,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           onTap: () => _pickNightMode(context, slot, night.modeOf(slot)),
         );
 
-    return _Panel(
+    return SettingsPanel(
       title: 'Prière de nuit',
       icon: Icons.nights_stay_outlined,
       children: [
@@ -257,7 +259,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           subtitle: const Text('Qiyam al-layl · tahajjud'),
         ),
         if (_controller.notice == SettingsNotice.nightNoLocation)
-          const _InlineMessage(
+          const InlineNote(
             icon: Icons.location_off_outlined,
             text: 'Activez la localisation ou choisissez une ville depuis '
                 'l’accueil : l’heure de la nuit en dépend.',
@@ -332,7 +334,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     final enabled = _controller.settings.lockScreenWidget;
     final busy = _controller.isBusy;
     final textTheme = Theme.of(context).textTheme;
-    return _Panel(
+    return SettingsPanel(
       title: 'Écran verrouillé',
       icon: Icons.lock_clock_outlined,
       children: [
@@ -345,7 +347,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           subtitle: const Text('Widget pour l’écran verrouillé (iOS 16 ou plus)'),
         ),
         if (_controller.notice == SettingsNotice.widgetNoLocation)
-          const _InlineMessage(
+          const InlineNote(
             icon: Icons.location_off_outlined,
             text: 'Activez la localisation ou choisissez une ville depuis '
                 'l’accueil : la chronologie en dépend.',
@@ -363,7 +365,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
               padding: const EdgeInsets.symmetric(vertical: 2),
               child: Text('${i + 1}. $step', style: textTheme.bodyMedium),
             ),
-          const _InlineMessage(
+          const InlineNote(
             icon: Icons.info_outline,
             text: 'Les horaires couvrent les 7 prochains jours et se mettent '
                 'à jour à chaque ouverture de Deen.',
@@ -379,7 +381,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     final textTheme = Theme.of(context).textTheme;
     final labels = DateLabels.of(DateTime.now(), calendar);
 
-    return _Panel(
+    return SettingsPanel(
       title: 'Calendrier',
       icon: Icons.calendar_month_outlined,
       children: [
@@ -427,7 +429,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                 busy ? null : (s) => _controller.setHijriAdjustment(s.first),
           ),
         ),
-        const _InlineMessage(
+        const InlineNote(
           icon: Icons.info_outline,
           text: 'Calendrier Umm al-Qura. Le début des mois suit souvent '
               'l’observation de la lune : décalez d’un jour pour suivre '
@@ -436,6 +438,16 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
         ),
       ],
     );
+  }
+
+  Future<void> _openFasting(BuildContext context) async {
+    await Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (_) => FastingScreen(
+        service: widget.service,
+        calendar: widget.calendar,
+      ),
+    ));
+    await _controller.load();
   }
 
   Future<void> _pickNightMode(
@@ -466,7 +478,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   Widget _buildDailySection(BuildContext context) {
     final settings = _controller.settings;
     final busy = _controller.isBusy;
-    return _Panel(
+    return SettingsPanel(
       title: 'Rappels quotidiens',
       icon: Icons.notifications_none_rounded,
       children: [
@@ -483,6 +495,16 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           onChanged: busy ? null : _controller.setQuizDaily,
           title: const Text('Quiz du jour'),
           subtitle: const Text('Chaque jour à 20 h'),
+        ),
+        ListTile(
+          key: const ValueKey('fasting-entry'),
+          contentPadding: EdgeInsets.zero,
+          title: const Text('Jeûnes surérogatoires'),
+          subtitle: Text(settings.fasting.enabled
+              ? 'Rappel la veille, après l’Isha'
+              : 'Arafat, Achoura, jours blancs…'),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: busy ? null : () => _openFasting(context),
         ),
       ],
     );
@@ -537,58 +559,6 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   }
 }
 
-class _Panel extends StatelessWidget {
-  const _Panel({
-    required this.title,
-    required this.icon,
-    required this.children,
-  });
-
-  final String title;
-  final IconData icon;
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    // Material (et non Container décoré) : les ListTile y dessinent leur
-    // effet d'appui ; sur un fond décoré, l'appui n'avait aucun retour.
-    return Material(
-      color: Colors.white.withValues(alpha: 0.78),
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: Colors.white.withValues(alpha: 0.9)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Semantics(
-              header: true,
-              child: Row(
-                children: [
-                  Icon(icon, color: AppColors.copper, size: 22),
-                  const SizedBox(width: 8),
-                  Text(
-                    title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 4),
-            ...children,
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _CoverageNote extends StatelessWidget {
   const _CoverageNote({required this.status, required this.calendar});
   final NotificationStatus status;
@@ -597,7 +567,7 @@ class _CoverageNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (status.calendarUnavailable) {
-      return const _InlineMessage(
+      return const InlineNote(
         icon: Icons.cloud_off_outlined,
         text: 'Horaires indisponibles hors connexion. Les rappels seront '
             'programmés dès que Deen pourra se connecter.',
@@ -605,43 +575,11 @@ class _CoverageNote extends StatelessWidget {
     }
     final until = status.coveredUntil;
     if (until == null || !status.hasPermission) return const SizedBox.shrink();
-    return _InlineMessage(
+    return InlineNote(
       icon: Icons.event_available_outlined,
       text: 'Rappels programmés jusqu’au '
           '${DateLabels.inSentence(until, calendar)}. '
           'Ils se prolongent automatiquement à chaque ouverture de Deen.',
-    );
-  }
-}
-
-class _InlineMessage extends StatelessWidget {
-  const _InlineMessage({required this.icon, required this.text});
-  final IconData icon;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      liveRegion: true,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 18, color: AppColors.textSecondary),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                text,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
-                      fontSize: 13,
-                    ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
