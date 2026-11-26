@@ -1,5 +1,6 @@
 import 'package:muslim_app/services/notification_gateway.dart';
 import 'package:muslim_app/services/prayer_notification_planner.dart';
+import 'package:muslim_app/services/prayer_widget_gateway.dart';
 
 /// Faux système de notifications : enregistre ce qui serait programmé.
 class FakeGateway implements NotificationGateway {
@@ -42,4 +43,25 @@ class FakeGateway implements NotificationGateway {
   @override
   Future<void> showTest({required String title, required String body}) async =>
       tests++;
+}
+
+/// Faux widget d'écran verrouillé : enregistre les publications.
+class FakeWidgetGateway implements PrayerWidgetGateway {
+  final List<String> published = [];
+  int clears = 0;
+
+  /// Dernière chronologie publiée, `null` si effacée depuis.
+  String? current;
+
+  @override
+  Future<void> publish(String timelineJson) async {
+    published.add(timelineJson);
+    current = timelineJson;
+  }
+
+  @override
+  Future<void> clear() async {
+    clears++;
+    current = null;
+  }
 }
