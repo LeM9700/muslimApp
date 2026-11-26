@@ -2,9 +2,12 @@ import 'package:flutter/foundation.dart';
 
 import '../models/calendar_settings.dart';
 import '../models/fasting.dart';
+import '../models/hijri_date.dart';
 import '../models/notification_settings.dart';
+import '../models/shawwal_progress.dart';
 import '../services/calendar_preferences.dart';
 import '../services/fast_calendar.dart';
+import '../services/hijri_converter.dart';
 import '../services/prayer_notification_service.dart';
 
 /// Message ponctuel de l'écran « Jeûnes ».
@@ -30,6 +33,7 @@ class FastingController extends ChangeNotifier {
   static const int horizonDays = 90;
 
   NotificationSettings? _settings;
+  ShawwalProgress? _shawwal;
   bool _busy = false;
   bool _disposed = false;
   FastingNotice _notice = FastingNotice.none;
@@ -50,6 +54,39 @@ class FastingController extends ChangeNotifier {
   List<FastDay> get upcoming => FastCalendar.upcoming(today,
       days: horizonDays, adjustment: calendar.hijriAdjustment);
 
+  /// Date hégirienne du jour (avec l'ajustement du croyant).
+  HijriDate? get todayHijri =>
+      HijriConverter.fromCivil(today, adjustment: calendar.hijriAdjustment);
+
+  /// Pendant Chawwal : jours jeûnables écoulés (du 2 Chawwal à aujourd'hui),
+  /// à cocher. Vide hors Chawwal (le 1er est l'Aïd : liste vide aussi).
+  List<DateTime> get shawwalDays {
+    final h = todayHijri;
+    if (h == null || h.month != 10) return const [];
+    return [
+      for (var day = 2; day <= h.day; day++)
+        DateTime(today.year, today.month, today.day - (h.day - day)),
+    ];
+  }
+
+  bool get inShawwal => todayHijri?.month == 10;
+
+  /// Suivi de l'année hégirienne en cours (vide si ancien ou absent).
+  ShawwalProgress get shawwal {
+    final year = todayHijri?.year ?? 0;
+    final p = _shawwal;
+    return p != null && p.hijriYear == year ? p : ShawwalProgress(hijriYear: year);
+  }
+
+  bool isShawwalFasted(DateTime day) => shawwal.days.contains(_key(day));
+
+  Future<void> toggleShawwal(DateTime day) => _run(() async {
+        _shawwal = await _service.toggleShawwalDay(day);
+      });
+
+  static String _key(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
   /// Vrai si un rappel sera envoyé la veille de [day].
   bool isReminded(FastDay day) =>
       fasting.enabled && day.kinds.any(fasting.kinds.contains);
@@ -57,6 +94,7 @@ class FastingController extends ChangeNotifier {
   Future<void> load() async {
     await _calendar.load();
     _settings = await _service.readSettings();
+    _shawwal = await _service.shawwalProgress();
     _notify();
   }
 

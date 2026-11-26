@@ -280,6 +280,7 @@ class PrayerNotificationPlanner {
     required DateTime now,
     required String cityName,
     CalendarSettings calendar = const CalendarSettings(),
+    Set<int> shawwalCompletedYears = const {},
     int budget = defaultBudget,
     String Function(DateTime instant)? formatTime,
   }) {
@@ -290,7 +291,8 @@ class PrayerNotificationPlanner {
       if (settings.night.isActive)
         ..._nightCandidates(days, settings.night, calendar, fmt),
       if (settings.fasting.isActive)
-        ..._fastCandidates(days, settings.fasting, calendar),
+        ..._fastCandidates(
+            days, settings.fasting, calendar, shawwalCompletedYears),
       if (settings.friday.isActive)
         ..._fridayCandidates(days, settings.friday, fmt),
     ];
@@ -432,17 +434,26 @@ class PrayerNotificationPlanner {
     List<PrayerDay> days,
     FastingSettings fasting,
     CalendarSettings calendar,
+    Set<int> shawwalCompletedYears,
   ) {
     final result = <PlannedNotification>[];
     for (final day in days) {
       final isha = day.times[Prayer.isha];
       final eve = DateTime.tryParse(day.dateKey);
       if (isha == null || eve == null) continue;
-      final fast = FastCalendar.on(
+      var fast = FastCalendar.on(
         DateTime(eve.year, eve.month, eve.day + 1),
         adjustment: calendar.hijriAdjustment,
         kinds: fasting.kinds,
       );
+      // 6 jours de Chawwal déjà faits : plus de rappel pour ces jours-là
+      // (un autre motif du même jour, ex. jour blanc, reste rappelé).
+      if (fast != null && shawwalCompletedYears.contains(fast.hijri.year)) {
+        final others = fast.kinds.where((k) => k != FastKind.shawwal).toList();
+        fast = others.isEmpty
+            ? null
+            : FastDay(date: fast.date, hijri: fast.hijri, kinds: others);
+      }
       if (fast == null) continue;
       final main = fast.mainKind;
       result.add(PlannedNotification.fast(

@@ -4,9 +4,11 @@ import 'package:flutter/foundation.dart';
 
 import '../models/friday_reminders.dart';
 import '../models/notification_settings.dart';
+import '../models/shawwal_progress.dart';
 import '../models/prayer_schedule.dart';
 import '../repositories/aladhan_repository.dart';
 import '../repositories/prayer_settings_repository.dart';
+import 'hijri_converter.dart';
 import 'night_prayer_calculator.dart';
 import 'notification_gateway.dart';
 import 'prayer_timeline_builder.dart';
@@ -163,6 +165,33 @@ class PrayerNotificationService {
   Future<EnableOutcome> enableFriday(FridayReminder reminder) =>
       _enable((s) => s.copyWith(friday: s.friday.toggle(reminder, true)));
 
+  /// Suivi des 6 jours de Chawwal (dernière année suivie).
+  Future<ShawwalProgress?> shawwalProgress() => _store.readShawwal();
+
+  /// Coche ou décoche la journée civile [date] comme jeûnée.
+  ///
+  /// Seuls les jours de Chawwal hors Aïd comptent (selon l'ajustement du
+  /// croyant). Une nouvelle année remplace l'ancien suivi. Quand l'objectif
+  /// est atteint (ou ne l'est plus), on reprogramme : le rappel de
+  /// mi-Chawwal disparaît (ou revient).
+  Future<ShawwalProgress> toggleShawwalDay(DateTime date) async {
+    final calendar = await _store.readCalendarSettings();
+    final h = HijriConverter.fromCivil(date, adjustment: calendar.hijriAdjustment);
+    if (h == null || h.month != 10 || h.day == 1) {
+      throw ArgumentError.value(date, 'date', 'pas un jour de Chawwal jeûnable');
+    }
+    final current = await _store.readShawwal();
+    final base = current != null && current.hijriYear == h.year
+        ? current
+        : ShawwalProgress(hijriYear: h.year);
+    final key = '${date.year}-${date.month.toString().padLeft(2, '0')}-'
+        '${date.day.toString().padLeft(2, '0')}';
+    final next = base.toggle(key);
+    await _store.writeShawwal(next);
+    if (base.isComplete != next.isComplete) await reschedule(force: true);
+    return next;
+  }
+
   /// Réglages enregistrés, sans téléchargement (contrairement à [status]).
   Future<NotificationSettings> readSettings() => _store.readSettings();
 
@@ -253,6 +282,9 @@ class PrayerNotificationService {
       days: days,
       settings: settings,
       calendar: await _store.readCalendarSettings(),
+      shawwalCompletedYears: {
+        if (await _store.readShawwal() case final p? when p.isComplete) p.hijriYear,
+      },
       now: now,
       cityName: location.cityName,
     );

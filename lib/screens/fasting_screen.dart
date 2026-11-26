@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../controllers/fasting_controller.dart';
 import '../models/fasting.dart';
+import '../models/shawwal_progress.dart';
 import '../services/calendar_preferences.dart';
 import '../services/hijri_converter.dart';
 import '../services/prayer_notification_service.dart';
@@ -68,6 +69,10 @@ class _FastingScreenState extends State<FastingScreen> {
               return ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
                 children: [
+                  if (_controller.inShawwal) ...[
+                    _buildShawwal(context),
+                    const SizedBox(height: 16),
+                  ],
                   _buildReminders(context),
                   const SizedBox(height: 16),
                   SettingsPanel(
@@ -96,6 +101,73 @@ class _FastingScreenState extends State<FastingScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildShawwal(BuildContext context) {
+    final progress = _controller.shawwal;
+    final days = _controller.shawwalDays;
+    final busy = _controller.isBusy;
+    final textTheme = Theme.of(context).textTheme;
+    return SettingsPanel(
+      title: '6 jours de Chawwal',
+      icon: Icons.task_alt_outlined,
+      children: [
+        Row(
+          children: [
+            Text('${progress.count.clamp(0, 99)} / ${ShawwalProgress.goal}',
+                key: const ValueKey('shawwal-count'),
+                style: textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: LinearProgressIndicator(
+                value: (progress.count / ShawwalProgress.goal).clamp(0.0, 1.0),
+                color: AppColors.emeraldDark,
+                backgroundColor: AppColors.emerald.withValues(alpha: 0.15),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        if (days.isEmpty)
+          const InlineNote(
+            icon: Icons.celebration_outlined,
+            text: 'Aïd moubarak ! Le jeûne commence demain : cochez ici '
+                'chaque jour jeûné.',
+          )
+        else
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final day in days)
+                FilterChip(
+                  key: ValueKey('shawwal-${day.day}-${day.month}'),
+                  label: Text(_shawwalLabel(day)),
+                  selected: _controller.isShawwalFasted(day),
+                  onSelected: busy ? null : (_) => _controller.toggleShawwal(day),
+                ),
+            ],
+          ),
+        if (progress.isComplete)
+          const InlineNote(
+            icon: Icons.check_circle_outline,
+            text: 'Les 6 jours sont faits, qu’Allah les accepte. Plus de '
+                'rappel de Chawwal cette année.',
+          )
+        else
+          const InlineNote(
+            icon: Icons.info_outline,
+            text: 'Cochez les jours jeûnés (consécutifs ou non). Les jours '
+                'à rattraper du Ramadan ne sont pas comptés ici.',
+          ),
+      ],
+    );
+  }
+
+  String _shawwalLabel(DateTime day) {
+    final h = HijriConverter.fromCivil(day,
+        adjustment: _controller.calendar.hijriAdjustment);
+    return h == null ? '${day.day}/${day.month}' : '${h.day} Chawwal';
   }
 
   Widget _buildReminders(BuildContext context) {

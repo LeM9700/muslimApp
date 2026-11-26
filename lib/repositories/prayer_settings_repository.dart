@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/calendar_settings.dart';
 import '../models/notification_settings.dart';
+import '../models/shawwal_progress.dart';
 import '../models/prayer_schedule.dart';
 
 /// Calendrier mis en cache, lié à la position et à la méthode qui l'ont
@@ -50,6 +51,7 @@ class PrayerSettingsRepository {
   static const String _calendarKey = 'prayer_calendar_v1';
   static const String _promptDismissedKey = 'notif_prompt_dismissed_v1';
   static const String _calendarSettingsKey = 'calendar_settings_v1';
+  static const String _shawwalKey = 'shawwal_progress_v1';
 
   Future<NotificationSettings> readSettings() async {
     final map = await _readMap(_settingsKey);
@@ -88,6 +90,13 @@ class PrayerSettingsRepository {
 
   Future<void> writeCalendarSettings(CalendarSettings settings) =>
       _write(_calendarSettingsKey, settings.toJson());
+
+  /// Suivi des 6 jours de Chawwal (dernière année suivie seulement).
+  Future<ShawwalProgress?> readShawwal() async =>
+      ShawwalProgress.fromJson(await _readMap(_shawwalKey));
+
+  Future<void> writeShawwal(ShawwalProgress progress) =>
+      _write(_shawwalKey, progress.toJson());
 
   Future<bool> isPromptDismissed() async {
     final prefs = await SharedPreferences.getInstance();
