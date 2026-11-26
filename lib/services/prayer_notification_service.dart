@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../models/friday_reminders.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 import '../repositories/aladhan_repository.dart';
@@ -157,6 +158,10 @@ class PrayerNotificationService {
   /// pour l'heure de l'Isha, autorisation au moment du geste.
   Future<EnableOutcome> enableFasting() =>
       _enable((s) => s.copyWith(fasting: s.fasting.copyWith(enabled: true)));
+
+  /// Active un rappel du vendredi (Dhuhr de la position pour la Jumu‘a).
+  Future<EnableOutcome> enableFriday(FridayReminder reminder) =>
+      _enable((s) => s.copyWith(friday: s.friday.toggle(reminder, true)));
 
   /// Réglages enregistrés, sans téléchargement (contrairement à [status]).
   Future<NotificationSettings> readSettings() => _store.readSettings();

@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import '../controllers/notification_settings_controller.dart';
 import '../models/adhan_mode.dart';
 import '../models/calendar_settings.dart';
+import '../models/friday_reminders.dart';
 import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
@@ -496,6 +497,15 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           title: const Text('Quiz du jour'),
           subtitle: const Text('Chaque jour à 20 h'),
         ),
+        for (final reminder in FridayReminder.values)
+          SwitchListTile.adaptive(
+            key: ValueKey('friday-${reminder.name}'),
+            contentPadding: EdgeInsets.zero,
+            value: settings.friday.has(reminder),
+            onChanged: busy ? null : (on) => _controller.setFriday(reminder, on),
+            title: Text(reminder.label),
+            subtitle: Text(reminder.when),
+          ),
         ListTile(
           key: const ValueKey('fasting-entry'),
           contentPadding: EdgeInsets.zero,

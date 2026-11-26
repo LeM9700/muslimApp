@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../models/adhan_mode.dart';
 import '../models/calendar_settings.dart';
+import '../models/friday_reminders.dart';
 import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
@@ -65,7 +66,9 @@ class NotificationSettingsController extends ChangeNotifier {
     if (s == null || s.hasPermission) return false;
     return _notice == SettingsNotice.permissionDenied ||
         s.settings.prayersEnabled ||
-        s.settings.night.enabled;
+        s.settings.night.enabled ||
+        s.settings.fasting.enabled ||
+        s.settings.friday.isActive;
   }
 
   Future<void> load() async {
@@ -119,6 +122,21 @@ class NotificationSettingsController extends ChangeNotifier {
           EnableOutcome.enabled => SettingsNotice.none,
           EnableOutcome.permissionDenied => SettingsNotice.permissionDenied,
           EnableOutcome.noLocation => SettingsNotice.nightNoLocation,
+        };
+      });
+
+  /// Rappel du vendredi (al-Kahf ou Jumu‘a).
+  Future<void> setFriday(FridayReminder reminder, bool enabled) =>
+      _run(() async {
+        if (!enabled) {
+          await _service.updateSettings(
+              settings.copyWith(friday: settings.friday.toggle(reminder, false)));
+          return;
+        }
+        _notice = switch (await _service.enableFriday(reminder)) {
+          EnableOutcome.enabled => SettingsNotice.none,
+          EnableOutcome.permissionDenied => SettingsNotice.permissionDenied,
+          EnableOutcome.noLocation => SettingsNotice.noLocation,
         };
       });
 

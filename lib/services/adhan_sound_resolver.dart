@@ -113,8 +113,16 @@ class AdhanSoundResolver {
     playSound: true,
   );
 
+  /// Rappels du vendredi (al-Kahf, Jumu‘a).
+  static const friday = AdhanSound(
+    androidChannelId: 'friday_v1',
+    androidChannelName: 'Vendredi',
+    androidChannelDescription: 'Sourate al-Kahf et prière du vendredi',
+    playSound: true,
+  );
+
   /// Tous les canaux à créer au démarrage de l'app.
-  static const List<AdhanSound> channels = [...all, ...night, fasting];
+  static const List<AdhanSound> channels = [...all, ...night, fasting, friday];
 
   /// [AdhanMode.off] n'est jamais programmé : appeler avec ce mode est une
   /// erreur de l'appelant, signalée tôt plutôt que masquée.

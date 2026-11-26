@@ -1,6 +1,7 @@
 import '../models/adhan_mode.dart';
 import '../models/calendar_settings.dart';
 import '../models/fasting.dart';
+import '../models/friday_reminders.dart';
 import '../models/hijri_date.dart';
 import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
@@ -12,7 +13,8 @@ import 'night_prayer_calculator.dart';
 ///
 /// [night] : prière de nuit, liée à un [NightSlot] et non à une [Prayer].
 /// [fast] : rappel de jeûne la veille, lié à un [FastKind].
-enum PlannedKind { prayer, reminder, night, fast }
+/// [friday] : rappel du vendredi, lié à un [FridayReminder].
+enum PlannedKind { prayer, reminder, night, fast, friday }
 
 /// Une notification à programmer, sans dépendance au plugin.
 class PlannedNotification {
@@ -31,6 +33,9 @@ class PlannedNotification {
   /// Jeûne rappelé ; `null` sauf pour [PlannedKind.fast].
   final FastKind? fastKind;
 
+  /// Rappel du vendredi ; `null` sauf pour [PlannedKind.friday].
+  final FridayReminder? fridayReminder;
+
   /// Son à utiliser. Jamais [AdhanMode.off] (filtré par le planificateur).
   final AdhanMode mode;
 
@@ -43,7 +48,8 @@ class PlannedNotification {
     required Prayer this.prayer,
     this.mode = AdhanMode.notification,
   })  : nightSlot = null,
-        fastKind = null;
+        fastKind = null,
+        fridayReminder = null;
 
   /// Notification de prière de nuit (jamais d'adhan).
   const PlannedNotification.night({
@@ -56,7 +62,8 @@ class PlannedNotification {
   })  : kind = PlannedKind.night,
         prayer = null,
         nightSlot = slot,
-        fastKind = null;
+        fastKind = null,
+        fridayReminder = null;
 
   /// Rappel de jeûne (son de notification simple).
   const PlannedNotification.fast({
@@ -69,6 +76,21 @@ class PlannedNotification {
         prayer = null,
         nightSlot = null,
         fastKind = kind,
+        fridayReminder = null,
+        mode = AdhanMode.notification;
+
+  /// Rappel du vendredi (son de notification simple).
+  const PlannedNotification.friday({
+    required this.id,
+    required this.when,
+    required this.title,
+    required this.body,
+    required FridayReminder reminder,
+  })  : kind = PlannedKind.friday,
+        prayer = null,
+        nightSlot = null,
+        fastKind = null,
+        fridayReminder = reminder,
         mode = AdhanMode.notification;
 
   const PlannedNotification._copy({
@@ -80,6 +102,7 @@ class PlannedNotification {
     required this.prayer,
     required this.nightSlot,
     required this.fastKind,
+    required this.fridayReminder,
     required this.mode,
   });
 
@@ -88,6 +111,7 @@ class PlannedNotification {
   String get payload => switch (kind) {
         PlannedKind.night => NightPayload(nightSlot!, mode).encode(),
         PlannedKind.fast => FastPayload(fastKind!).encode(),
+        PlannedKind.friday => FridayPayload(fridayReminder!).encode(),
         _ => NotificationPayload.prayer(prayer!, mode).encode(),
       };
 
@@ -100,6 +124,7 @@ class PlannedNotification {
         prayer: prayer,
         nightSlot: nightSlot,
         fastKind: fastKind,
+        fridayReminder: fridayReminder,
         mode: mode,
       );
 }
@@ -192,6 +217,28 @@ class FastPayload {
   }
 }
 
+/// Payload d'un rappel du vendredi (`friday:<rappel>`) : al-Kahf ouvre la
+/// sourate, la Jumu‘a ouvre simplement l'app.
+///
+/// [🔒 SÉCURITÉ] Parsing défensif : toute valeur inattendue donne `null`.
+class FridayPayload {
+  final FridayReminder reminder;
+
+  const FridayPayload(this.reminder);
+
+  static const String _prefix = 'friday';
+
+  String encode() => '$_prefix:${reminder.name}';
+
+  static FridayPayload? decode(String? raw) {
+    if (raw == null) return null;
+    final parts = raw.split(':');
+    if (parts.length != 2 || parts[0] != _prefix) return null;
+    final r = FridayReminder.fromName(parts[1]);
+    return r == null ? null : FridayPayload(r);
+  }
+}
+
 /// Résultat de la planification : les notifications et la date jusqu'à
 /// laquelle les rappels sont garantis (affichée à l'utilisateur).
 class PrayerPlan {
@@ -244,6 +291,8 @@ class PrayerNotificationPlanner {
         ..._nightCandidates(days, settings.night, calendar, fmt),
       if (settings.fasting.isActive)
         ..._fastCandidates(days, settings.fasting, calendar),
+      if (settings.friday.isActive)
+        ..._fridayCandidates(days, settings.friday, fmt),
     ];
     final prayersOn = settings.prayersEnabled && settings.prayers.isNotEmpty;
 
@@ -412,6 +461,47 @@ class PrayerNotificationPlanner {
         },
         kind: main,
       ));
+    }
+    return result;
+  }
+
+  /// Rappels du vendredi, pour chaque vendredi du calendrier.
+  ///
+  /// [⚠️ PROD] Al-Kahf à 9 h **heure locale de l'appareil** (et non du
+  /// lieu des horaires) : c'est l'heure à laquelle la personne vit.
+  static List<PlannedNotification> _fridayCandidates(
+    List<PrayerDay> days,
+    FridaySettings friday,
+    String Function(DateTime) fmt,
+  ) {
+    final result = <PlannedNotification>[];
+    for (final day in days) {
+      final date = DateTime.tryParse(day.dateKey);
+      if (date == null || date.weekday != DateTime.friday) continue;
+      if (friday.has(FridayReminder.kahf)) {
+        result.add(PlannedNotification.friday(
+          id: 0,
+          when: DateTime(date.year, date.month, date.day, FridaySettings.kahfHour)
+              .toUtc(),
+          title: 'Vendredi : sourate al-Kahf',
+          body: 'Celui qui lit la sourate al-Kahf le vendredi est éclairé '
+              'd’une lumière jusqu’au vendredi suivant (al-Hâkim, authentifié '
+              'par al-Albânî). Pensez au ghusl et aux salawat sur le '
+              'Prophète ﷺ.',
+          reminder: FridayReminder.kahf,
+        ));
+      }
+      final dhuhr = day.times[Prayer.dhuhr];
+      if (friday.has(FridayReminder.jumua) && dhuhr != null) {
+        result.add(PlannedNotification.friday(
+          id: 0,
+          when: dhuhr.subtract(FridaySettings.jumuaLead),
+          title: 'Jumu‘a dans 45 min',
+          body: 'Dhuhr à ${fmt(dhuhr)}. Ghusl, parfum et venir tôt : ses '
+              'péchés sont pardonnés jusqu’au vendredi suivant (Bukhari 883).',
+          reminder: FridayReminder.jumua,
+        ));
+      }
     }
     return result;
   }

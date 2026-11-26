@@ -172,6 +172,7 @@ class LocalNotificationGateway implements NotificationGateway {
       details: switch (n.kind) {
         PlannedKind.night => nightDetailsFor(n.nightSlot!, n.mode),
         PlannedKind.fast => fastDetails(),
+        PlannedKind.friday => fridayDetails(),
         _ => detailsFor(n.mode),
       },
       payload: n.payload,
@@ -265,8 +266,15 @@ class LocalNotificationGateway implements NotificationGateway {
 
   /// Détails d'un rappel de jeûne : simple notification, jamais urgente.
   @visibleForTesting
-  static NotificationDetails fastDetails() {
-    const sound = AdhanSoundResolver.fasting;
+  static NotificationDetails fastDetails() =>
+      _reminderDetails(AdhanSoundResolver.fasting, 'fasting');
+
+  /// Détails d'un rappel du vendredi.
+  @visibleForTesting
+  static NotificationDetails fridayDetails() =>
+      _reminderDetails(AdhanSoundResolver.friday, 'friday');
+
+  static NotificationDetails _reminderDetails(AdhanSound sound, String thread) {
     return NotificationDetails(
       android: AndroidNotificationDetails(
         sound.androidChannelId,
@@ -278,8 +286,8 @@ class LocalNotificationGateway implements NotificationGateway {
         icon: '@mipmap/ic_launcher',
         color: const Color(0xFF10B981),
       ),
-      iOS: const DarwinNotificationDetails(
-        threadIdentifier: 'fasting',
+      iOS: DarwinNotificationDetails(
+        threadIdentifier: thread,
         interruptionLevel: InterruptionLevel.active,
       ),
     );
