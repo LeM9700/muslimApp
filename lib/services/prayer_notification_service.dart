@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../models/adhan_mode.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 import '../repositories/aladhan_repository.dart';
 import '../repositories/prayer_settings_repository.dart';
+import 'night_prayer_calculator.dart';
 import 'notification_gateway.dart';
 import 'prayer_notification_planner.dart';
 
@@ -26,6 +28,10 @@ class NotificationStatus {
   /// Horaires du jour (pour les afficher à côté de chaque interrupteur).
   final PrayerDay? today;
 
+  /// Rappel du dernier tiers de la nuit qui commence ce soir (garde-fou
+  /// appliqué), `null` si inconnu.
+  final DateTime? tonightLastThird;
+
   /// Vrai si les rappels sont activés mais qu'aucun horaire n'a pu être
   /// obtenu (hors connexion sans cache) : à signaler à l'utilisateur.
   final bool calendarUnavailable;
@@ -38,6 +44,7 @@ class NotificationStatus {
     required this.methodName,
     required this.today,
     required this.calendarUnavailable,
+    this.tonightLastThird,
   });
 }
 
@@ -90,20 +97,25 @@ class PrayerNotificationService {
         (calendar == null || !calendar.matches(location, settings.methodId))) {
       // Afficher les horaires aide à choisir, même avant l'autorisation :
       // on télécharge le calendrier sans rien programmer.
-      await _calendarFor(location, settings.methodId, _clock());
+      await _calendarFor(location, settings, _clock());
       calendar = await _store.readCalendar();
     }
     final usable = location != null &&
         calendar != null &&
         calendar.matches(location, settings.methodId);
+    final todayIndex = usable ? _todayIndex(calendar.days) : -1;
+    final today = todayIndex < 0 ? null : calendar!.days[todayIndex];
     return NotificationStatus(
       settings: settings,
       location: location,
       hasPermission: await _gateway.hasPermission(),
       coveredUntil: _lastPlan.coveredUntil,
       methodName: usable ? calendar.methodName : _methodName,
-      today: usable ? _todayIn(calendar.days) : null,
-      calendarUnavailable: settings.prayersEnabled && _calendarUnavailable,
+      today: today,
+      calendarUnavailable: settings.needsCalendar && _calendarUnavailable,
+      tonightLastThird: today == null
+          ? null
+          : _lastThirdOf(calendar!.days, todayIndex, settings),
     );
   }
 
@@ -116,13 +128,23 @@ class PrayerNotificationService {
 
   /// Active les rappels de prière : demande l'autorisation au bon moment
   /// (geste explicite de l'utilisateur), comme le recommande Apple.
-  Future<EnableOutcome> enablePrayers() async {
+  Future<EnableOutcome> enablePrayers() =>
+      _enable((s) => s.copyWith(prayersEnabled: true));
+
+  /// Active la prière de nuit : mêmes prérequis que les 5 prières
+  /// (position pour les horaires, autorisation au moment du geste).
+  Future<EnableOutcome> enableNightPrayer() =>
+      _enable((s) => s.copyWith(night: s.night.copyWith(enabled: true)));
+
+  Future<EnableOutcome> _enable(
+    NotificationSettings Function(NotificationSettings) update,
+  ) async {
     if (await _store.readLocation() == null) return EnableOutcome.noLocation;
     final granted =
         await _gateway.hasPermission() || await _gateway.requestPermission();
     if (!granted) return EnableOutcome.permissionDenied;
     final settings = await _store.readSettings();
-    await _store.writeSettings(settings.copyWith(prayersEnabled: true));
+    await _store.writeSettings(update(settings));
     await reschedule(force: true);
     return EnableOutcome.enabled;
   }
@@ -179,12 +201,12 @@ class PrayerNotificationService {
     if (settings.quizDaily) await _gateway.scheduleDaily(DailyNotification.quiz);
 
     final location = await _store.readLocation();
-    if (!settings.prayersEnabled || location == null) {
+    if (!settings.needsCalendar || location == null) {
       _lastPlan = PrayerPlan.empty;
       return;
     }
 
-    final days = await _calendarFor(location, settings.methodId, now);
+    final days = await _calendarFor(location, settings, now);
     _calendarUnavailable = days.isEmpty;
     final plan = PrayerNotificationPlanner.plan(
       days: days,
@@ -196,21 +218,29 @@ class PrayerNotificationService {
       await _gateway.schedulePrayer(n);
     }
     _lastPlan = plan;
-    debugPrint('Notifications : ${plan.notifications.length} rappels de prière '
+    debugPrint('Notifications : ${plan.notifications.length} rappels '
         'programmés jusqu’au ${plan.coveredUntil?.toLocal()}');
   }
 
   /// Calendrier couvrant au moins [minDaysAhead] jours : cache si possible,
   /// sinon Aladhan (mois courant + suivant si besoin). Hors connexion, un
   /// cache même court vaut mieux que rien ; sans cache, liste vide.
+  ///
+  /// [⚠️ PROD] Un cache antérieur à la v1.4.0 n'a pas le mois hégirien :
+  /// si les Tarawih sont activés, on le retélécharge une fois (le cache
+  /// reste lisible et sert de repli hors connexion, sans Tarawih).
   Future<List<PrayerDay>> _calendarFor(
     PrayerLocation location,
-    int? methodId,
+    NotificationSettings settings,
     DateTime now,
   ) async {
+    final methodId = settings.methodId;
     final cached = await _store.readCalendar();
     final cacheOk = cached != null && cached.matches(location, methodId);
+    final needsHijri = settings.night.isActive &&
+        settings.night.tarawih != AdhanMode.off;
     if (cacheOk &&
+        (!needsHijri || cached.days.every((d) => d.hijriMonth != null)) &&
         PrayerNotificationPlanner.daysAhead(cached.days, now) >= minDaysAhead) {
       _methodName = cached.methodName;
       return cached.days;
@@ -259,13 +289,23 @@ class PrayerNotificationService {
     }
   }
 
-  PrayerDay? _todayIn(List<PrayerDay> days) {
+  int _todayIndex(List<PrayerDay> days) {
     final now = _clock();
     final key = '${now.year}-${now.month.toString().padLeft(2, '0')}-'
         '${now.day.toString().padLeft(2, '0')}';
-    for (final d in days) {
-      if (d.dateKey == key) return d;
-    }
-    return null;
+    return days.indexWhere((d) => d.dateKey == key);
+  }
+
+  static DateTime? _lastThirdOf(
+    List<PrayerDay> days,
+    int index,
+    NotificationSettings settings,
+  ) {
+    final next = index + 1 < days.length ? days[index + 1] : null;
+    final night = NightPrayerCalculator.nightOf(days[index], next);
+    if (night == null) return null;
+    return NightPrayerCalculator.lastThird(night,
+            fajrMarginMinutes: settings.night.fajrMarginMinutes)
+        ?.at;
   }
 }

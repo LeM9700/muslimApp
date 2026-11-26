@@ -1,4 +1,5 @@
 import 'adhan_mode.dart';
+import 'night_prayer_settings.dart';
 import 'prayer_schedule.dart';
 
 /// Réglages des notifications, modifiables par l'utilisateur.
@@ -20,6 +21,9 @@ class NotificationSettings {
   final bool hadithDaily;
   final bool quizDaily;
 
+  /// Prière de nuit (désactivée par défaut, indépendante de [prayersEnabled]).
+  final NightPrayerSettings night;
+
   const NotificationSettings({
     this.prayersEnabled = false,
     Map<Prayer, AdhanMode>? modes,
@@ -27,6 +31,7 @@ class NotificationSettings {
     this.methodId,
     this.hadithDaily = true,
     this.quizDaily = true,
+    this.night = const NightPrayerSettings(),
   }) : _modes = modes;
 
   // Champ privé + getter : permet un constructeur `const` avec un profil
@@ -52,6 +57,7 @@ class NotificationSettings {
     int? Function()? methodId,
     bool? hadithDaily,
     bool? quizDaily,
+    NightPrayerSettings? night,
   }) {
     return NotificationSettings(
       prayersEnabled: prayersEnabled ?? this.prayersEnabled,
@@ -60,8 +66,13 @@ class NotificationSettings {
       methodId: methodId != null ? methodId() : this.methodId,
       hadithDaily: hadithDaily ?? this.hadithDaily,
       quizDaily: quizDaily ?? this.quizDaily,
+      night: night ?? this.night,
     );
   }
+
+  /// Les notifications de prière (5 prières ou prière de nuit) ont besoin
+  /// du calendrier et de la position.
+  bool get needsCalendar => prayersEnabled || night.isActive;
 
   /// Change le mode d'une seule prière.
   NotificationSettings withMode(Prayer prayer, AdhanMode mode) =>
@@ -71,6 +82,9 @@ class NotificationSettings {
   /// ensemble `prayers`. Une prière cochée devient « Notification » (le
   /// comportement qu'avait l'utilisateur), une prière décochée « Désactivé ».
   /// On ne bascule jamais un utilisateur existant sur l'adhan sans son accord.
+  ///
+  /// [⚠️ PROD] v1.3.0 → v1.4.0 : la clé `night` est absente des réglages
+  /// existants, ce qui donne une prière de nuit désactivée.
   factory NotificationSettings.fromJson(Map<String, dynamic> json) {
     final reminder = json['reminderMinutes'] as int? ?? 0;
     return NotificationSettings(
@@ -80,6 +94,7 @@ class NotificationSettings {
       methodId: json['methodId'] as int?,
       hadithDaily: json['hadithDaily'] as bool? ?? true,
       quizDaily: json['quizDaily'] as bool? ?? true,
+      night: NightPrayerSettings.fromJson(json['night']),
     );
   }
 
@@ -109,5 +124,6 @@ class NotificationSettings {
         'methodId': methodId,
         'hadithDaily': hadithDaily,
         'quizDaily': quizDaily,
+        'night': night.toJson(),
       };
 }

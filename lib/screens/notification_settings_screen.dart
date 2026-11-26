@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../controllers/notification_settings_controller.dart';
 import '../models/adhan_mode.dart';
+import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 import '../services/adhan_audio.dart';
@@ -105,6 +106,8 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                   ],
                   _buildPrayerSection(context),
                   const SizedBox(height: 16),
+                  _buildNightSection(context),
+                  const SizedBox(height: 16),
                   _buildDailySection(context),
                   const SizedBox(height: 20),
                   _buildTestButton(),
@@ -202,6 +205,121 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
         ],
       ],
     );
+  }
+
+  Widget _buildNightSection(BuildContext context) {
+    final status = _controller.status!;
+    final night = status.settings.night;
+    final busy = _controller.isBusy;
+    final textTheme = Theme.of(context).textTheme;
+    final lastThird = status.tonightLastThird;
+
+    Widget slotTile(NightSlot slot, String subtitle) => ListTile(
+          key: ValueKey('night-${slot.name}'),
+          contentPadding: EdgeInsets.zero,
+          enabled: !busy,
+          title: Text(slot.label),
+          subtitle: Text(subtitle),
+          trailing: _ModeChip(mode: night.modeOf(slot)),
+          onTap: () => _pickNightMode(context, slot, night.modeOf(slot)),
+        );
+
+    return _Panel(
+      title: 'Prière de nuit',
+      icon: Icons.nights_stay_outlined,
+      children: [
+        SwitchListTile.adaptive(
+          key: const ValueKey('night-switch'),
+          contentPadding: EdgeInsets.zero,
+          value: night.enabled,
+          onChanged: busy ? null : _controller.setNightEnabled,
+          title: const Text('Rappels de la prière de nuit'),
+          subtitle: const Text('Qiyam al-layl · tahajjud'),
+        ),
+        if (_controller.notice == SettingsNotice.nightNoLocation)
+          const _InlineMessage(
+            icon: Icons.location_off_outlined,
+            text: 'Activez la localisation ou choisissez une ville depuis '
+                'l’accueil : l’heure de la nuit en dépend.',
+          ),
+        if (night.enabled) ...[
+          const Divider(height: 20),
+          slotTile(
+            NightSlot.evening,
+            '${night.eveningDelayHours} h après l’Isha · encourage la prière '
+            'de nuit',
+          ),
+          if (night.evening != AdhanMode.off)
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<int>(
+                showSelectedIcon: false,
+                segments: [
+                  for (final h in NightPrayerSettings.eveningDelayChoices)
+                    ButtonSegment(value: h, label: Text('Isha + $h h')),
+                ],
+                selected: {night.eveningDelayHours},
+                onSelectionChanged:
+                    busy ? null : (s) => _controller.setEveningDelay(s.first),
+              ),
+            ),
+          const SizedBox(height: 4),
+          slotTile(
+            NightSlot.lastThird,
+            lastThird == null
+                ? 'Calculé entre le Maghrib et le Fajr'
+                : 'Cette nuit vers ${FrenchDates.time(lastThird)}',
+          ),
+          if (night.lastThird != AdhanMode.off) ...[
+            Text('Au plus tard avant le Fajr', style: textTheme.titleSmall),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<int>(
+                showSelectedIcon: false,
+                segments: [
+                  for (final m in NightPrayerSettings.fajrMarginChoices)
+                    ButtonSegment(
+                      value: m,
+                      label: Text(m == 0 ? 'Non' : '$m min'),
+                    ),
+                ],
+                selected: {night.fajrMarginMinutes},
+                onSelectionChanged:
+                    busy ? null : (s) => _controller.setFajrMargin(s.first),
+              ),
+            ),
+          ],
+          const SizedBox(height: 4),
+          slotTile(
+            NightSlot.tarawih,
+            '15 min après l’Isha, remplace le rappel du soir',
+          ),
+          const _InlineMessage(
+            icon: Icons.info_outline,
+            text: 'Dates du Ramadan selon le calendrier hégirien calculé : '
+                'elles peuvent différer d’un jour de l’annonce locale.',
+          ),
+        ],
+      ],
+    );
+  }
+
+  Future<void> _pickNightMode(
+    BuildContext context,
+    NightSlot slot,
+    AdhanMode current,
+  ) async {
+    final picked = await showModalBottomSheet<AdhanMode>(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      backgroundColor: const Color(0xFFFBF8FD),
+      builder: (context) => _NightModePicker(slot: slot, current: current),
+    );
+    if (picked != null && picked != current) {
+      await _controller.setNightMode(slot, picked);
+    }
   }
 
   String _methodSubtitle(NotificationStatus status) {
@@ -565,6 +683,44 @@ class _ModeChip extends StatelessWidget {
         Text(mode.label,
             style: TextStyle(color: color, fontWeight: FontWeight.w600)),
         const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+      ],
+    );
+  }
+}
+
+/// Choix du mode d'un créneau de nuit : jamais d'adhan.
+class _NightModePicker extends StatelessWidget {
+  const _NightModePicker({required this.slot, required this.current});
+
+  final NightSlot slot;
+  final AdhanMode current;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      shrinkWrap: true,
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 24),
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+          child: Text(slot.label, style: Theme.of(context).textTheme.titleLarge),
+        ),
+        for (final mode in NightPrayerSettings.allowedModes)
+          ListTile(
+            leading: Icon(
+              _iconFor(mode),
+              color: mode == current
+                  ? AppColors.emeraldDark
+                  : AppColors.textSecondary,
+            ),
+            title: Text(mode.label),
+            subtitle: Text(mode.description),
+            selected: mode == current,
+            trailing: mode == current
+                ? const Icon(Icons.check, color: AppColors.emeraldDark)
+                : null,
+            onTap: () => Navigator.of(context).pop(mode),
+          ),
       ],
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import '../models/adhan_mode.dart';
+import '../models/night_prayer_settings.dart';
 import 'adhan_sound_resolver.dart';
 import 'ios_sound_installer.dart';
 import 'prayer_notification_planner.dart';
@@ -153,7 +154,7 @@ class LocalNotificationGateway implements NotificationGateway {
   Future<void> prepare() async {
     final android = _android;
     if (android != null) {
-      for (final sound in AdhanSoundResolver.all) {
+      for (final sound in AdhanSoundResolver.channels) {
         await android.createNotificationChannel(_channelFor(sound));
       }
     }
@@ -168,7 +169,9 @@ class LocalNotificationGateway implements NotificationGateway {
       body: n.body,
       // Instant absolu → converti dans le fuseau de l'appareil.
       at: tz.TZDateTime.from(n.when, tz.local),
-      details: detailsFor(n.mode),
+      details: n.kind == PlannedKind.night
+          ? nightDetailsFor(n.nightSlot!, n.mode)
+          : detailsFor(n.mode),
       payload: n.payload,
     );
   }
@@ -224,6 +227,42 @@ class LocalNotificationGateway implements NotificationGateway {
       ),
     );
   }
+
+  /// Détails d'une notification de prière de nuit (exposé pour les tests).
+  ///
+  /// [⚠️ PROD] Flux « notification » (jamais alarme) : elle respecte le
+  /// mode Ne pas déranger. Seul le dernier tiers est « Time Sensitive »
+  /// sur iOS (réveil volontaire) ; le rappel du soir et les Tarawih
+  /// restent « active », comme le recommande Apple pour du non urgent.
+  @visibleForTesting
+  static NotificationDetails nightDetailsFor(NightSlot slot, AdhanMode mode) {
+    final sound = AdhanSoundResolver.resolveNight(mode);
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        sound.androidChannelId,
+        sound.androidChannelName,
+        channelDescription: sound.androidChannelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+        playSound: sound.playSound,
+        enableVibration: sound.playSound,
+        audioAttributesUsage: AudioAttributesUsage.notification,
+        category: AndroidNotificationCategory.reminder,
+        icon: '@mipmap/ic_launcher',
+        color: const Color(0xFF10B981),
+      ),
+      iOS: DarwinNotificationDetails(
+        threadIdentifier: nightThreadId,
+        presentSound: sound.playSound,
+        interruptionLevel: sound.playSound && slot == NightSlot.lastThird
+            ? InterruptionLevel.timeSensitive
+            : InterruptionLevel.active,
+      ),
+    );
+  }
+
+  /// Regroupement iOS des notifications de prière de nuit.
+  static const String nightThreadId = 'night_prayer';
 
   /// [⚠️ PROD] Les attributs d'un canal (son, flux audio, importance) sont
   /// figés à sa création. Créer explicitement les canaux garantit qu'ils

@@ -9,6 +9,9 @@ import 'prayer_notification_planner.dart';
 /// Seules les notifications d'adhan ouvrent le lecteur (adhan intégral +
 /// dou'a) ; un rappel « dans 15 min » ou une notification simple ouvre
 /// juste l'app, sans écran inattendu.
+///
+/// Les notifications de prière de nuit (`night:…`, voir `NightPayload`)
+/// ne sont pas reconnues ici : elles ouvrent simplement l'app.
 class NotificationRouter {
   /// [navigatorKey] est injecté (celui de `MyApp`) plutôt qu'importé : le
   /// routeur reste indépendant de l'arbre de l'app, donc testable seul.

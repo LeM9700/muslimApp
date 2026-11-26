@@ -1,13 +1,17 @@
 import 'package:flutter/foundation.dart';
 
 import '../models/adhan_mode.dart';
+import '../models/night_prayer_settings.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
 import '../services/adhan_audio.dart';
 import '../services/prayer_notification_service.dart';
 
 /// Message ponctuel à afficher après une action (bandeau / snackbar).
-enum SettingsNotice { none, permissionDenied, noLocation, testSent }
+///
+/// [nightNoLocation] : même cause que [noLocation], affichée dans la
+/// section « Prière de nuit » (là où l'utilisateur a agi).
+enum SettingsNotice { none, permissionDenied, noLocation, nightNoLocation, testSent }
 
 /// État et actions de l'écran « Notifications ».
 class NotificationSettingsController extends ChangeNotifier {
@@ -46,7 +50,8 @@ class NotificationSettingsController extends ChangeNotifier {
     final s = _status;
     if (s == null || s.hasPermission) return false;
     return _notice == SettingsNotice.permissionDenied ||
-        s.settings.prayersEnabled;
+        s.settings.prayersEnabled ||
+        s.settings.night.enabled;
   }
 
   Future<void> load() async {
@@ -72,6 +77,33 @@ class NotificationSettingsController extends ChangeNotifier {
           EnableOutcome.noLocation => SettingsNotice.noLocation,
         };
       });
+
+  /// Active ou désactive la prière de nuit (section dédiée).
+  Future<void> setNightEnabled(bool enabled) => _run(() async {
+        if (!enabled) {
+          await _updateNight(settings.night.copyWith(enabled: false));
+          return;
+        }
+        final outcome = await _service.enableNightPrayer();
+        _notice = switch (outcome) {
+          EnableOutcome.enabled => SettingsNotice.none,
+          EnableOutcome.permissionDenied => SettingsNotice.permissionDenied,
+          EnableOutcome.noLocation => SettingsNotice.nightNoLocation,
+        };
+      });
+
+  /// Mode d'un créneau de nuit (Désactivé, Silencieux ou Notification).
+  Future<void> setNightMode(NightSlot slot, AdhanMode mode) =>
+      _run(() => _updateNight(settings.night.withMode(slot, mode)));
+
+  Future<void> setEveningDelay(int hours) => _run(() =>
+      _updateNight(settings.night.copyWith(eveningDelayHours: hours)));
+
+  Future<void> setFajrMargin(int minutes) => _run(() =>
+      _updateNight(settings.night.copyWith(fajrMarginMinutes: minutes)));
+
+  Future<void> _updateNight(NightPrayerSettings night) =>
+      _service.updateSettings(settings.copyWith(night: night));
 
   /// Profil actif, `null` = réglage personnalisé.
   AdhanPreset? get activePreset => AdhanPreset.matching(settings.modes);
