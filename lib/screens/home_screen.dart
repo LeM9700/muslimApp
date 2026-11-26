@@ -20,6 +20,8 @@ import '../services/prayer_service.dart';
 import '../services/firebase_service.dart';
 import '../services/onboarding_service.dart';
 import 'hadith_library_screen.dart';
+import 'tasbih_screen.dart';
+import 'fasting_screen.dart';
 import '../models/quiz_question.dart';
 import '../models/prayer_data.dart';
 
@@ -339,6 +341,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       // Section navigation rapide
                       _buildQuickNavigationSection(),
 
+                      const SizedBox(height: 12),
+
+                      // Pratiques du quotidien (2e rangée : 3 cartes par
+                      // rangée au maximum pour rester lisible sur téléphone)
+                      _buildPracticeSection(),
+
                       const SizedBox(height: 16),
 
                       // Reprendre la lecture
@@ -522,6 +530,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// Section de navigation rapide vers Qibla et Coran
   /// Boutons larges avec icônes pour accès facile
+  /// Raccourcis vers les pratiques : Tasbih, Jeûnes.
+  Widget _buildPracticeSection() {
+    return Row(
+      children: [
+        _PracticeCard(
+          icon: Icons.touch_app_outlined,
+          label: 'Tasbih',
+          color: AppColors.emeraldDark,
+          onTap: () => TasbihScreen.open(context),
+        ),
+        const SizedBox(width: 12),
+        _PracticeCard(
+          icon: Icons.nightlight_outlined,
+          label: 'Jeûnes',
+          color: AppColors.copper,
+          onTap: () => FastingScreen.open(context),
+        ),
+      ],
+    );
+  }
+
   Widget _buildQuickNavigationSection() {
     return Row(
       children: [
@@ -627,6 +656,43 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _PracticeCard extends StatelessWidget {
+  const _PracticeCard({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Card(
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Icon(icon, size: 40, color: color),
+                const SizedBox(height: 8),
+                Text(label,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
