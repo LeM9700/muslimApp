@@ -4,6 +4,29 @@ Les fichiers actuels sont des **sons de substitution** (tonalités synthétiques
 signalés par `assets/audio/.placeholder`. `check_release_audio.sh` échoue tant
 que ce marqueur existe : à brancher en CI avant tout build de release.
 
+## Tester avec un audio non publiable (ex. sans licence)
+
+Ne **jamais** commiter un audio sans licence (il resterait dans l'historique git).
+
+- **Android, en local** :
+  ```bash
+  scripts/adhan/prepare_adhan.sh --source adhan.mp3 --short 0:00-0:08 --long-start 0:00 --test
+  flutter run --release
+  git checkout -- android/app/src/main/res/raw assets/audio && rm -f assets/audio/.test_audio
+  ```
+  `--test` écrit `assets/audio/.test_audio` : s'il est commité par erreur, les
+  builds de release échouent.
+- **iPhone, via TestFlight** : GitHub → Actions → *iOS TestFlight* → *Run workflow*,
+  remplir `test_audio_url` (URL https directe du fichier) et les repères
+  `test_audio_short` / `test_audio_long_start`. Le CI télécharge et convertit
+  l'audio dans le runner uniquement, et l'app affiche un bandeau « Build de test »
+  dans les réglages des notifications.
+  ⚠️ **Ne jamais soumettre ce build à l'App Store** (l'artefact est suffixé `-TEST-AUDIO`).
+
+Sans `test_audio_url`, le workflow (tags `v*` compris) lance
+`check_release_audio.sh` et **échoue** tant que les sons sont des sons de substitution
+ou de test.
+
 ## Remplacer par un vrai enregistrement
 
 1. Trouver **un** enregistrement de l'adhan (et si possible l'adhan du Fajr de

@@ -14,6 +14,10 @@ import '../models/prayer_schedule.dart';
 class AdhanAudioCatalog {
   const AdhanAudioCatalog._();
 
+  /// Build compilé avec un audio de test non publiable
+  /// (`--dart-define=ADHAN_TEST_AUDIO=true`, posé par le CI).
+  static const bool isTestAudio = bool.fromEnvironment('ADHAN_TEST_AUDIO');
+
   static const String shortPreview = 'assets/audio/adhan_short.mp3';
   static const String longPreview = 'assets/audio/adhan_long.mp3';
   static const String full = 'assets/audio/adhan_full.mp3';

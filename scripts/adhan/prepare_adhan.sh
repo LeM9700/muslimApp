@@ -7,6 +7,9 @@
 #     --short 0:00.5-0:09.2 \      # « Allahu akbar, Allahu akbar »
 #     --long-start 0:00.5 \        # début de l'extrait de 30 s
 #     [--fajr adhan_fajr.mp3]      # adhan du Fajr (facultatif)
+#     [--test]                     # audio NON publiable (ex. sans licence) :
+#                                  # marque les sons comme « test » et bloque
+#                                  # tout build de release (check_release_audio.sh)
 #
 # Produit :
 #   android/app/src/main/res/raw/adhan_{short,long}.ogg   (notification Android)
@@ -20,18 +23,19 @@
 #     canal existant ne change jamais).
 set -euo pipefail
 
-SOURCE="" SHORT="" LONG_START="" FAJR=""
+SOURCE="" SHORT="" LONG_START="" FAJR="" TEST=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --source) SOURCE="$2"; shift 2 ;;
     --short) SHORT="$2"; shift 2 ;;
     --long-start) LONG_START="$2"; shift 2 ;;
     --fajr) FAJR="$2"; shift 2 ;;
+    --test) TEST=1; shift ;;
     *) echo "Option inconnue : $1" >&2; exit 2 ;;
   esac
 done
 [[ -f "$SOURCE" && -n "$SHORT" && -n "$LONG_START" ]] || {
-  sed -n '2,12p' "$0"; exit 2; }
+  sed -n '2,15p' "$0"; exit 2; }
 command -v ffmpeg >/dev/null || { echo "ffmpeg requis" >&2; exit 1; }
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -81,7 +85,13 @@ if [[ -n "$FAJR" ]]; then
   render "$FAJR" "$NORM" 0 "" -ar 44100 -c:a libmp3lame -b:a 96k "$AUDIO/adhan_fajr_full.mp3"
 fi
 
-rm -f "$AUDIO/.placeholder"
+rm -f "$AUDIO/.placeholder" "$AUDIO/.test_audio"
+if [[ "$TEST" == 1 ]]; then
+  # Marqueur versionnable : s'il est commité par erreur, les builds de
+  # release échouent au lieu de publier un audio sans licence.
+  echo "Audio de test, non publiable : $(basename "$SOURCE")" > "$AUDIO/.test_audio"
+  echo "⚠️  Sons marqués comme TEST (assets/audio/.test_audio) : ne pas publier."
+fi
 
 echo "→ Vérification des durées"
 for f in "$NOTIF"/*.caf; do

@@ -89,6 +89,16 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
               return ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
                 children: [
+                  if (AdhanAudioCatalog.isTestAudio) ...[
+                    // [⚠️ PROD] Visible par les testeurs : un build TestFlight
+                    // peut être soumis à l'App Store en deux clics.
+                    const _InlineMessage(
+                      icon: Icons.science_outlined,
+                      text: 'Build de test : l’audio de l’adhan n’est pas '
+                          'publiable. Ne pas soumettre ce build à l’App Store.',
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                   if (_controller.permissionMissing) ...[
                     const _PermissionBanner(),
                     const SizedBox(height: 12),
