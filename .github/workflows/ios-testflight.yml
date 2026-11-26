@@ -92,6 +92,17 @@ jobs:
             exit 1
           fi
 
+      # Même logique pour les adhkar : un build App Store exige des textes
+      # relus. Les builds de test (avec test_audio_url) passent, avec un
+      # bandeau « en cours de relecture » dans l'app.
+      - name: Check adhkar are reviewed
+        if: ${{ !inputs.test_audio_url }}
+        run: |
+          if ! scripts/adhkar/check_reviewed.sh; then
+            echo "::error::Adhkar non relus. Après relecture, passer \"reviewed\": true dans assets/adhkar/adhkar_fr.json."
+            exit 1
+          fi
+
       - name: Restore Firebase config files
         env:
           FIREBASE_OPTIONS_DART_BASE64: ${{ secrets.FIREBASE_OPTIONS_DART_BASE64 }}
