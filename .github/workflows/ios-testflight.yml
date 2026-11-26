@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       test_audio_url:
-        description: "Adhan de TEST (URL https) intégré à CE build uniquement, jamais commité. Vide = sons du repo."
+        description: "OBLIGATOIRE tant que les sons d'adhan du repo sont de substitution : URL https d'un adhan de TEST, intégré à CE build uniquement (jamais commité). Vide = sons du repo (build App Store)."
         required: false
         default: ''
       test_audio_short:
@@ -86,7 +86,11 @@ jobs:
       # sans audio de test).
       - name: Check adhan audio is publishable
         if: ${{ !inputs.test_audio_url }}
-        run: scripts/adhan/check_release_audio.sh
+        run: |
+          if ! scripts/adhan/check_release_audio.sh; then
+            echo "::error::Sons d'adhan non publiables. Pour un build de TEST, relancez le workflow en remplissant « test_audio_url » (URL https d'un adhan). Pour l'App Store, préparez les vrais sons : scripts/adhan/README.md"
+            exit 1
+          fi
 
       - name: Restore Firebase config files
         env:
@@ -153,6 +157,13 @@ jobs:
               exit 1
             fi
           done
+
+          # L'app déclare l'entitlement « Time Sensitive » : son profil doit
+          # l'inclure, sinon l'archive échoue avec une erreur peu lisible.
+          if ! /usr/libexec/PlistBuddy -c "Print :Entitlements:com.apple.developer.usernotifications.time-sensitive" "$RUNNER_TEMP/profile.plist" >/dev/null 2>&1; then
+            echo "::error::Le profil de l'app n'inclut pas « Time Sensitive Notifications ». Cochez la capacité sur $BUNDLE_ID puis régénérez le profil (scripts/ios/WIDGET_SETUP.md, étape 2)."
+            exit 1
+          fi
 
       - name: Configure manual signing for Release
         env:
