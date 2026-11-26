@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../controllers/notification_settings_controller.dart';
+import '../models/adhan_mode.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
+import '../services/adhan_audio.dart';
 import '../services/prayer_notification_service.dart';
 import '../utils/app_theme.dart';
 import '../utils/french_dates.dart';
@@ -11,10 +13,11 @@ import '../widgets/glass_widgets.dart';
 
 /// Réglages des notifications : rappels de prière, hadith et quiz.
 class NotificationSettingsScreen extends StatefulWidget {
-  const NotificationSettingsScreen({super.key, this.service});
+  const NotificationSettingsScreen({super.key, this.service, this.preview});
 
-  /// Injectable pour les tests.
+  /// Injectables pour les tests.
   final PrayerNotificationService? service;
+  final AdhanPlayback? preview;
 
   static Future<void> open(BuildContext context) {
     return Navigator.of(context).push(
@@ -32,7 +35,8 @@ class NotificationSettingsScreen extends StatefulWidget {
 class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
     with WidgetsBindingObserver {
   late final NotificationSettingsController _controller =
-      NotificationSettingsController(service: widget.service);
+      NotificationSettingsController(
+          service: widget.service, preview: widget.preview);
 
   @override
   void initState() {
@@ -54,6 +58,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) _controller.load();
+    if (state == AppLifecycleState.paused) _controller.stopPreview();
   }
 
   void _onNotice() {
@@ -84,6 +89,16 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
               return ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
                 children: [
+                  if (AdhanAudioCatalog.isTestAudio) ...[
+                    // [⚠️ PROD] Visible par les testeurs : un build TestFlight
+                    // peut être soumis à l'App Store en deux clics.
+                    const _InlineMessage(
+                      icon: Icons.science_outlined,
+                      text: 'Build de test : l’audio de l’adhan n’est pas '
+                          'publiable. Ne pas soumettre ce build à l’App Store.',
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                   if (_controller.permissionMissing) ...[
                     const _PermissionBanner(),
                     const SizedBox(height: 12),
@@ -135,23 +150,26 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           ),
         if (settings.prayersEnabled) ...[
           const Divider(height: 20),
+          _PresetSelector(
+            active: _controller.activePreset,
+            onSelected: busy ? null : _controller.applyPreset,
+          ),
+          const SizedBox(height: 4),
           for (final prayer in Prayer.values)
-            CheckboxListTile.adaptive(
+            ListTile(
               contentPadding: EdgeInsets.zero,
-              value: settings.prayers.contains(prayer),
-              onChanged: busy
-                  ? null
-                  : (v) => _controller.togglePrayer(prayer, v ?? false),
+              enabled: !busy,
               title: Text(prayer.label),
-              secondary: Text(
+              subtitle: Text(
                 status.today?.times[prayer] == null
                     ? '--:--'
                     : FrenchDates.time(status.today!.times[prayer]!),
-                style: textTheme.titleMedium?.copyWith(
-                  fontFeatures: const [FontFeature.tabularFigures()],
+                style: const TextStyle(
+                  fontFeatures: [FontFeature.tabularFigures()],
                 ),
               ),
-              controlAffinity: ListTileControlAffinity.leading,
+              trailing: _ModeChip(mode: settings.modeOf(prayer)),
+              onTap: () => _pickMode(context, prayer, settings.modeOf(prayer)),
             ),
           const Divider(height: 20),
           Text('Me prévenir aussi avant', style: textTheme.titleSmall),
@@ -227,6 +245,32 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
       icon: const Icon(Icons.notifications_active_outlined),
       label: const Text('Envoyer une notification de test'),
     );
+  }
+
+  Future<void> _pickMode(
+    BuildContext context,
+    Prayer prayer,
+    AdhanMode current,
+  ) async {
+    final picked = await showModalBottomSheet<_ModeChoice>(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      isScrollControlled: true,
+      backgroundColor: const Color(0xFFFBF8FD),
+      builder: (context) => _ModePicker(
+        prayer: prayer,
+        current: current,
+        controller: _controller,
+      ),
+    );
+    await _controller.stopPreview();
+    if (picked == null) return;
+    if (picked.applyToAll) {
+      await _controller.setModeForAll(picked.mode);
+    } else if (picked.mode != current) {
+      await _controller.setMode(prayer, picked.mode);
+    }
   }
 
   Future<void> _pickMethod(BuildContext context, int? current) async {
@@ -445,4 +489,172 @@ class _MethodPicker extends StatelessWidget {
       ],
     );
   }
+}
+
+IconData _iconFor(AdhanMode mode) => switch (mode) {
+      AdhanMode.off => Icons.notifications_off_outlined,
+      AdhanMode.silent => Icons.notifications_paused_outlined,
+      AdhanMode.notification => Icons.notifications_outlined,
+      AdhanMode.adhanShort => Icons.campaign_outlined,
+      AdhanMode.adhanFull => Icons.mosque_outlined,
+    };
+
+/// Profils en un appui ; « Personnalisé » s'affiche dès qu'une prière
+/// s'écarte du profil.
+class _PresetSelector extends StatelessWidget {
+  const _PresetSelector({required this.active, required this.onSelected});
+
+  final AdhanPreset? active;
+  final ValueChanged<AdhanPreset>? onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Profil', style: textTheme.titleSmall),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final preset in AdhanPreset.values)
+              ChoiceChip(
+                label: Text(preset.label),
+                selected: active == preset,
+                onSelected:
+                    onSelected == null ? null : (_) => onSelected!(preset),
+              ),
+            if (active == null)
+              const ChoiceChip(
+                label: Text('Personnalisé'),
+                selected: true,
+                onSelected: null,
+              ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Text(
+          active?.description ??
+              'Réglé prière par prière. Touchez une prière pour la modifier.',
+          style: textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+        ),
+      ],
+    );
+  }
+}
+
+class _ModeChip extends StatelessWidget {
+  const _ModeChip({required this.mode});
+  final AdhanMode mode;
+
+  @override
+  Widget build(BuildContext context) {
+    final off = mode == AdhanMode.off;
+    final color = off
+        ? AppColors.textSecondary
+        : mode.playsAdhan
+            ? AppColors.emeraldDark
+            : AppColors.copper;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(_iconFor(mode), size: 20, color: color),
+        const SizedBox(width: 6),
+        Text(mode.label,
+            style: TextStyle(color: color, fontWeight: FontWeight.w600)),
+        const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+      ],
+    );
+  }
+}
+
+class _ModeChoice {
+  final AdhanMode mode;
+  final bool applyToAll;
+  const _ModeChoice(this.mode, {required this.applyToAll});
+}
+
+/// Choix du mode d'une prière, avec écoute des sons d'adhan.
+class _ModePicker extends StatefulWidget {
+  const _ModePicker({
+    required this.prayer,
+    required this.current,
+    required this.controller,
+  });
+
+  final Prayer prayer;
+  final AdhanMode current;
+  final NotificationSettingsController controller;
+
+  @override
+  State<_ModePicker> createState() => _ModePickerState();
+}
+
+class _ModePickerState extends State<_ModePicker> {
+  bool _applyToAll = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return ListenableBuilder(
+      listenable: widget.controller,
+      builder: (context, _) => ListView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 24),
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+            child: Text(widget.prayer.label, style: textTheme.titleLarge),
+          ),
+          for (final mode in AdhanMode.values)
+            ListTile(
+              leading: Icon(
+                _iconFor(mode),
+                color: mode == widget.current
+                    ? AppColors.emeraldDark
+                    : AppColors.textSecondary,
+              ),
+              title: Text(mode.label),
+              subtitle: Text(mode.description),
+              selected: mode == widget.current,
+              trailing: AdhanAudioCatalog.previewFor(mode) == null
+                  ? (mode == widget.current
+                      ? const Icon(Icons.check, color: AppColors.emeraldDark)
+                      : null)
+                  : IconButton(
+                      tooltip: widget.controller.previewing == mode
+                          ? 'Arrêter l’écoute'
+                          : 'Écouter',
+                      icon: Icon(widget.controller.previewing == mode
+                          ? Icons.stop_circle_outlined
+                          : Icons.play_circle_outline),
+                      onPressed: () => widget.controller.togglePreview(mode),
+                    ),
+              onTap: () => Navigator.of(context)
+                  .pop(_ModeChoice(mode, applyToAll: _applyToAll)),
+            ),
+          CheckboxListTile.adaptive(
+            value: _applyToAll,
+            onChanged: (v) => setState(() => _applyToAll = v ?? false),
+            title: const Text('Appliquer à toutes les prières'),
+            controlAffinity: ListTileControlAffinity.leading,
+          ),
+          if (_isAdhanOnIos(context))
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+              child: Text(
+                'Sur iPhone, l’adhan suit le bouton silencieux du téléphone.',
+                style: textTheme.bodySmall
+                    ?.copyWith(color: AppColors.textSecondary),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  bool _isAdhanOnIos(BuildContext context) =>
+      Theme.of(context).platform == TargetPlatform.iOS;
 }

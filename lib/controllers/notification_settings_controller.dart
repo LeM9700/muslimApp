@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 
+import '../models/adhan_mode.dart';
 import '../models/notification_settings.dart';
 import '../models/prayer_schedule.dart';
+import '../services/adhan_audio.dart';
 import '../services/prayer_notification_service.dart';
 
 /// Message ponctuel à afficher après une action (bandeau / snackbar).
@@ -9,10 +11,22 @@ enum SettingsNotice { none, permissionDenied, noLocation, testSent }
 
 /// État et actions de l'écran « Notifications ».
 class NotificationSettingsController extends ChangeNotifier {
-  NotificationSettingsController({PrayerNotificationService? service})
-      : _service = service ?? PrayerNotificationService.instance;
+  NotificationSettingsController({
+    PrayerNotificationService? service,
+    AdhanPlayback? preview,
+  })  : _service = service ?? PrayerNotificationService.instance,
+        _previewFactory = _factoryFor(preview);
+
+  static AdhanPlayback Function() _factoryFor(AdhanPlayback? preview) =>
+      preview == null ? JustAudioAdhanPlayback.new : () => preview;
 
   final PrayerNotificationService _service;
+
+  /// Lecteur d'aperçu créé à la première écoute (pas de player natif
+  /// alloué pour rien si l'utilisateur n'écoute jamais).
+  final AdhanPlayback Function() _previewFactory;
+  AdhanPlayback? _preview;
+  AdhanMode? _previewing;
 
   NotificationStatus? _status;
   bool _busy = false;
@@ -59,11 +73,51 @@ class NotificationSettingsController extends ChangeNotifier {
         };
       });
 
-  Future<void> togglePrayer(Prayer prayer, bool enabled) => _run(() {
-        final prayers = {...settings.prayers};
-        enabled ? prayers.add(prayer) : prayers.remove(prayer);
-        return _service.updateSettings(settings.copyWith(prayers: prayers));
-      });
+  /// Profil actif, `null` = réglage personnalisé.
+  AdhanPreset? get activePreset => AdhanPreset.matching(settings.modes);
+
+  /// Mode dont l'aperçu est en cours de lecture.
+  AdhanMode? get previewing => _previewing;
+
+  Future<void> setMode(Prayer prayer, AdhanMode mode) => _run(
+      () => _service.updateSettings(settings.withMode(prayer, mode)));
+
+  /// Applique [mode] aux 5 prières.
+  Future<void> setModeForAll(AdhanMode mode) => _run(() => _service
+      .updateSettings(settings.copyWith(modes: {for (final p in Prayer.values) p: mode})));
+
+  Future<void> applyPreset(AdhanPreset preset) =>
+      _run(() => _service.updateSettings(settings.copyWith(modes: preset.modes)));
+
+  /// Écoute (ou arrête) le son de notification d'un mode d'adhan.
+  Future<void> togglePreview(AdhanMode mode) async {
+    final asset = AdhanAudioCatalog.previewFor(mode);
+    if (asset == null) return;
+    final player = _preview ??= _createPreview();
+    if (_previewing == mode && player.isPlaying.value) {
+      await player.stop();
+      return;
+    }
+    try {
+      await player.playFirstAvailable([asset]);
+      // Après le stop() interne du lecteur, qui remet `_previewing` à null.
+      _previewing = mode;
+    } on AdhanPlaybackException {
+      _previewing = null;
+    }
+    _notify();
+  }
+
+  Future<void> stopPreview() async => _preview?.stop();
+
+  AdhanPlayback _createPreview() {
+    final player = _previewFactory();
+    player.isPlaying.addListener(() {
+      if (!player.isPlaying.value) _previewing = null;
+      _notify();
+    });
+    return player;
+  }
 
   Future<void> setReminder(int minutes) => _run(
       () => _service.updateSettings(settings.copyWith(reminderMinutes: minutes)));
@@ -116,6 +170,7 @@ class NotificationSettingsController extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    _preview?.dispose();
     super.dispose();
   }
 }

@@ -4,16 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:muslim_app/models/adhan_mode.dart';
 import 'package:muslim_app/models/notification_settings.dart';
 import 'package:muslim_app/models/prayer_schedule.dart';
 import 'package:muslim_app/repositories/aladhan_repository.dart';
 import 'package:muslim_app/repositories/prayer_settings_repository.dart';
+import 'package:muslim_app/models/adhan_dua.dart';
+import 'package:muslim_app/screens/adhan_player_screen.dart';
 import 'package:muslim_app/screens/notification_settings_screen.dart';
+import 'package:muslim_app/services/adhan_audio.dart';
 import 'package:muslim_app/services/notification_gateway.dart';
 import 'package:muslim_app/services/prayer_notification_planner.dart';
 import 'package:muslim_app/services/prayer_notification_service.dart';
 import 'package:muslim_app/utils/french_dates.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'support/fake_playback.dart';
 
 const _paris = PrayerLocation(latitude: 48.8566, longitude: 2.3522, cityName: 'Paris');
 
@@ -70,7 +76,12 @@ class FakeGateway implements NotificationGateway {
   final List<PlannedNotification> prayers = [];
   int tests = 0;
 
+  int prepared = 0;
+
   FakeGateway({this.permission = true, this.grantOnRequest = true});
+
+  @override
+  Future<void> prepare() async => prepared++;
 
   @override
   Future<bool> hasPermission() async => permission;
@@ -212,7 +223,7 @@ void main() {
         days: _days(2),
         settings: const NotificationSettings(
           prayersEnabled: true,
-          prayers: {Prayer.fajr, Prayer.maghrib},
+          modes: {Prayer.fajr: AdhanMode.adhanFull, Prayer.maghrib: AdhanMode.silent},
         ),
         now: _now,
         cityName: '',
@@ -226,7 +237,7 @@ void main() {
         days: _days(1),
         settings: const NotificationSettings(
           prayersEnabled: true,
-          prayers: {Prayer.dhuhr},
+          modes: {Prayer.dhuhr: AdhanMode.notification},
           reminderMinutes: 15,
         ),
         now: _now,
@@ -269,7 +280,7 @@ void main() {
     test('aller-retour JSON', () {
       const s = NotificationSettings(
         prayersEnabled: true,
-        prayers: {Prayer.fajr, Prayer.isha},
+        modes: {Prayer.fajr: AdhanMode.adhanFull, Prayer.isha: AdhanMode.silent},
         reminderMinutes: 30,
         methodId: 12,
         hadithDaily: false,
@@ -277,6 +288,9 @@ void main() {
       final r = NotificationSettings.fromJson(s.toJson());
       expect(r.prayersEnabled, isTrue);
       expect(r.prayers, {Prayer.fajr, Prayer.isha});
+      expect(r.modeOf(Prayer.fajr), AdhanMode.adhanFull);
+      expect(r.modeOf(Prayer.isha), AdhanMode.silent);
+      expect(r.modeOf(Prayer.dhuhr), AdhanMode.off);
       expect(r.reminderMinutes, 30);
       expect(r.methodId, 12);
       expect(r.hadithDaily, isFalse);
@@ -460,12 +474,19 @@ void main() {
   });
 
   group('UI', () {
-    Future<FakeGateway> pump(WidgetTester tester, {bool permission = true}) async {
+    Future<FakeGateway> pump(
+      WidgetTester tester, {
+      bool permission = true,
+      AdhanPlayback? preview,
+    }) async {
       final gateway = FakeGateway(permission: permission);
       await tester.runAsync(() async {
         await PrayerSettingsRepository().writeLocation(_paris);
         await tester.pumpWidget(MaterialApp(
-          home: NotificationSettingsScreen(service: _service(gateway)),
+          home: NotificationSettingsScreen(
+            service: _service(gateway),
+            preview: preview ?? FakePlayback(),
+          ),
         ));
         await Future<void>.delayed(const Duration(milliseconds: 100));
       });
@@ -507,6 +528,132 @@ void main() {
       expect(find.text('Les notifications sont désactivées pour Deen'),
           findsOneWidget);
       expect(find.text('Ouvrir les Réglages'), findsOneWidget);
+    });
+
+    Future<void> enable(WidgetTester tester) async {
+      await tester.runAsync(() async {
+        await tester.tap(find.text('Notification à chaque prière'));
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+      });
+      await tester.pump();
+    }
+
+    /// Le fond animé tourne en boucle : pumpAndSettle ne se stabiliserait
+    /// jamais. On avance l'horloge du temps d'une transition.
+    Future<void> sheet(WidgetTester tester) async {
+      for (var i = 0; i < 5; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+    }
+
+    Future<void> settle(WidgetTester tester) async {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 200)));
+      await sheet(tester);
+    }
+
+    Finder inSheet(String text) => find.descendant(
+        of: find.byType(BottomSheet), matching: find.text(text));
+
+    Future<void> openPrayer(WidgetTester tester, String label) async {
+      await tester.ensureVisible(find.text(label));
+      await tester.pump();
+      await tester.tap(find.text(label));
+      await sheet(tester);
+    }
+
+    Map<Prayer, AdhanMode> scheduledModes(FakeGateway gateway) => {
+          for (final n in gateway.prayers.where((n) => n.kind == PlannedKind.prayer))
+            n.prayer: n.mode,
+        };
+
+    testWidgets('profil Équilibré par défaut, mode affiché par prière',
+        (tester) async {
+      final gateway = await pump(tester);
+      await enable(tester);
+
+      final balanced = tester.widget<ChoiceChip>(
+          find.widgetWithText(ChoiceChip, 'Équilibré'));
+      expect(balanced.selected, isTrue);
+      expect(find.text('Personnalisé'), findsNothing);
+      expect(scheduledModes(gateway), AdhanPreset.balanced.modes);
+    });
+
+    testWidgets('changer une prière : reprogrammée avec son nouveau mode',
+        (tester) async {
+      final gateway = await pump(tester);
+      await enable(tester);
+
+      await openPrayer(tester, 'Dhuhr');
+      await tester.tap(inSheet('Adhan court'));
+      await settle(tester);
+
+      expect(scheduledModes(gateway)[Prayer.dhuhr], AdhanMode.adhanShort);
+      expect(scheduledModes(gateway)[Prayer.fajr], AdhanMode.adhanFull);
+      expect(find.text('Personnalisé'), findsOneWidget);
+    });
+
+    testWidgets('« Appliquer à toutes » puis retour à un profil',
+        (tester) async {
+      final gateway = await pump(tester);
+      await enable(tester);
+
+      await openPrayer(tester, 'Asr');
+      await tester.tap(inSheet('Appliquer à toutes les prières'));
+      await tester.pump();
+      await tester.tap(inSheet('Silencieux'));
+      await settle(tester);
+
+      expect(
+          tester
+              .widget<ChoiceChip>(find.widgetWithText(ChoiceChip, 'Discret'))
+              .selected,
+          isTrue);
+      expect(scheduledModes(gateway).values.toSet(), {AdhanMode.silent});
+
+      await tester.ensureVisible(find.widgetWithText(ChoiceChip, 'Adhan partout'));
+      await tester.pump();
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Adhan partout'));
+      await settle(tester);
+      expect(scheduledModes(gateway).values.toSet(), {AdhanMode.adhanFull});
+    });
+
+    testWidgets('écouter un son d’adhan depuis le sélecteur', (tester) async {
+      final preview = FakePlayback(available: {AdhanAudioCatalog.shortPreview});
+      await pump(tester, preview: preview);
+      await enable(tester);
+
+      await openPrayer(tester, 'Isha');
+      await tester.tap(find.byTooltip('Écouter').first);
+      await tester.pump();
+
+      expect(preview.played, [AdhanAudioCatalog.shortPreview]);
+      expect(find.byTooltip('Arrêter l’écoute'), findsOneWidget);
+
+      // Fermer la feuille sans choisir : l'aperçu s'arrête.
+      await tester.tapAt(const Offset(10, 10));
+      await sheet(tester);
+      expect(preview.stops, greaterThan(0));
+    });
+  });
+
+  group('AdhanPlayerScreen', () {
+    testWidgets('dou’a affichée, adhan intégral à la demande', (tester) async {
+      final playback = FakePlayback(available: {AdhanAudioCatalog.full});
+      await tester.pumpWidget(MaterialApp(
+        home: AdhanPlayerScreen(prayer: Prayer.maghrib, playback: playback),
+      ));
+      expect(find.text('Prière du Maghrib'), findsOneWidget);
+      expect(find.text(AdhanDua.source), findsOneWidget);
+      expect(playback.played, isEmpty, reason: 'pas de lecture automatique');
+
+      await tester.tap(find.text('Écouter l’adhan complet'));
+      await tester.pump();
+      expect(playback.played, [AdhanAudioCatalog.full]);
+      expect(find.text('Arrêter'), findsOneWidget);
+
+      await tester.pumpWidget(const SizedBox());
+      expect(playback.disposed, isTrue);
     });
   });
 }

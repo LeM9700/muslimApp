@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
+import '../models/adhan_mode.dart';
+import 'adhan_sound_resolver.dart';
+import 'ios_sound_installer.dart';
 import 'prayer_notification_planner.dart';
 
 /// Notification quotidienne à heure fixe (hadith, quiz).
@@ -49,6 +52,10 @@ class DailyNotification {
 /// Frontière avec le système de notifications : tout ce qui touche au
 /// plugin natif passe par ici (et se remplace par un faux en test).
 abstract class NotificationGateway {
+  /// Prépare le système : canaux Android (un par son) et sons iOS.
+  /// À appeler une fois au démarrage, avant toute programmation.
+  Future<void> prepare();
+
   /// Autorisation déjà accordée (ne déclenche aucune demande).
   Future<bool> hasPermission();
 
@@ -63,13 +70,17 @@ abstract class NotificationGateway {
 
 /// Implémentation réelle avec flutter_local_notifications.
 class LocalNotificationGateway implements NotificationGateway {
-  LocalNotificationGateway([FlutterLocalNotificationsPlugin? plugin])
-      : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
+  LocalNotificationGateway({
+    FlutterLocalNotificationsPlugin? plugin,
+    IosSoundInstaller? iosSounds,
+  })  : _plugin = plugin ?? FlutterLocalNotificationsPlugin(),
+        _iosSounds = iosSounds ?? IosSoundInstaller();
 
   final FlutterLocalNotificationsPlugin _plugin;
+  final IosSoundInstaller _iosSounds;
 
-  static const String prayerChannelId = 'prayer_channel';
-  static const String prayerChannelName = 'Heures de prière';
+  /// Action Android « Arrêter » : annuler la notification coupe le son.
+  static const String stopAdhanActionId = 'stop_adhan';
 
   AndroidFlutterLocalNotificationsPlugin? get _android =>
       _plugin.resolvePlatformSpecificImplementation<
@@ -139,6 +150,17 @@ class LocalNotificationGateway implements NotificationGateway {
   }
 
   @override
+  Future<void> prepare() async {
+    final android = _android;
+    if (android != null) {
+      for (final sound in AdhanSoundResolver.all) {
+        await android.createNotificationChannel(_channelFor(sound));
+      }
+    }
+    await _iosSounds.install();
+  }
+
+  @override
   Future<void> schedulePrayer(PlannedNotification n) async {
     await _zonedSchedule(
       id: n.id,
@@ -146,40 +168,79 @@ class LocalNotificationGateway implements NotificationGateway {
       body: n.body,
       // Instant absolu → converti dans le fuseau de l'appareil.
       at: tz.TZDateTime.from(n.when, tz.local),
-      details: const NotificationDetails(
-        android: AndroidNotificationDetails(
-          prayerChannelId,
-          prayerChannelName,
-          channelDescription: 'Notification à l’heure de chaque prière',
-          importance: Importance.high,
-          priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
-          color: Color(0xFF10B981),
-        ),
-        iOS: DarwinNotificationDetails(
-          threadIdentifier: prayerChannelId,
-          presentSound: true,
-        ),
-      ),
+      details: detailsFor(n.mode),
       payload: n.payload,
     );
   }
 
   @override
   Future<void> showTest({required String title, required String body}) {
-    return _plugin.show(
-      999,
-      title,
-      body,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          prayerChannelId,
-          prayerChannelName,
-          importance: Importance.high,
-          priority: Priority.high,
-        ),
-        iOS: DarwinNotificationDetails(presentSound: true),
+    return _plugin.show(999, title, body, detailsFor(AdhanMode.notification));
+  }
+
+  /// Détails de notification d'un mode (exposé pour les tests).
+  @visibleForTesting
+  static NotificationDetails detailsFor(AdhanMode mode) {
+    final sound = AdhanSoundResolver.resolve(mode);
+    final raw = sound.androidRawSound;
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        sound.androidChannelId,
+        sound.androidChannelName,
+        channelDescription: sound.androidChannelDescription,
+        importance: Importance.high,
+        priority: Priority.high,
+        playSound: sound.playSound,
+        enableVibration: sound.playSound,
+        sound: raw == null ? null : RawResourceAndroidNotificationSound(raw),
+        audioAttributesUsage: sound.useAlarmStream
+            ? AudioAttributesUsage.alarm
+            : AudioAttributesUsage.notification,
+        category: sound.useAlarmStream
+            ? AndroidNotificationCategory.alarm
+            : AndroidNotificationCategory.reminder,
+        icon: '@mipmap/ic_launcher',
+        color: const Color(0xFF10B981),
+        actions: mode.playsAdhan
+            ? const [
+                AndroidNotificationAction(
+                  stopAdhanActionId,
+                  'Arrêter',
+                  cancelNotification: true,
+                ),
+              ]
+            : null,
       ),
+      iOS: DarwinNotificationDetails(
+        threadIdentifier: AdhanSoundResolver.notificationChannelId,
+        presentSound: sound.playSound,
+        sound: sound.iosSound,
+        // « Time Sensitive » : passe les résumés programmés et certains
+        // modes Concentration. Sans l'entitlement Xcode correspondant,
+        // iOS rétrograde simplement en « active » (aucune erreur).
+        interruptionLevel: sound.playSound
+            ? InterruptionLevel.timeSensitive
+            : InterruptionLevel.active,
+      ),
+    );
+  }
+
+  /// [⚠️ PROD] Les attributs d'un canal (son, flux audio, importance) sont
+  /// figés à sa création. Créer explicitement les canaux garantit qu'ils
+  /// ont les bons attributs dès le premier affichage.
+  static AndroidNotificationChannel _channelFor(AdhanSound sound) {
+    final raw = sound.androidRawSound;
+    return AndroidNotificationChannel(
+      sound.androidChannelId,
+      sound.androidChannelName,
+      description: sound.androidChannelDescription,
+      importance: Importance.high,
+      playSound: sound.playSound,
+      enableVibration: sound.playSound,
+      sound: raw == null ? null : RawResourceAndroidNotificationSound(raw),
+      audioAttributesUsage: sound.useAlarmStream
+          ? AudioAttributesUsage.alarm
+          : AudioAttributesUsage.notification,
     );
   }
 

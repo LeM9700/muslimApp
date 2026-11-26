@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  [⚠️ PROD] Les sons d'adhan ne sont référencés que par leur nom (chaîne
+  passée au plugin de notifications). Sans cette règle, R8 les considère
+  inutilisés et les supprime du build release : la notification jouerait
+  alors le son par défaut, sans aucune erreur visible.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/adhan_short,@raw/adhan_long" />

@@ -2,6 +2,19 @@ name: iOS TestFlight
 
 on:
   workflow_dispatch:
+    inputs:
+      test_audio_url:
+        description: "Adhan de TEST (URL https) intégré à CE build uniquement, jamais commité. Vide = sons du repo."
+        required: false
+        default: ''
+      test_audio_short:
+        description: "Adhan court : passage « Allahu akbar » ×2 (début-fin)"
+        required: false
+        default: '0:00-0:08'
+      test_audio_long_start:
+        description: "Début de l'extrait de 30 s"
+        required: false
+        default: '0:00'
   push:
     tags:
       - 'v*'
@@ -31,6 +44,43 @@ jobs:
         with:
           channel: stable
           cache: true
+
+      # Build de test : l'audio est téléchargé et converti ici, dans le
+      # runner, puis intégré à l'IPA. Il n'entre jamais dans git.
+      - name: Prepare TEST adhan audio
+        if: ${{ inputs.test_audio_url }}
+        env:
+          TEST_AUDIO_URL: ${{ inputs.test_audio_url }}
+          TEST_AUDIO_SHORT: ${{ inputs.test_audio_short }}
+          TEST_AUDIO_LONG_START: ${{ inputs.test_audio_long_start }}
+          HOMEBREW_NO_AUTO_UPDATE: '1'
+        run: |
+          # [🔒] Entrées passées par variables d'environnement (jamais
+          # interpolées dans le script) et URL limitée à https.
+          case "$TEST_AUDIO_URL" in
+            https://*) ;;
+            *) echo "::error::test_audio_url doit commencer par https://"; exit 1 ;;
+          esac
+          brew install ffmpeg
+          curl -fsSL --max-filesize 52428800 -o "$RUNNER_TEMP/test_adhan" "$TEST_AUDIO_URL"
+          scripts/adhan/prepare_adhan.sh \
+            --source "$RUNNER_TEMP/test_adhan" \
+            --short "$TEST_AUDIO_SHORT" \
+            --long-start "$TEST_AUDIO_LONG_START" \
+            --test
+          echo "ADHAN_TEST_AUDIO=true" >> "$GITHUB_ENV"
+          {
+            echo "## ⚠️ Build avec audio d'adhan de TEST"
+            echo "Ce build TestFlight contient un audio non publiable."
+            echo "**Ne jamais le soumettre à l'App Store.**"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Bloque tout build qui embarquerait les sons de substitution ou un
+      # audio de test commité par erreur (tags v* et lancements manuels
+      # sans audio de test).
+      - name: Check adhan audio is publishable
+        if: ${{ !inputs.test_audio_url }}
+        run: scripts/adhan/check_release_audio.sh
 
       - name: Restore Firebase config files
         env:
@@ -123,6 +173,7 @@ jobs:
           flutter build ipa --release \
             --build-number=${{ github.run_number }} \
             --dart-define=SUNNAH_API_KEY="$SUNNAH_API_KEY" \
+            --dart-define=ADHAN_TEST_AUDIO="${ADHAN_TEST_AUDIO:-false}" \
             --export-options-plist="$RUNNER_TEMP/ExportOptions.plist"
 
       - name: Upload to TestFlight
@@ -141,7 +192,7 @@ jobs:
       - name: Keep IPA as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ios-ipa-${{ github.run_number }}
+          name: ios-ipa-${{ github.run_number }}${{ inputs.test_audio_url && '-TEST-AUDIO' || '' }}
           path: build/ios/ipa/*.ipa
           retention-days: 7
 
